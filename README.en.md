@@ -1,37 +1,30 @@
 # 350小队
 
-#### Description
-350小队git项目地址
-队员：孙铭杰、李君祥、陈士博
+#### 成员介绍
 
-#### Software Architecture
-Software architecture description
+* 前端成员：陈士博
+* 后端成员：孙铭杰、李君祥
 
-#### Installation
+#### 项目介绍
+1. xxx
+2. xxx
+3. ...
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+#### 项目演示
 
-#### Instructions
+1. xxx
+2. xxx
+3. ...
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+#### 技术栈
 
-#### Contribution
+##### 前端技术栈
+1. xxx
+2. xxx
+3. ...
 
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
+##### 后端技术栈
+1. xxx
+2. xxx
+3. ...
 
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
