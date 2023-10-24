@@ -1,0 +1,29 @@
+* {
+  // 设置边距
+  margin: 0;
+  padding: 0;
+  // 超出自动隐藏
+  overflow: hidden;
+  // 设置背景
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  body {
+    // 设置大小
+    width: 100vw;
+    height: 100vh;
+    // 设置背景
+    background: #000000;
+    background: -webkit-linear-gradient(to left, $color-bg-color-gray, $color-bg-color-black);
+    background: linear-gradient(to left, $color-bg-color-gray, $color-bg-color-black);
+    color: $color-text-color;
+  }
+  ul {
+    li {
+      list-style: none;
+    }
+  }
+  #app {
+    height: 100vh;
+  }
+}
