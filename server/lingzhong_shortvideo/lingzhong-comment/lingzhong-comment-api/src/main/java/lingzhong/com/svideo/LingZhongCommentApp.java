@@ -2,6 +2,7 @@ package lingzhong.com.svideo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * @Author 孙铭杰
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@EnableDiscoveryClient
 public class LingZhongCommentApp {
     public static void main(String[] args) {
         SpringApplication.run(LingZhongCommentApp.class , args);

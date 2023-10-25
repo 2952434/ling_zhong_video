@@ -15,6 +15,7 @@
         <module>lingzhong-chat</module>
         <module>lingzhong-search</module>
         <module>lingzhong-comment</module>
+        <module>renren-generator</module>
     </modules>
 
     <name>lingzhong_shortvideo</name>
