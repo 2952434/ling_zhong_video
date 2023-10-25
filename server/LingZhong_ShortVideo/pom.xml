@@ -4,19 +4,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>lingzhong.com.svideo</groupId>
-    <artifactId>LingZhong_ShortVideo</artifactId>
+    <artifactId>lingzhong_shortvideo</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>
 
     <modules>
-        <module>LingZhong-business</module>
-        <module>LingZhong-core</module>
-        <module>LingZhong-service</module>
-        <module>LingZhong-starter</module>
+        <module>lingzhong-common</module>
+        <module>lingzhong-user</module>
+        <module>lingzhong-video</module>
+        <module>lingzhong-chat</module>
+        <module>lingzhong-search</module>
+        <module>lingzhong-comment</module>
     </modules>
 
-    <name>LingZhong_ShortVideo</name>
-    <description>LingZhong_ShortVideo</description>
+    <name>lingzhong_shortvideo</name>
+    <description>lingzhong_shortvideo</description>
 
 
 
