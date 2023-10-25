@@ -6,9 +6,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-const getImageUrl = (name) => {
-  return new URL(`../../assets/images/${name}`, import.meta.url).href
-}
+import { getImageUrl } from '@/utils/utils.js'
 </script>
 
 <style scoped lang='scss'>

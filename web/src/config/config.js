@@ -8,30 +8,58 @@ export const MENU_LIST = [
     title: '首页',
     icon: 'House',
     value: '',
-    path:'/'
+    path: '/',
+    isActive: false
   },
   {
     title: '分类',
     icon: 'Grid',
     value: '',
-    path:'/category'
+    path: '/category',
+    isActive: false
   },
   {
     title: '我的',
     icon: 'User',
     value: '',
-    path:'/user'
+    path: '/user',
+    isActive: false
   },
   {
     title: '关于',
     icon: 'StarFilled',
     value: '',
-    path:'/about'
+    path: '/about',
+    isActive: false
   },
   {
     title: '关注',
     icon: 'Avatar',
     value: '',
-    path:'/follow'
+    path: '/follow',
+    isActive: false
   },
+]
+// 视频鼠标右键出现的选项
+export const MOUSE_CLICK_MENU_LIST = [
+  {
+    label: '暂停',
+    value: 'stop',
+    show: true
+  },
+  {
+    label: '播放',
+    value: 'play',
+    show: true
+  },
+  {
+    label: '复制视频链接',
+    value: 'copy',
+    show: true
+  },
+  {
+    label: "评论",
+    value: 'comments',
+    show: true
+  }
 ]

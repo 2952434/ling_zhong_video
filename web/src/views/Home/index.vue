@@ -1,9 +1,16 @@
 <template>
-  <div class="home">这是首页</div>
-</template>
+  <div class="home">
+    <VideoComponent />
+  </div>
+</template> 
 
-<script setup lang='ts'>
+<script setup>
 import { ref, reactive } from 'vue'
+import VideoComponent from './videoItem/index.vue'
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.home {
+  height: 100%;
+}
+</style>

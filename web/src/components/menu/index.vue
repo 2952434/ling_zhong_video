@@ -1,7 +1,8 @@
 <template>
   <div class='menu'>
     <ul id="ul">
-      <li v-for="(item, index) in MENU_LIST" class="listItem" :key="index" @click="menuClick($event, item)">
+      <li v-for="(item, index) in menu_list" :class="{ listItem: true, active: item.isActive }" :key="index"
+        @click="menuClick($event, item)">
         <component :is="item.icon" style="height: 20px;vertical-align:text-bottom;padding-right: 5px;"></component>
         {{ item.title }}
       </li>
@@ -11,16 +12,24 @@
 
 <script setup>
 import { MENU_LIST } from '@/config/config.js'
-import { useRouter } from 'vue-router';
+import { nextTick, onMounted, reactive } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 const router = useRouter()
+const route = useRoute()
+let menu_list = reactive(MENU_LIST)
+/**
+ * 默认选中当前标签
+ */
+onMounted(() => {
+  selectDefault()
+})
 /**
  * 列表点击事件
  */
 const menuClick = (e, item) => {
-  console.log(e, item);
   clearClass()
   e.target.children[0].children[0].setAttribute('fill', 'white')
-  e.target.classList.add('active')
+  item.isActive = true
   router.push(item.path)
 }
 /**
@@ -28,9 +37,22 @@ const menuClick = (e, item) => {
  */
 const clearClass = () => {
   const lis = document.querySelectorAll('.listItem')
+  menu_list.forEach(item => {
+    item.isActive = false
+  })
   lis.forEach(item => {
-    item.classList.remove('active')
     item.children[0].children[0].setAttribute('fill', 'currentColor')
+  })
+}
+/**
+ * 选中默认
+ */
+const selectDefault = () => {
+  console.log();
+  menu_list.forEach(item => {
+    if (item.path === '/' + window.location.href.split('/')[window.location.href.split('/').length - 1]) {
+      item.isActive = true
+    }
   })
 }
 </script>

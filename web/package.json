@@ -1,7 +1,7 @@
 {
   "name": "lingzhong",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
@@ -15,6 +15,7 @@
     "sass": "^1.69.4",
     "sass-loader": "^13.3.2",
     "vue": "^3.3.4",
+    "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {

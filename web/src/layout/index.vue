@@ -4,7 +4,9 @@
     <div class="container">
       <Menu />
       <div class="main">
-        <router-view></router-view>
+        <keep-alive include="home">
+          <router-view></router-view>
+        </keep-alive>
       </div>
     </div>
 
@@ -12,7 +14,6 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
 import Tabbar from '@/components/tabbar/index.vue'
 import Menu from '@/components/menu/index.vue'
 </script>
