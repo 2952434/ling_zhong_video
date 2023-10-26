@@ -16,6 +16,7 @@
         <module>lingzhong-search</module>
         <module>lingzhong-comment</module>
         <module>renren-generator</module>
+        <module>lingzhong-gateway</module>
     </modules>
 
     <name>lingzhong_shortvideo</name>
