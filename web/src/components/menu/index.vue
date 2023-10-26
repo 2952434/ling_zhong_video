@@ -48,7 +48,6 @@ const clearClass = () => {
  * 选中默认
  */
 const selectDefault = () => {
-  console.log();
   menu_list.forEach(item => {
     if (item.path === '/' + window.location.href.split('/')[window.location.href.split('/').length - 1]) {
       item.isActive = true

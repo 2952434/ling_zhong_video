@@ -138,10 +138,8 @@ const keydownEvent = () => {
         }
         break
       case 'ArrowUp':
-        console.log('up');
         break
       case 'ArrowDown':
-        console.log('down');
         break
       case 'ArrowLeft':
         rewind(videoItem.value, videoActionTime)
@@ -204,7 +202,6 @@ const mouseLeaveControlHandle = () => {
  * 控件事件的点击回调
  */
 const controlsClickHandle = (type) => {
-  console.log(type);
   switch (type) {
     case 'left':
       rewind(videoItem.value, videoActionTime)
