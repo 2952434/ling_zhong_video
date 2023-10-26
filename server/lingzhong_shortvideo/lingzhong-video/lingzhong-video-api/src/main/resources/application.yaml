@@ -1,2 +1,20 @@
 server:
   port: 3504
+spring:
+  #数据源
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: lingzhong_video
+    password: lingzhong_video
+    url: jdbc:mysql://82.157.145.197:3306/lingzhong_video?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+  #注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: video-3504
+  #swagger3
+  swagger:
+    active:
+      enabled: true

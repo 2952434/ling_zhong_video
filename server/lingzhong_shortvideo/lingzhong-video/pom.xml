@@ -13,7 +13,6 @@
     <artifactId>lingzhong-video</artifactId>
     <version>1.0.0</version>
 
-    <packaging>pom</packaging>
     <modules>
         <module>lingzhong-video-api</module>
         <module>lingzhong-video-model</module>

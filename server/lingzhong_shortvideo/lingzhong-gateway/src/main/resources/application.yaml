@@ -1,0 +1,48 @@
+server:
+  port: 350
+  servlet:
+    context-path: /${spring.application.name}
+spring:
+  application:
+    name: lingzhong
+    #路由网关
+  cloud:
+    gateway:
+      routes:
+        - id: chat-3500
+            uri: lb://chat-3500
+            predicates:
+              - Path=/chat/**
+            filters:
+              - StripPrefix=1
+
+        - id: comment-3501
+            uri: lb://comment-3501
+            predicates:
+              - Path=/comment/**
+            filters:
+              - StripPrefix=1
+
+        - id: search-3502
+            uri: lb://search-3502
+            predicates:
+              - Path=/search/**
+            filters:
+              - StripPrefix=1
+
+        - id: user-3503
+            uri: lb://user-3503
+            predicates:
+              - Path=/user/**
+            filters:
+              - StripPrefix=1
+
+        - id: video-3504
+            uri: lb://video-3504
+            predicates:
+              - Path=/video/**
+            filters:
+              - StripPrefix=1
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848

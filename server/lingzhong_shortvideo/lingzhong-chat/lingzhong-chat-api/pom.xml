@@ -3,12 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>lingzhong-chat</artifactId>
         <groupId>lingzhong.com.svideo.chat</groupId>
+        <artifactId>lingzhong-chat</artifactId>
         <version>1.0.0</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
 
     <artifactId>lingzhong-chat-api</artifactId>
 
@@ -17,5 +17,13 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>lingzhong.com.svideo.chat</groupId>
+            <artifactId>lingzhong-chat-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
