@@ -1,8 +1,9 @@
 <template>
   <div :style="{ width: props.width + '%', height: props.height + '%' }" class="videoItem" ref="videoBox">
-    <video @contextmenu.prevent.stop="rewriteVideoClick" @click="videoClick" :src="props.videoUrl" ref="videoItem"
-      autoplay></video>
-    <VideoControls />
+    <video @contextmenu.prevent.stop="rewriteVideoClick" @click="videoClick" @mousemove="mouseMoveHandle"
+      :src="props.videoUrl" ref="videoItem" autoplay @mouseleave="mouseLeaveHandle" mouted></video>
+    <VideoControls v-show="controlsShow" @mouseOverControls="mouseUpHandle" :videoStatus="videoStatus"
+      :videoInfo="videoItem" @mouseLeaveControls="mouseLeaveControlHandle" @controlsClickHandle="controlsClickHandle" />
     <div class="click-menu" ref="menuList" v-show="menuShow">
       <ul class="menu-ul">
         <li v-for="(item, index) in MOUSE_CLICK_MENU_LIST" @click="menuListClick(item)" v-show="item.show">{{ item.label
@@ -13,10 +14,19 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 // 引入视频控件
 import VideoControls from '@/components/videoControls/index.vue'
 import { MOUSE_CLICK_MENU_LIST } from '@/config/config.js'
+// 引入操作视频方法
+import {
+  play,
+  pause,
+  seek,
+  rewind,
+} from '@/utils/video.js'
+// 引入操作的时间
+import { videoActionTime } from '@/config/config.js'
 // 操作剪切板
 import { copy } from '@/utils/utils.js'
 // 获取菜单实例
@@ -25,8 +35,27 @@ const menuList = ref()
 const menuShow = ref(false)
 // 获取video标签
 const videoItem = ref()
+// 控件的显示和隐藏
+const controlsShow = ref(false)
+// 视频播放状态
+const videoStatus = ref(true)
+// 视频信息
+// const videoInfo = reactive({
+//   currentTime: '',
+//   totalTime: ''
+// })
+// 定时器
+let timer = null
 onMounted(() => {
   keydownEvent()
+  nextTick(() => {
+    if (videoItem.value.paused) {
+      videoStatus.value = false
+    } else {
+      videoStatus.value = true
+    }
+  })
+
 })
 /**
  * 获取到video盒子实例
@@ -66,10 +95,12 @@ const rewriteVideoClick = (e) => {
 const videoClick = () => {
   menuShow.value = false
   if (videoItem.value.paused) {
-    videoItem.value.play()
-
+    play(videoItem.value)
+    videoStatus.value = true
   } else {
-    videoItem.value.pause()
+    pause(videoItem.value)
+    videoStatus.value = false
+
   }
 }
 /**
@@ -79,10 +110,12 @@ const menuListClick = (item) => {
   menuShow.value = false
   switch (item.value) {
     case 'stop':
-      videoItem.value.pause()
+      pause(videoItem.value)
+      videoStatus.value = false
       break
     case 'play':
-      videoItem.value.play()
+      play(videoItem.value)
+      videoStatus.value = true
       break
     case 'copy':
       copy(props.videoUrl)
@@ -92,19 +125,106 @@ const menuListClick = (item) => {
 /**
  * 键盘事件
  */
-const keydownEvent = (e) => {
+const keydownEvent = () => {
   document.body.addEventListener('keyup', (e) => {
-    console.log(e.code);
-    if (e.code === 'Space') {
-      if (videoItem.value.paused) {
-        videoItem.value.play()
-      } else {
-        videoItem.value.pause()
-      }
+    switch (e.code) {
+      case 'Space':
+        if (videoItem.value.paused) {
+          play(videoItem.value)
+          videoStatus.value = true
+        } else {
+          pause(videoItem.value)
+          videoStatus.value = false
+        }
+        break
+      case 'ArrowUp':
+        console.log('up');
+        break
+      case 'ArrowDown':
+        console.log('down');
+        break
+      case 'ArrowLeft':
+        rewind(videoItem.value, videoActionTime)
+        break
+      case 'ArrowRight':
+        seek(videoItem.value, videoActionTime)
+
+        break
     }
   })
 }
 
+/**
+ * 鼠标移出事件
+ */
+const mouseLeaveHandle = () => {
+  if (timer) clearTimeout(timer)
+  timer = setTimeout(() => {
+    controlsShow.value = false
+    videoItem.value.style.cursor = 'none'
+    timer = null
+  }, 1000);
+}
+/**
+ * 鼠标移入视频
+ */
+const mouseMoveHandle = () => {
+  controlsShow.value = true
+  videoItem.value.style.cursor = 'auto'
+
+  if (timer) clearTimeout(timer)
+  timer = setTimeout(() => {
+    controlsShow.value = false
+    videoItem.value.style.cursor = 'none'
+
+    timer = null
+  }, 1000);
+}
+/**
+ * 鼠标置于控件
+ */
+const mouseUpHandle = () => {
+  if (timer) clearTimeout(timer)
+  controlsShow.value = true
+  videoItem.value.style.cursor = 'auto'
+
+}
+/**
+ * 鼠标移出控件
+ */
+const mouseLeaveControlHandle = () => {
+  if (timer) clearTimeout(timer)
+  timer = setTimeout(() => {
+    controlsShow.value = false
+    videoItem.value.style.cursor = 'none'
+
+  }, 1000)
+}
+/**
+ * 控件事件的点击回调
+ */
+const controlsClickHandle = (type) => {
+  console.log(type);
+  switch (type) {
+    case 'left':
+      rewind(videoItem.value, videoActionTime)
+      break
+    case 'pause':
+      pause(videoItem.value)
+      videoStatus.value = false
+      break
+    case 'play':
+      play(videoItem.value)
+      videoStatus.value = true
+      break
+    case 'right':
+      seek(videoItem.value, videoActionTime)
+      break
+    case 'fullScreen':
+
+      break
+  }
+}
 
 
 </script>

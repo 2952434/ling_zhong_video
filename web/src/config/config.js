@@ -63,3 +63,5 @@ export const MOUSE_CLICK_MENU_LIST = [
     show: true
   }
 ]
+// 视频前进和后退一次的时间（秒）
+export const videoActionTime = 5
