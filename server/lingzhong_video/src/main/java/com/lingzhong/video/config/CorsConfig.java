@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @Author: Ljx
- * @Date: 2021/5/25 20:38
+ * @Date: 2023/10/27 20:33
  * @role: 跨域配置
  */
 @Configuration
