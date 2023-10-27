@@ -3,6 +3,8 @@ package com.lingzhong.video.mapper;
 import com.lingzhong.video.bean.po.CommentReply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
 * @author ljx
 * @description 针对表【comment_reply】的数据库操作Mapper

@@ -1,10 +1,13 @@
 package com.lingzhong.video.bean.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -17,38 +20,44 @@ public class CommentReply implements Serializable {
     /**
      * 主键id
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 如果是评论为视频id，如果是回复是评论id
+     * 评论id
      */
-    private Integer videoOrCommentId;
+    private Integer commentId;
 
     /**
-     * 发表回复的用户id
+     * 视频id
+     */
+    private Integer videoId;
+
+    /**
+     * 发表评论的用户id
      */
     private Integer userId;
 
     /**
-     * 被回复或评论的用户id
+     * 评论内容
      */
-    private Integer beUserId;
+    private String commentTxt;
 
     /**
-     * 0：评论，1：回复
+     * 父评论id，-1代表评论，其他代表回复
      */
-    private Integer commentOrReply;
-
-    /**
-     * 回复的内容
-     */
-    private String replyContent;
+    private Integer commentFid;
 
     /**
      * 发表时间
      */
     private Date replyDate;
+
+    /**
+     * 子评论
+     */
+    @TableField(exist = false)
+    private List<CommentReply> sonCommentReplyList;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -66,12 +75,13 @@ public class CommentReply implements Serializable {
         }
         CommentReply other = (CommentReply) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getVideoOrCommentId() == null ? other.getVideoOrCommentId() == null : this.getVideoOrCommentId().equals(other.getVideoOrCommentId()))
+            && (this.getCommentId() == null ? other.getCommentId() == null : this.getCommentId().equals(other.getCommentId()))
+            && (this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getBeUserId() == null ? other.getBeUserId() == null : this.getBeUserId().equals(other.getBeUserId()))
-            && (this.getCommentOrReply() == null ? other.getCommentOrReply() == null : this.getCommentOrReply().equals(other.getCommentOrReply()))
-            && (this.getReplyContent() == null ? other.getReplyContent() == null : this.getReplyContent().equals(other.getReplyContent()))
-            && (this.getReplyDate() == null ? other.getReplyDate() == null : this.getReplyDate().equals(other.getReplyDate()));
+            && (this.getCommentTxt() == null ? other.getCommentTxt() == null : this.getCommentTxt().equals(other.getCommentTxt()))
+            && (this.getCommentFid() == null ? other.getCommentFid() == null : this.getCommentFid().equals(other.getCommentFid()))
+            && (this.getReplyDate() == null ? other.getReplyDate() == null : this.getReplyDate().equals(other.getReplyDate()))
+            && (this.getSonCommentReplyList() == null ? other.getSonCommentReplyList() == null : this.getSonCommentReplyList().equals(other.getSonCommentReplyList()));
     }
 
     @Override
@@ -79,30 +89,14 @@ public class CommentReply implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getVideoOrCommentId() == null) ? 0 : getVideoOrCommentId().hashCode());
+        result = prime * result + ((getCommentId() == null) ? 0 : getCommentId().hashCode());
+        result = prime * result + ((getVideoId() == null) ? 0 : getVideoId().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getBeUserId() == null) ? 0 : getBeUserId().hashCode());
-        result = prime * result + ((getCommentOrReply() == null) ? 0 : getCommentOrReply().hashCode());
-        result = prime * result + ((getReplyContent() == null) ? 0 : getReplyContent().hashCode());
+        result = prime * result + ((getCommentTxt() == null) ? 0 : getCommentTxt().hashCode());
+        result = prime * result + ((getCommentFid() == null) ? 0 : getCommentFid().hashCode());
         result = prime * result + ((getReplyDate() == null) ? 0 : getReplyDate().hashCode());
+        result = prime * result + ((getSonCommentReplyList() == null) ? 0 : getSonCommentReplyList().hashCode());
         return result;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", videoOrCommentId=").append(videoOrCommentId);
-        sb.append(", userId=").append(userId);
-        sb.append(", beUserId=").append(beUserId);
-        sb.append(", commentOrReply=").append(commentOrReply);
-        sb.append(", replyContent=").append(replyContent);
-        sb.append(", replyDate=").append(replyDate);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
 }

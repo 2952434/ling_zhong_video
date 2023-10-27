@@ -1,7 +1,8 @@
 package com.lingzhong.video.service;
 
 import com.lingzhong.video.bean.po.CommentReply;
-import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author ljx
@@ -10,4 +11,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface CommentReplyService  {
 
+    /**
+     * 发表评论或回复
+     */
+    public String insertNewComment(CommentReply commentReply);
+
+    /**
+     * 获取视频下所有评论及回复
+     */
+    public List<CommentReply> getAllCommentByVideoId(Integer videoId);
+
+    /**
+     * 获取用户的评论
+     */
+    public List<CommentReply> getCommentByUserId(Integer userId);
 }
