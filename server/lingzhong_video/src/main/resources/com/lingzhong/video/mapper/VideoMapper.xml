@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingzhong.video.mapper.VideoMapper">
+
+    <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.Video">
+            <id property="videoId" column="video_id" jdbcType="INTEGER"/>
+            <result property="videoName" column="video_name" jdbcType="VARCHAR"/>
+            <result property="videoUrl" column="video_url" jdbcType="VARCHAR"/>
+            <result property="videoUserId" column="video_user_id" jdbcType="INTEGER"/>
+            <result property="videoAddress" column="video_address" jdbcType="VARCHAR"/>
+            <result property="videoPrivate" column="video_private" jdbcType="TINYINT"/>
+            <result property="videoDate" column="video_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        video_id,video_name,video_url,
+        video_user_id,video_address,video_private,
+        video_date
+    </sql>
+</mapper>
