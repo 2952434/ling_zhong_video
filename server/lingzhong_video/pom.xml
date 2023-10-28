@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.lingzhong.video</groupId>
     <artifactId>lingzhong_video</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>v1.0</version>
     <name>lingzhong_video</name>
     <description>lingzhong_video</description>
     <properties>

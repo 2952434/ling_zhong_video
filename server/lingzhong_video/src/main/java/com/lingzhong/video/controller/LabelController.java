@@ -30,7 +30,7 @@ public class LabelController {
 
     @ApiOperation(value = "获得所有标签")
     @GetMapping("/getAllLabel")
-    public RespBean getAllLabel() {
+    public RespBean<List<LabelVo>> getAllLabel() {
         List<LabelVo> labels = labelService.getAllLabel();
         return RespBean.ok(labels);
     }
@@ -40,7 +40,7 @@ public class LabelController {
             @ApiImplicitParam(name = "labelId", value = "标签id", required = true, dataTypeClass = Integer.class, example = "1")
     })
     @GetMapping("/getAllLabel/{labelId}")
-    public RespBean getLabelById(@PathVariable Integer labelId) {
+    public RespBean<Label> getLabelById(@PathVariable Integer labelId) {
         Label label = labelService.getLabelById(labelId);
         if (label == null) {
             return RespBean.error("没有查询到该值");
@@ -50,7 +50,7 @@ public class LabelController {
 
     @ApiOperation(value = "新增标签")
     @PostMapping("/insertVideoLabel")
-    public RespBean insertVideoLabel(@RequestBody VideoLabelDTO videoLabelDTO){
+    public RespBean<String> insertVideoLabel(@RequestBody VideoLabelDTO videoLabelDTO){
         Boolean judge = labelService.insertVideoLabel(videoLabelDTO);
         if (judge) {
             return RespBean.ok("添加标签成功");

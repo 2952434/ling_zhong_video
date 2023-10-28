@@ -5,7 +5,7 @@ package com.lingzhong.video.bean.vo;
  * @Date: 2023/10/27 20:33
  * @role: 给前端回复数据实体
  */
-public class RespBean {
+public class RespBean<T> {
     /**
      * 状态码
      */
@@ -17,40 +17,40 @@ public class RespBean {
     /**
      * 响应数据
      */
-    private Object obj;
+    private T obj;
 
-    public static RespBean build() {
-        return new RespBean();
+    public static <T> RespBean<T> build() {
+        return new RespBean<T>();
     }
 
-    public static RespBean ok(Object obj) {
-        return new RespBean(200, null, obj);
+    public static <T> RespBean<T> ok(T obj) {
+        return new RespBean<T>(200, null, obj);
     }
 
-    public static RespBean ok(String msg) {
-        return new RespBean(200, msg, null);
+    public static <T> RespBean<T> ok(String msg) {
+        return new RespBean<T>(200, msg, null);
     }
 
-    public static RespBean ok(String msg, Object obj) {
-        return new RespBean(200, msg, obj);
+    public static <T> RespBean<T> ok(String msg, T obj) {
+        return new RespBean<T>(200, msg, obj);
     }
 
-    public static RespBean error(Object obj) {
-        return new RespBean(500, null, obj);
+    public static <T> RespBean<T> error(T obj) {
+        return new RespBean<T>(500, null, obj);
     }
 
-    public static RespBean error(String msg) {
-        return new RespBean(500, msg, null);
+    public static <T> RespBean<T> error(String msg) {
+        return new RespBean<T>(500, msg, null);
     }
 
-    public static RespBean error(String msg, Object obj) {
-        return new RespBean(500, msg, obj);
+    public static <T> RespBean<T> error(String msg, T obj) {
+        return new RespBean<T>(500, msg, obj);
     }
 
     private RespBean() {
     }
 
-    private RespBean(Integer status, String msg, Object obj) {
+    private RespBean(Integer status, String msg, T obj) {
         this.status = status;
         this.msg = msg;
         this.obj = obj;
@@ -69,16 +69,16 @@ public class RespBean {
         return msg;
     }
 
-    public RespBean setMsg(String msg) {
+    public  RespBean setMsg(String msg) {
         this.msg = msg;
         return this;
     }
 
-    public Object getObj() {
+    public T getObj() {
         return obj;
     }
 
-    public RespBean setObj(Object obj) {
+    public RespBean setObj(T obj) {
         this.obj = obj;
         return this;
     }

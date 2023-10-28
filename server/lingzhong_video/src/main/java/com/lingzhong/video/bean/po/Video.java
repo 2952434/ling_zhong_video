@@ -21,9 +21,9 @@ public class Video implements Serializable {
     private Integer videoId;
 
     /**
-     * 视频名
+     * 视频描述
      */
-    private String videoName;
+    private String videoDescription;
 
     /**
      * 视频url地址

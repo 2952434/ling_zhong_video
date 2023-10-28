@@ -1,14 +1,17 @@
 package com.lingzhong.video.service.impl;
 
 import com.google.gson.Gson;
+import com.lingzhong.video.bean.dto.TempUser;
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
 import com.lingzhong.video.bean.po.Video;
 import com.lingzhong.video.bean.po.VideoData;
 import com.lingzhong.video.bean.po.VideoLabel;
+import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.mapper.VideoLabelMapper;
 import com.lingzhong.video.mapper.VideoMapper;
 import com.lingzhong.video.service.VideoDataService;
 import com.lingzhong.video.service.VideoService;
+import com.lingzhong.video.utils.TimeUtils;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.Configuration;
@@ -20,7 +23,6 @@ import com.qiniu.util.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author ljx
@@ -63,19 +66,18 @@ public class VideoServiceImpl implements VideoService {
     @Resource
     private VideoDataService videoDataService;
 
-    Integer userId = 1;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean uploadVideo(MultipartFile file, VideoPublishDTO videoPublishDTO) throws Exception {
         try {
+            TempUser tempUser = new TempUser();
             String videoUrl = uploadVideo(file);
             Video video = new Video();
             BeanUtils.copyProperties(videoPublishDTO, video);
-            video.setVideoUserId(userId);
+            video.setVideoUserId(tempUser.getUserId());
             video.setVideoUrl(videoUrl);
             video.setVideoDate(new Date());
-            video.setVideoName(file.getOriginalFilename());
             int insert = videoMapper.insert(video);
             System.out.println(insert);
             List<Integer> labelIds = videoPublishDTO.getLabelIds();
@@ -95,6 +97,12 @@ public class VideoServiceImpl implements VideoService {
         return true;
     }
 
+    @Override
+    public List<VideoVo> getVideo(Integer page) {
+//        TODO 算法需要优化
+        return videoMapper.getVideo(page * 10);
+    }
+
 
     private String uploadVideo(MultipartFile file) {
         //构造一个带指定 Region 对象的配置类
@@ -105,7 +113,7 @@ public class VideoServiceImpl implements VideoService {
         cfg.resumableUploadMaxConcurrentTaskCount = 2;
 
         //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = "video/" + file.getOriginalFilename();
+        String key = "video/" + TimeUtils.getNowDateString("yyyy/MM/dd") + "/" + (new Random().nextInt(1000) + 1) +"/" + file.getOriginalFilename();
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
         String localTempDir = Paths.get(System.getenv("java.io.tmpdir"), bucket).toString();

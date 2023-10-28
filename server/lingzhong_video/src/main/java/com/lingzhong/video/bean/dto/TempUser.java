@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * @Author: 李君祥
  * @Date: 2023/10/28 20:27
- * @Description: TODO:类的描述信息
+ * @Description: 临时用户
  */
 @Data
 public class TempUser {

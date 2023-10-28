@@ -2,7 +2,10 @@ package com.lingzhong.video.service;
 
 
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
+import com.lingzhong.video.bean.vo.VideoVo;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * @author ljx
@@ -20,5 +23,12 @@ public interface VideoService {
      */
     Boolean uploadVideo(MultipartFile file, VideoPublishDTO videoPublishDTO) throws Exception;
 
+
+    /**
+     * 获取视频信息
+     * @param page 第几页
+     * @return List<VideoVo>
+     */
+    List<VideoVo> getVideo(Integer page);
 
 }
