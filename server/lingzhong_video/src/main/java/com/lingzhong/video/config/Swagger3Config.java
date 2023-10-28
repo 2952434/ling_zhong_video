@@ -27,7 +27,7 @@ public class Swagger3Config {
     Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("studio.banner.forumwebsite.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.lingzhong.video.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .securityContexts(Arrays.asList(securityContexts()))
@@ -55,8 +55,8 @@ public class Swagger3Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "forumWebsite接口",
-                "用于测试论坛功能",
+                "凌众视频接口文档",
+                "接口测试",
                 "v1.0",
                 "#",
                 new Contact("测试", "#", "2952434583@qq.com"),

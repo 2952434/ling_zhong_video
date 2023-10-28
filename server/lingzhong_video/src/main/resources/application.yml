@@ -72,3 +72,11 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   type-aliases-package: studio.banner.forumwebsite.bean
 
+
+qiniu:
+  accessKey: EeYNXo1hONmESybj2pe3YNBHO9Nar38Kf-QrbWEF
+  secretKey: lpiYGtDzQP3M0xNx--WyAposkw6KLWSXvWsod1aO
+  bucket: lingzhong
+  url: http://s32t6kk2m.hb-bkt.clouddn.com/
+
+

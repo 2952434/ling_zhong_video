@@ -1,6 +1,8 @@
 package com.lingzhong.video.controller;
 
+import com.lingzhong.video.bean.dto.VideoLabelDTO;
 import com.lingzhong.video.bean.po.Label;
+import com.lingzhong.video.bean.vo.LabelVo;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.service.LabelService;
 import io.swagger.annotations.Api;
@@ -8,9 +10,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @Api(tags = "视频标签接口")
+@RequestMapping("/label")
 public class LabelController {
 
 
@@ -30,7 +31,7 @@ public class LabelController {
     @ApiOperation(value = "获得所有标签")
     @GetMapping("/getAllLabel")
     public RespBean getAllLabel() {
-        List<Label> labels = labelService.getAllLabel();
+        List<LabelVo> labels = labelService.getAllLabel();
         return RespBean.ok(labels);
     }
 
@@ -45,6 +46,17 @@ public class LabelController {
             return RespBean.error("没有查询到该值");
         }
         return RespBean.ok(label);
+    }
+
+    @ApiOperation(value = "新增标签")
+    @PostMapping("/insertVideoLabel")
+    public RespBean insertVideoLabel(@RequestBody VideoLabelDTO videoLabelDTO){
+        Boolean judge = labelService.insertVideoLabel(videoLabelDTO);
+        if (judge) {
+            return RespBean.ok("添加标签成功");
+        }else {
+            return RespBean.error("标签已存在");
+        }
     }
 
 

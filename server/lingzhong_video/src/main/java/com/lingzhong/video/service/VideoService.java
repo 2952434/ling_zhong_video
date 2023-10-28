@@ -1,7 +1,8 @@
 package com.lingzhong.video.service;
 
-import com.lingzhong.video.bean.po.Video;
-import com.baomidou.mybatisplus.extension.service.IService;
+
+import com.lingzhong.video.bean.dto.VideoPublishDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author ljx
@@ -9,5 +10,15 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @createDate 2023-10-27 20:30:22
  */
 public interface VideoService {
+
+
+    /**
+     * 用户发布视频
+     * @param file 视频文件
+     * @param videoPublishDTO 发布视频需要携带的参数
+     * @return 是否成功
+     */
+    Boolean uploadVideo(MultipartFile file, VideoPublishDTO videoPublishDTO) throws Exception;
+
 
 }

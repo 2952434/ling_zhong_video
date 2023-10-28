@@ -1,12 +1,17 @@
 package com.lingzhong.video.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lingzhong.video.bean.dto.TempUser;
+import com.lingzhong.video.bean.dto.VideoLabelDTO;
 import com.lingzhong.video.bean.po.Label;
+import com.lingzhong.video.bean.vo.LabelVo;
 import com.lingzhong.video.service.LabelService;
 import com.lingzhong.video.mapper.LabelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,9 +26,23 @@ public class LabelServiceImpl implements LabelService {
     private LabelMapper labelMapper;
 
     @Override
-    public List<Label> getAllLabel() {
-        List<Label> labels = labelMapper.selectList(null);
-        return labels;
+    public List<LabelVo> getAllLabel() {
+        TempUser tempUser = new TempUser();
+        QueryWrapper<Label> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",tempUser.getUserId()).or().eq("user_id",-1);
+        List<Label> labels = labelMapper.selectList(queryWrapper);
+        List<LabelVo> labelVos = new ArrayList<>();
+        for (Label label : labels) {
+            LabelVo labelVo = new LabelVo();
+            BeanUtils.copyProperties(label,labelVo);
+            if (label.getUserId() == -1) {
+                labelVo.setIsUserAdd(Boolean.FALSE);
+            }else {
+                labelVo.setIsUserAdd(Boolean.TRUE);
+            }
+            labelVos.add(labelVo);
+        }
+        return labelVos;
     }
 
     @Override
@@ -31,6 +50,46 @@ public class LabelServiceImpl implements LabelService {
         Label label = labelMapper.selectById(labelId);
         return label;
     }
+
+    @Override
+    public Boolean insertVideoLabel(VideoLabelDTO videoLabelDTO) {
+        boolean exists = labelExists(videoLabelDTO);
+        if (exists) {
+            return false;
+        }
+        Label label = new Label();
+        Boolean isUser = videoLabelDTO.getIsUser();
+        label.setLabelName(videoLabelDTO.getLabelName());
+        if (isUser) {
+            TempUser tempUser = new TempUser();
+            label.setUserId(tempUser.getUserId());
+        }else {
+            label.setUserId(-1);
+        }
+        int insert = labelMapper.insert(label);
+        return insert > 0;
+    }
+
+    /**
+     * 判断标签是否存在
+     * @param videoLabelDTO 添加的标签
+     * @return true：存在 false：不存在
+     */
+    private boolean labelExists(VideoLabelDTO videoLabelDTO) {
+        Boolean isUser = videoLabelDTO.getIsUser();
+        QueryWrapper<Label> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("label_name", videoLabelDTO.getLabelName());
+        if (isUser) {
+            TempUser tempUser = new TempUser();
+            queryWrapper.eq("user_id",tempUser.getUserId());
+        }else {
+            queryWrapper.eq("user_id",-1);
+        }
+        Label label = labelMapper.selectOne(queryWrapper);
+        return label != null;
+    }
+
+
 }
 
 

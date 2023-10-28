@@ -2,6 +2,7 @@ package com.lingzhong.video.mapper;
 
 import com.lingzhong.video.bean.po.VideoData;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author ljx
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-10-27 21:36:13
 * @Entity com.lingzhong.video.bean.po.VideoData
 */
+@Repository
 public interface VideoDataMapper extends BaseMapper<VideoData> {
 
 }
