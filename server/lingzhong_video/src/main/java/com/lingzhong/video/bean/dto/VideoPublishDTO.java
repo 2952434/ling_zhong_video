@@ -21,6 +21,9 @@ public class VideoPublishDTO {
     @ApiModelProperty(value = "视频发表用户的地址", example = "北京")
     private String videoAddress;
 
+    @ApiModelProperty(value = "视频描述",example = "这个视频很有趣，分享给大家")
+    private String videoDescription;
+
     /**
      * (0：公开，1：私有)
      */

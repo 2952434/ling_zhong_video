@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.Video">
             <id property="videoId" column="video_id" jdbcType="INTEGER"/>
-            <result property="videoName" column="video_name" jdbcType="VARCHAR"/>
+            <result property="videoDescription" column="video_description" jdbcType="VARCHAR"/>
             <result property="videoUrl" column="video_url" jdbcType="VARCHAR"/>
             <result property="videoUserId" column="video_user_id" jdbcType="INTEGER"/>
             <result property="videoAddress" column="video_address" jdbcType="VARCHAR"/>
@@ -15,7 +15,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        video_id,video_name,video_url,
+        video_id,video_description,video_url,
         video_user_id,video_address,video_private,
         video_date
     </sql>
