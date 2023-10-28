@@ -37,8 +37,7 @@ public class CommentReplyServiceImpl implements CommentReplyService{
         /**
          * 雪花算法生成唯一评论id
          */
-        SnowFlake snowFlake = new SnowFlake(1,1);
-        long commentId = snowFlake.nextId();
+        long commentId = System.currentTimeMillis();
         commentReply.setCommentId(commentId);
         /**
          * 保存评论

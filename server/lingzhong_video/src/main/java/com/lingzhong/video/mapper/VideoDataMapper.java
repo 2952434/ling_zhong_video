@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 * @Entity com.lingzhong.video.bean.po.VideoData
 */
 public interface VideoDataMapper extends BaseMapper<VideoData> {
-    public Integer updateVideoDataByFiled(@Param("filed") String filed ,@Param("videoId") Integer videoId ,@Param("flag") Boolean flag);
+    public Integer updateVideoDataByFiled(@Param("filed") String filed ,@Param("videoId") Integer videoId ,@Param("num") Integer num);
 }
 
 

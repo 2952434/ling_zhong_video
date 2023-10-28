@@ -28,6 +28,9 @@ public class CommentController {
 
     private VideoDataService videoDataService;
 
+    private static final Integer ADD_NUM = 1;
+    private static final Integer SUBTRACT_NUM = -1;
+
     public CommentController(CommentReplyService commentReplyService, CommentLikeService commentLikeService, VideoDataService videoDataService) {
         this.commentReplyService = commentReplyService;
         this.commentLikeService = commentLikeService;
@@ -44,7 +47,7 @@ public class CommentController {
         /**
          * 视频评论数增加
          */
-        Integer videoCommentInner = videoDataService.updateVideoCommentNum(commentReply.getVideoId(), Boolean.TRUE);
+        Integer videoCommentInner = videoDataService.updateVideoCommentNum(commentReply.getVideoId(), ADD_NUM);
         return new ResponseEntity<Long>(result , HttpStatus.OK);
     }
 
@@ -102,7 +105,7 @@ public class CommentController {
         /**
          * 减少视频评论数
          */
-        Integer updateStatus = videoDataService.updateVideoCommentNum(videoId, Boolean.FALSE);
+        Integer updateStatus = videoDataService.updateVideoCommentNum(videoId, SUBTRACT_NUM);
         return new ResponseEntity<Integer>(delUserComment , HttpStatus.OK);
     }
 

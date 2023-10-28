@@ -12,17 +12,17 @@ public interface VideoDataService extends IService<VideoData> {
     /**
      * 修改视频评论数
      */
-    public Integer updateVideoCommentNum(Integer videoId , Boolean isComment);
+    public Integer updateVideoCommentNum(Integer videoId , Integer addCommentNum);
 
     /**
      * 修改视频点赞数
      */
-    public Integer updateVideoLikeNum(Integer videoId , Boolean isLike);
+    public Integer updateVideoLikeNum(Integer videoId , Integer addLikeNum);
 
     /**
      * 修改视频收藏数
      */
-    public Integer updateVideoCollectNum(Integer videoId , Boolean isCollect);
+    public Integer updateVideoCollectNum(Integer videoId , Integer addCollectNum);
 
     /**
      * 插入新视频数据

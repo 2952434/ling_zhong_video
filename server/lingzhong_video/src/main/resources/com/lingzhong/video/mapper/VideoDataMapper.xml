@@ -17,11 +17,7 @@
     </sql>
 
     <update id="updateVideoDataByFiled">
-        update video_data set ${filed} =
-            CASE
-                when #{flag} AND video_id = #{videoId} THEN old.${filed} + 1
-                when #{!flag} AND video_id = #{videoId} THEN old.${filed} - 1
-            END;
+        update video_data set ${filed} = ${filed} + #{num} where video_id = #{videoId}
     </update>
 
 </mapper>

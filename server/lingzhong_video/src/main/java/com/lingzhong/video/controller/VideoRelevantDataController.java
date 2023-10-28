@@ -23,6 +23,9 @@ public class VideoRelevantDataController {
 
     private VideoCollectService videoCollectService;
 
+    private static final Integer ADD_NUM = 1;
+    private static final Integer SUBTRACT_NUM = -1;
+
     public VideoRelevantDataController(VideoLikeService videoLikeService, VideoDataService videoDataService, VideoCollectService videoCollectService) {
         this.videoLikeService = videoLikeService;
         this.videoDataService = videoDataService;
@@ -33,7 +36,7 @@ public class VideoRelevantDataController {
     @ApiOperation(value = "收藏视频")
     public ResponseEntity<Integer> addCollectVideo(@RequestBody VideoCollect videoCollect){
         Integer addNewVideoCollectDataStatus = videoCollectService.addNewVideoCollectData(videoCollect);
-        Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoCollect.getVideoId(), Boolean.TRUE);
+        Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoCollect.getVideoId(), ADD_NUM);
         /**
          * 通知被收藏用户
          */
@@ -46,7 +49,7 @@ public class VideoRelevantDataController {
                                                       @RequestParam("userId") Integer userId ,
                                                       @RequestParam("beUserId") Integer beUserId){
         Integer delVideoCollectDataStatus = videoCollectService.delVideoCollectData(videoId, userId, beUserId);
-        Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoId, Boolean.FALSE);
+        Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoId, SUBTRACT_NUM);
         return new ResponseEntity<Integer>(delVideoCollectDataStatus , HttpStatus.OK);
     }
 
@@ -54,7 +57,7 @@ public class VideoRelevantDataController {
     @ApiOperation(value = "喜欢视频")
     public ResponseEntity<Integer> addLikeVideo(@RequestBody VideoLike videoLike){
         Integer addNewVideoLikeDataStatus = videoLikeService.addNewVideoLikeData(videoLike);
-        Integer updateVideoLikeNumStatus = videoDataService.updateVideoLikeNum(videoLike.getVideoId(), Boolean.TRUE);
+        Integer updateVideoLikeNumStatus = videoDataService.updateVideoLikeNum(videoLike.getVideoId(), ADD_NUM);
         /**
          * 通知被喜欢用户
          */
@@ -67,7 +70,7 @@ public class VideoRelevantDataController {
                                                       @RequestParam("userId") Integer userId ,
                                                       @RequestParam("beUserId") Integer beUserId){
         Integer delVideoLikeDataStatus = videoLikeService.delVideoLikeData(videoId, userId, beUserId);
-        Integer updateVideoLikeNumStatus = videoDataService.updateVideoCollectNum(videoId, Boolean.FALSE);
+        Integer updateVideoLikeNumStatus = videoDataService.updateVideoCollectNum(videoId, SUBTRACT_NUM);
         return new ResponseEntity<Integer>(delVideoLikeDataStatus , HttpStatus.OK);
     }
 }
