@@ -50,6 +50,12 @@ public class VideoDataServiceImpl extends ServiceImpl<VideoDataMapper, VideoData
     public VideoData selectByVideoId(Integer videoId) {
         return videoDataMapper.selectById(videoId);
     }
+
+    @Override
+    public boolean insertVideoData(VideoData videoData) {
+        int insert = videoDataMapper.insert(videoData);
+        return insert > 0;
+    }
 }
 
 

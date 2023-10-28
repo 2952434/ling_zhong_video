@@ -39,5 +39,12 @@ public interface VideoDataService extends IService<VideoData> {
      */
     public VideoData selectByVideoId(Integer videoId);
 
+    /**
+     * 初始化视频数据
+     * @param videoData 视频数据
+     * @return 是否成功
+     */
+    boolean insertVideoData(VideoData videoData);
+
 
 }
