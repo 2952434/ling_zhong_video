@@ -1,7 +1,6 @@
 package com.lingzhong.video.service;
 
 import com.lingzhong.video.bean.po.VideoLike;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
 * @author ljx
@@ -10,4 +9,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface VideoLikeService  {
 
+    /**
+     * 添加点赞记录
+     */
+    public Integer addNewVideoLikeData(VideoLike videoLike);
+
+    /**
+     * 删除点赞记录
+     */
+    public Integer delVideoLikeData(Integer videoId , Integer userId , Integer beUserId);
+
+    /**
+     * 批量删除点赞记录
+     */
+    public Integer delVideoLikeList(Integer videoId , Integer beUserId);
 }

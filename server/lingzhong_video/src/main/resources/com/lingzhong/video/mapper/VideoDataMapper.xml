@@ -15,4 +15,13 @@
         video_id,video_like_num,video_collect_num,
         video_comment_num
     </sql>
+
+    <update id="updateVideoDataByFiled">
+        update video_data set ${filed} =
+            CASE
+                when #{flag} AND video_id = #{videoId} THEN old.${filed} + 1
+                when #{!flag} AND video_id = #{videoId} THEN old.${filed} - 1
+            END;
+    </update>
+
 </mapper>

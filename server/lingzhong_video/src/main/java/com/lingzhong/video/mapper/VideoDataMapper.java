@@ -2,7 +2,7 @@ package com.lingzhong.video.mapper;
 
 import com.lingzhong.video.bean.po.VideoData;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author ljx
@@ -10,9 +10,8 @@ import org.springframework.stereotype.Repository;
 * @createDate 2023-10-27 21:36:13
 * @Entity com.lingzhong.video.bean.po.VideoData
 */
-@Repository
 public interface VideoDataMapper extends BaseMapper<VideoData> {
-
+    public Integer updateVideoDataByFiled(@Param("filed") String filed ,@Param("videoId") Integer videoId ,@Param("flag") Boolean flag);
 }
 
 

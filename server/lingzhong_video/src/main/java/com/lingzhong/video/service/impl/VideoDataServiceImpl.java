@@ -4,26 +4,51 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lingzhong.video.bean.po.VideoData;
 import com.lingzhong.video.service.VideoDataService;
 import com.lingzhong.video.mapper.VideoDataMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-
 /**
- * @author ljx
- * @description 针对表【video_data】的数据库操作Service实现
- * @createDate 2023-10-27 21:36:13
- */
+* @author ljx
+* @description 针对表【video_data】的数据库操作Service实现
+* @createDate 2023-10-27 21:36:13
+*/
 @Service
-public class VideoDataServiceImpl implements VideoDataService {
+public class VideoDataServiceImpl extends ServiceImpl<VideoDataMapper, VideoData>
+    implements VideoDataService{
 
-    @Resource
     private VideoDataMapper videoDataMapper;
 
+    public VideoDataServiceImpl(VideoDataMapper videoDataMapper) {
+        this.videoDataMapper = videoDataMapper;
+    }
+
     @Override
-    public boolean insertVideoData(VideoData videoData) {
-        int insert = videoDataMapper.insert(videoData);
-        return insert > 0;
+    public Integer updateVideoCommentNum(Integer videoId, Boolean isComment) {
+        return videoDataMapper.updateVideoDataByFiled("vide_comment_num" , videoId , isComment);
+    }
+
+    @Override
+    public Integer updateVideoLikeNum(Integer videoId, Boolean isLike) {
+        return videoDataMapper.updateVideoDataByFiled("vide_like_num" , videoId , isLike);
+    }
+
+    @Override
+    public Integer updateVideoCollectNum(Integer videoId, Boolean isCollect) {
+        return videoDataMapper.updateVideoDataByFiled("vide_collect_num" , videoId , isCollect);
+    }
+
+    @Override
+    public Integer addNewVideoData(VideoData videoData) {
+        return videoDataMapper.insert(videoData);
+    }
+
+    @Override
+    public Integer delVideoDataById(Integer videoId) {
+        return videoDataMapper.deleteById(videoId);
+    }
+
+    @Override
+    public VideoData selectByVideoId(Integer videoId) {
+        return videoDataMapper.selectById(videoId);
     }
 }
 

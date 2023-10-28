@@ -4,6 +4,7 @@ import com.lingzhong.video.bean.po.CommentLike;
 import com.lingzhong.video.bean.po.CommentReply;
 import com.lingzhong.video.service.CommentLikeService;
 import com.lingzhong.video.service.CommentReplyService;
+import com.lingzhong.video.service.VideoDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,25 @@ public class CommentController {
 
     private CommentLikeService commentLikeService;
 
-    public CommentController(CommentReplyService commentReplyService, CommentLikeService commentLikeService) {
+    private VideoDataService videoDataService;
+
+    public CommentController(CommentReplyService commentReplyService, CommentLikeService commentLikeService, VideoDataService videoDataService) {
         this.commentReplyService = commentReplyService;
         this.commentLikeService = commentLikeService;
+        this.videoDataService = videoDataService;
     }
 
     @ApiOperation(value = "发表评论或回复")
     @RequestMapping(value = "/send" , method = RequestMethod.PUT)
     public ResponseEntity<Long>  sendComment(@RequestBody @Valid CommentReply commentReply){
+        /**
+         * 添加评论回复记录
+         */
         Long result = commentReplyService.insertNewComment(commentReply);
+        /**
+         * 视频评论数增加
+         */
+        Integer videoCommentInner = videoDataService.updateVideoCommentNum(commentReply.getVideoId(), Boolean.TRUE);
         return new ResponseEntity<Long>(result , HttpStatus.OK);
     }
 
@@ -82,13 +93,16 @@ public class CommentController {
 
     @ApiOperation(value = "删除评论")
     @RequestMapping(value = "/del" , method = RequestMethod.DELETE)
-    public ResponseEntity<Integer> deleteMyComment(@RequestParam("commentId") Integer commentId){
+    public ResponseEntity<Integer> deleteMyComment(@RequestParam("videoId") Integer videoId , @RequestParam("commentId") Integer commentId){
         /**
          * 删除评论和该评论的所有点赞记录
          */
         Integer delUserComment = commentReplyService.delUserComment(commentId);
         Integer delListByCommentId = commentLikeService.delListByCommentId(commentId);
-
+        /**
+         * 减少视频评论数
+         */
+        Integer updateStatus = videoDataService.updateVideoCommentNum(videoId, Boolean.FALSE);
         return new ResponseEntity<Integer>(delUserComment , HttpStatus.OK);
     }
 

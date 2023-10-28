@@ -8,14 +8,36 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @description 针对表【video_data】的数据库操作Service
 * @createDate 2023-10-27 21:36:13
 */
-public interface VideoDataService{
-
+public interface VideoDataService extends IService<VideoData> {
+    /**
+     * 修改视频评论数
+     */
+    public Integer updateVideoCommentNum(Integer videoId , Boolean isComment);
 
     /**
-     * 初始化视频数据
-     * @param videoData 视频数据
-     * @return 是否成功
+     * 修改视频点赞数
      */
-    boolean insertVideoData(VideoData videoData);
+    public Integer updateVideoLikeNum(Integer videoId , Boolean isLike);
+
+    /**
+     * 修改视频收藏数
+     */
+    public Integer updateVideoCollectNum(Integer videoId , Boolean isCollect);
+
+    /**
+     * 插入新视频数据
+     */
+    public Integer addNewVideoData(VideoData videoData);
+
+    /**
+     * 删除视频数据
+     */
+    public Integer delVideoDataById(Integer videoId);
+
+    /**
+     * 获取视频数据
+     */
+    public VideoData selectByVideoId(Integer videoId);
+
 
 }
