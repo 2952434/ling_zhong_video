@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Data;
 
-/**
- * 
- * @TableName label
- */
+
 @TableName(value ="label")
 @Data
 public class Label implements Serializable {

@@ -7,10 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
-/**
- * 
- * @TableName video_like
- */
+
 @TableName(value ="video_like")
 @Data
 public class VideoLike implements Serializable {

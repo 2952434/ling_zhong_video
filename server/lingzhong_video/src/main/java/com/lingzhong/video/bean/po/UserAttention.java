@@ -7,10 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
-/**
- * 
- * @TableName user_attention
- */
+
 @TableName(value ="user_attention")
 @Data
 public class UserAttention implements Serializable {

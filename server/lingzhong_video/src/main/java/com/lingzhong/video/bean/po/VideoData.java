@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Data;
 
-/**
- * 
- * @TableName video_data
- */
+
 @TableName(value ="video_data")
 @Data
 public class VideoData implements Serializable {

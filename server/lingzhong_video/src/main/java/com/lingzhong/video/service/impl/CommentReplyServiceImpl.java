@@ -1,36 +1,50 @@
 package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lingzhong.video.bean.po.CommentLike;
 import com.lingzhong.video.bean.po.CommentReply;
+import com.lingzhong.video.service.CommentLikeService;
 import com.lingzhong.video.service.CommentReplyService;
 import com.lingzhong.video.mapper.CommentReplyMapper;
-import org.aspectj.apache.bcel.generic.RET;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.lingzhong.video.utils.SnowFlake;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
-* @author ljx
-* @description 针对表【comment_reply】的数据库操作Service实现
-* @createDate 2023-10-27 20:30:22
-*/
+
 @Service
 public class CommentReplyServiceImpl implements CommentReplyService{
 
     private CommentReplyMapper commentReplyMapper;
 
-    public CommentReplyServiceImpl(CommentReplyMapper commentReplyMapper) {
+    private CommentLikeService commentLikeService;
+
+    public CommentReplyServiceImpl(CommentReplyMapper commentReplyMapper, CommentLikeService commentLikeService) {
         this.commentReplyMapper = commentReplyMapper;
+        this.commentLikeService = commentLikeService;
     }
 
     @Override
-    public String insertNewComment(CommentReply commentReply) {
+    public Long insertNewComment(CommentReply commentReply) {
+        if (commentReply.getCommentFid() == null){
+            commentReply.setCommentFid(-1);
+        }
+        if (commentReply.getCommentLike() == null){
+            commentReply.setCommentLike(0);
+        }
+        /**
+         * 雪花算法生成唯一评论id
+         */
+        SnowFlake snowFlake = new SnowFlake(1,1);
+        long commentId = snowFlake.nextId();
+        commentReply.setCommentId(commentId);
+        /**
+         * 保存评论
+         */
         int innerStatus = commentReplyMapper.insert(commentReply);
-        return innerStatus >= 0 ? "发表成功" : "发表失败";
+        return innerStatus >= 0 ? commentId : null;
     }
 
     @Override
@@ -44,16 +58,20 @@ public class CommentReplyServiceImpl implements CommentReplyService{
         /**
          * 封装
          */
-        List<CommentReply> fatherCommentList = commentReplies.stream().filter(commentReply -> commentReply.getCommentFid() == -1).collect(Collectors.toList());
-        List<CommentReply> sonCommentList = commentReplies.stream().filter(commentReply -> commentReply.getCommentFid() != -1).collect(Collectors.toList());
-        fatherCommentList.forEach(fatherComment -> {
-            List<CommentReply> replyList = sonCommentList.stream()
-                    .filter(sonComment -> sonComment.getCommentFid().intValue() == fatherComment.getCommentId().intValue())
-                    .collect(Collectors.toList());
-            fatherComment.setSonCommentReplyList(replyList);
-        });
+         return commentReplies.stream().filter(commentReply -> commentReply.getCommentFid() == -1)
+                .peek(fatherComment-> fatherComment.setSonCommentReplyList(getChildrenComment(fatherComment , commentReplies)))
+                .sorted(Comparator.comparingInt(CommentReply::getCommentLike)).collect(Collectors.toList());
+    }
 
-        return fatherCommentList;
+    /**
+     * 封装所有评论下的回复
+     * @param fatherComment
+     * @param allComment
+     * @return
+     */
+    private List<CommentReply> getChildrenComment(CommentReply fatherComment , List<CommentReply> allComment){
+        return allComment.stream().filter(commentReply -> commentReply.getCommentFid() == fatherComment.getCommentId().intValue())
+                .peek(commentReply -> commentReply.setSonCommentReplyList(getChildrenComment(commentReply , allComment))).collect(Collectors.toList());
     }
 
     @Override
@@ -61,6 +79,38 @@ public class CommentReplyServiceImpl implements CommentReplyService{
         QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id" , userId);
         return commentReplyMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public Integer delUserComment(Integer commentId) {
+        QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comment_id" , commentId);
+        return commentReplyMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public Integer updateCommentLike(CommentReply commentReply) {
+        QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comment_id" , commentReply.getCommentId());
+
+        /**
+         * 新增点赞记录
+         */
+        CommentLike commentLike = new CommentLike();
+        commentLike.setUserId(commentReply.getUserId());
+        commentLike.setCommentId(commentReply.getCommentId());
+        commentLike.setLikeDate(commentReply.getReplyDate());
+        Integer addNewLike = commentLikeService.addNewLike(commentLike);
+
+        return commentReplyMapper.update(commentReply , queryWrapper);
+    }
+
+    @Override
+    public CommentReply getCommentByUserIdAndCommentId(Integer userId, Integer commentId) {
+        QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comment_id" , commentId);
+        queryWrapper.eq("user_id" , userId);
+        return commentReplyMapper.selectOne(queryWrapper);
     }
 }
 

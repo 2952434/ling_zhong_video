@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Data;
 
-/**
- * 
- * @TableName video_label
- */
+
 @TableName(value ="video_label")
 @Data
 public class VideoLabel implements Serializable {

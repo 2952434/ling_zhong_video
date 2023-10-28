@@ -14,7 +14,7 @@ public interface CommentReplyService  {
     /**
      * 发表评论或回复
      */
-    public String insertNewComment(CommentReply commentReply);
+    public Long insertNewComment(CommentReply commentReply);
 
     /**
      * 获取视频下所有评论及回复
@@ -25,4 +25,21 @@ public interface CommentReplyService  {
      * 获取用户的评论
      */
     public List<CommentReply> getCommentByUserId(Integer userId);
+
+    /**
+     * 删除本用户评论
+     */
+    public Integer delUserComment(Integer commentId);
+
+    /**
+     * 更新点赞数
+     */
+    public Integer updateCommentLike(CommentReply commentReply);
+
+    /**
+     * 判断是否是该用户的评论
+     */
+    public CommentReply getCommentByUserIdAndCommentId(Integer userId , Integer commentId);
+
+
 }

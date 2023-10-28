@@ -8,14 +8,16 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
-/**
- * 
- * @TableName comment_reply
- */
+import javax.validation.constraints.NotNull;
+
+
 @TableName(value ="comment_reply")
 @Data
+@ApiModel
 public class CommentReply implements Serializable {
     /**
      * 主键id
@@ -26,22 +28,33 @@ public class CommentReply implements Serializable {
     /**
      * 评论id
      */
-    private Integer commentId;
+    private Long commentId;
 
     /**
      * 视频id
      */
+    @NotNull(message = "视频id不能为空")
+    @ApiParam(name = "视频id",type = "Integer",required = true)
     private Integer videoId;
 
     /**
      * 发表评论的用户id
      */
+    @NotNull(message = "用户id不能为空")
+    @ApiParam(name = "用户id",type = "Integer",required = true)
     private Integer userId;
 
     /**
      * 评论内容
      */
+    @NotNull(message = "评论内容不能为空")
+    @ApiParam(name = "评论内容",type = "String",required = true)
     private String commentTxt;
+
+    /**
+     * 评论点赞数
+     */
+    private Integer commentLike;
 
     /**
      * 父评论id，-1代表评论，其他代表回复
@@ -51,6 +64,8 @@ public class CommentReply implements Serializable {
     /**
      * 发表时间
      */
+    @NotNull(message = "发表时间不能为空")
+    @ApiParam(name = "发表时间",type = "Date",required = true)
     private Date replyDate;
 
     /**
@@ -79,6 +94,7 @@ public class CommentReply implements Serializable {
             && (this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
             && (this.getCommentTxt() == null ? other.getCommentTxt() == null : this.getCommentTxt().equals(other.getCommentTxt()))
+            && (this.getCommentLike() == null ? other.getCommentLike() == null : this.getCommentLike().equals(other.getCommentLike()))
             && (this.getCommentFid() == null ? other.getCommentFid() == null : this.getCommentFid().equals(other.getCommentFid()))
             && (this.getReplyDate() == null ? other.getReplyDate() == null : this.getReplyDate().equals(other.getReplyDate()))
             && (this.getSonCommentReplyList() == null ? other.getSonCommentReplyList() == null : this.getSonCommentReplyList().equals(other.getSonCommentReplyList()));
@@ -93,6 +109,7 @@ public class CommentReply implements Serializable {
         result = prime * result + ((getVideoId() == null) ? 0 : getVideoId().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getCommentTxt() == null) ? 0 : getCommentTxt().hashCode());
+        result = prime * result + ((getCommentLike() == null) ? 0 : getCommentLike().hashCode());
         result = prime * result + ((getCommentFid() == null) ? 0 : getCommentFid().hashCode());
         result = prime * result + ((getReplyDate() == null) ? 0 : getReplyDate().hashCode());
         result = prime * result + ((getSonCommentReplyList() == null) ? 0 : getSonCommentReplyList().hashCode());

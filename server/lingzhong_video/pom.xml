@@ -147,6 +147,13 @@
 <!--            <version>2.2.6.RELEASE</version>-->
 <!--        </dependency>-->
 
+        <!--token-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

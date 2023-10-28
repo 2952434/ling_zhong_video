@@ -6,17 +6,18 @@
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.CommentReply">
             <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="commentId" column="comment_id" jdbcType="INTEGER"/>
+            <result property="commentId" column="comment_id" jdbcType="BIGINT"/>
             <result property="videoId" column="video_id" jdbcType="INTEGER"/>
             <result property="userId" column="user_id" jdbcType="INTEGER"/>
             <result property="commentTxt" column="comment_txt" jdbcType="VARCHAR"/>
+            <result property="commentLike" column="comment_like" jdbcType="INTEGER"/>
             <result property="commentFid" column="comment_fid" jdbcType="INTEGER"/>
             <result property="replyDate" column="reply_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,comment_id,video_id,user_id,
-        comment_txt,comment_fid,reply_date
+        comment_txt,comment_like,comment_fid,reply_date
     </sql>
 
 
