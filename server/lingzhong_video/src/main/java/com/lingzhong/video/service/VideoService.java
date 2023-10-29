@@ -2,6 +2,7 @@ package com.lingzhong.video.service;
 
 
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
+import com.lingzhong.video.bean.po.Video;
 import com.lingzhong.video.bean.vo.VideoVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,5 +31,20 @@ public interface VideoService {
      * @return List<VideoVo>
      */
     List<VideoVo> getVideo(Integer page);
+
+    /**
+     * 根据视频id获取视频信息
+     */
+    List<Video> getListById(List<Integer> videoIds);
+
+    /**
+     * 查询用户喜欢的视频信息
+     */
+    List<VideoVo> getUserLikeVideoList(Integer userId);
+
+    /**
+     * 查询用户收藏的视频信息
+     */
+    List<VideoVo> getUserCollectVideoList(Integer userId);
 
 }

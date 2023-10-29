@@ -23,8 +23,9 @@ public interface CommentLikeService {
 
     /**
      * 通过评论id批量删除点赞记录
+     * @param commentId
      */
-    public Integer delListByCommentId(Integer commentId);
+    public Integer delListByCommentId(Long commentId);
 
     /**
      * 获取用户点赞的评论记录

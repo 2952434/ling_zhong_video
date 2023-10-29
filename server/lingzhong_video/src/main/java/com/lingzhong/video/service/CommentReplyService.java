@@ -28,8 +28,9 @@ public interface CommentReplyService  {
 
     /**
      * 删除本用户评论
+     * @param commentId
      */
-    public Integer delUserComment(Integer commentId);
+    public Integer delUserComment(Long commentId);
 
     /**
      * 更新点赞数
@@ -39,7 +40,7 @@ public interface CommentReplyService  {
     /**
      * 判断是否是该用户的评论
      */
-    public CommentReply getCommentByUserIdAndCommentId(Integer userId , Integer commentId);
+    public CommentReply getCommentByUserIdAndCommentId(Integer userId , Long commentId);
 
 
 }

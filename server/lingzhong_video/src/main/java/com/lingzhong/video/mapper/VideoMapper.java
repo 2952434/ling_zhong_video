@@ -27,6 +27,17 @@ public interface VideoMapper extends BaseMapper<Video> {
             "from video v,video_data d,user u\n" +
             "where v.video_id = d.video_id and v.video_user_id = u.user_id limit #{count},10;")
     List<VideoVo> getVideo(@Param("count") Integer count);
+
+    /**
+     * 查询用户喜欢的视频
+     */
+    List<VideoVo> selectLikeVideoByUserId(@Param("userId") Integer userId);
+
+    /**
+     * 查询用户收藏的视频
+     */
+    List<VideoVo> selectCollectVideoByUserId(@Param("userId") Integer userId);
+
 }
 
 

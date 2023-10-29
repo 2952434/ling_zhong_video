@@ -19,4 +19,18 @@
         video_user_id,video_address,video_private,
         video_date
     </sql>
+    <select id="selectLikeVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM video v
+        LEFT join video_like vl
+        on v.video_id = vl.video_id
+        where vl.user_id = #{user_id}
+    </select>
+    <select id="selectCollectVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM video v
+        LEFT join video_collect vc
+        on v.video_id = vc.video_id
+        where vc.user_id = #{user_id}
+    </select>
 </mapper>

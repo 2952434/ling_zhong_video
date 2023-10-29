@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 
@@ -14,6 +16,7 @@ public class VideoData implements Serializable {
      * 视频id
      */
     @TableId
+    @ApiModelProperty(name = "视频id" , dataType = "Integer" , required = true)
     private Integer videoId;
 
     /**

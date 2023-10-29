@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 
@@ -20,21 +22,25 @@ public class VideoLike implements Serializable {
     /**
      * 点赞的视频id
      */
+    @ApiModelProperty(name = "视频id" , dataType = "Integer" , required = true)
     private Integer videoId;
 
     /**
      * 点赞的用户id
      */
+    @ApiModelProperty(name = "点赞的用户id" , dataType = "Integer" , required = true)
     private Integer userId;
 
     /**
      * 被点赞用户的id(用于消息提醒)
      */
+    @ApiModelProperty(name = "被点赞用户的id" , dataType = "Integer" , required = true)
     private Integer beUserId;
 
     /**
      * 点赞时间（用于排序）
      */
+    @ApiModelProperty(name = "点赞时间" , dataType = "Date" , required = true)
     private Date likeDate;
 
     @TableField(exist = false)

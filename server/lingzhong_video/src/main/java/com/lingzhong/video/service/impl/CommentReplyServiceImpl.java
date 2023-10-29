@@ -6,7 +6,6 @@ import com.lingzhong.video.bean.po.CommentReply;
 import com.lingzhong.video.service.CommentLikeService;
 import com.lingzhong.video.service.CommentReplyService;
 import com.lingzhong.video.mapper.CommentReplyMapper;
-import com.lingzhong.video.utils.SnowFlake;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -29,10 +28,10 @@ public class CommentReplyServiceImpl implements CommentReplyService{
     @Override
     public Long insertNewComment(CommentReply commentReply) {
         if (commentReply.getCommentFid() == null){
-            commentReply.setCommentFid(-1);
+            commentReply.setCommentFid(-1L);
         }
         if (commentReply.getCommentLike() == null){
-            commentReply.setCommentLike(0);
+            commentReply.setCommentLike(0L);
         }
         /**
          * 雪花算法生成唯一评论id
@@ -59,7 +58,7 @@ public class CommentReplyServiceImpl implements CommentReplyService{
          */
          return commentReplies.stream().filter(commentReply -> commentReply.getCommentFid() == -1)
                 .peek(fatherComment-> fatherComment.setSonCommentReplyList(getChildrenComment(fatherComment , commentReplies)))
-                .sorted(Comparator.comparingInt(CommentReply::getCommentLike)).collect(Collectors.toList());
+                .sorted(Comparator.comparingLong(CommentReply::getCommentLike)).collect(Collectors.toList());
     }
 
     /**
@@ -81,7 +80,7 @@ public class CommentReplyServiceImpl implements CommentReplyService{
     }
 
     @Override
-    public Integer delUserComment(Integer commentId) {
+    public Integer delUserComment(Long commentId) {
         QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comment_id" , commentId);
         return commentReplyMapper.delete(queryWrapper);
@@ -105,7 +104,7 @@ public class CommentReplyServiceImpl implements CommentReplyService{
     }
 
     @Override
-    public CommentReply getCommentByUserIdAndCommentId(Integer userId, Integer commentId) {
+    public CommentReply getCommentByUserIdAndCommentId(Integer userId, Long commentId) {
         QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comment_id" , commentId);
         queryWrapper.eq("user_id" , userId);

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
@@ -19,17 +20,17 @@ public class CommentLike implements Serializable {
     /**
      * 用户id
      */
-    @ApiParam(name = "用户id",type = "Integer",required = true)
+    @ApiModelProperty(name = "用户id",dataType = "Integer",required = true)
     private Integer userId;
     /**
      * 评论id
      */
-    @ApiParam(name = "评论id",type = "Long",required = true)
+    @ApiModelProperty(name = "评论id",dataType = "Long",required = true)
     private Long commentId;
     /**
      * 点赞时间
      */
-    @ApiParam(name = "点赞时间",type = "Date",required = true)
+    @ApiModelProperty(name = "点赞时间",dataType = "Date",required = true)
     private Date likeDate;
 
     @TableField(exist = false)

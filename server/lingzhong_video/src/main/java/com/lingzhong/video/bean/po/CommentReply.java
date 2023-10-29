@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
@@ -34,38 +35,38 @@ public class CommentReply implements Serializable {
      * 视频id
      */
     @NotNull(message = "视频id不能为空")
-    @ApiParam(name = "视频id",type = "Integer",required = true)
+    @ApiModelProperty(name = "视频id",dataType = "Integer",required = true)
     private Integer videoId;
 
     /**
      * 发表评论的用户id
      */
     @NotNull(message = "用户id不能为空")
-    @ApiParam(name = "用户id",type = "Integer",required = true)
+    @ApiModelProperty(name = "用户id",dataType = "Integer",required = true)
     private Integer userId;
 
     /**
      * 评论内容
      */
     @NotNull(message = "评论内容不能为空")
-    @ApiParam(name = "评论内容",type = "String",required = true)
+    @ApiModelProperty(name = "评论内容",dataType = "String",required = true)
     private String commentTxt;
 
     /**
      * 评论点赞数
      */
-    private Integer commentLike;
+    private Long commentLike;
 
     /**
      * 父评论id，-1代表评论，其他代表回复
      */
-    private Integer commentFid;
+    private Long commentFid;
 
     /**
      * 发表时间
      */
     @NotNull(message = "发表时间不能为空")
-    @ApiParam(name = "发表时间",type = "Date",required = true)
+    @ApiModelProperty(name = "发表时间",dataType = "Date",required = true)
     private Date replyDate;
 
     /**

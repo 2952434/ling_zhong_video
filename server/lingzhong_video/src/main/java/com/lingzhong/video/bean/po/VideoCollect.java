@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
 
@@ -20,21 +23,25 @@ public class VideoCollect implements Serializable {
     /**
      * 收藏的视频id
      */
+    @ApiModelProperty(name = "视频id" , dataType = "Integer" , required = true)
     private Integer videoId;
 
     /**
      * 用户id
      */
+    @ApiModelProperty(name = "用户id" , dataType = "Integer" , required = true)
     private Integer userId;
 
     /**
      * 被收藏的用户id（用于收藏消息提醒）
      */
+    @ApiModelProperty(name = "被收藏的用户id" , dataType = "Integer" , required = true)
     private Integer beUserId;
 
     /**
      * 收藏时间
      */
+    @ApiModelProperty(name = "收藏时间" , dataType = "Date" , required = true)
     private Date collectDate;
 
     @TableField(exist = false)

@@ -37,7 +37,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     }
 
     @Override
-    public Integer delListByCommentId(Integer commentId) {
+    public Integer delListByCommentId(Long commentId) {
         QueryWrapper<CommentLike> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comment_id",commentId);
         return commentLikeMapper.delete(queryWrapper);
