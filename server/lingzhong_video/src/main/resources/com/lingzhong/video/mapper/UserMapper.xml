@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.User">
             <id property="userId" column="user_id" jdbcType="INTEGER"/>
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="userMail" column="user_mail" jdbcType="VARCHAR"/>
             <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
             <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
             <result property="userPhoto" column="user_photo" jdbcType="VARCHAR"/>
@@ -16,7 +17,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        user_id,user_name,user_account,
+        user_id,user_name,user_mail,user_account,
         user_password,user_photo,user_sex,
         user_describe,user_date
     </sql>

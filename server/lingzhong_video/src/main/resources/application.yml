@@ -21,9 +21,20 @@ spring:
       pool-prepared-statements: false
       max-pool-prepared-statement-per-connection-size: 20
   level:
-    studio.banner.forumwebsite: debug
+    com.lingzhong.video: debug
     org.springfromework.web: info
     com.baomidou.mybatisplus: error
+#  整合邮件
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 2952434583@qq.com
+    password: nhgwclsvipfndcda
+    default-encoding: UTF-8
+    properties:
+      smtp:
+        socketFactoryClass: javax.net.ssl.SSLSocketFactory
+      debug: true
   # ??????
   servlet:
     multipart:
