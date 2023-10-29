@@ -2,8 +2,9 @@ package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
-import com.lingzhong.video.bean.dto.TempUser;
+import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
+import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.po.Video;
 import com.lingzhong.video.bean.po.VideoData;
 import com.lingzhong.video.bean.po.VideoLabel;
@@ -12,6 +13,7 @@ import com.lingzhong.video.mapper.VideoLabelMapper;
 import com.lingzhong.video.mapper.VideoMapper;
 import com.lingzhong.video.service.VideoDataService;
 import com.lingzhong.video.service.VideoService;
+import com.lingzhong.video.utils.LoginUser;
 import com.lingzhong.video.utils.TimeUtils;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -72,11 +74,11 @@ public class VideoServiceImpl implements VideoService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean uploadVideo(MultipartFile file, VideoPublishDTO videoPublishDTO) throws Exception {
         try {
-            TempUser tempUser = new TempUser();
+            User user = LoginUser.getUser();
             String videoUrl = uploadVideo(file);
             Video video = new Video();
             BeanUtils.copyProperties(videoPublishDTO, video);
-            video.setVideoUserId(tempUser.getUserId());
+            video.setVideoUserId(user.getUserId());
             video.setVideoUrl(videoUrl);
             video.setVideoDate(new Date());
             int insert = videoMapper.insert(video);

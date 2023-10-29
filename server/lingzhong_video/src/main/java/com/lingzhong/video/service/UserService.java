@@ -2,7 +2,6 @@ package com.lingzhong.video.service;
 
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.UserRegisterVo;
 
@@ -19,7 +18,7 @@ public interface UserService {
      * @param mail 邮箱
      * @return 是否成功
      */
-    boolean sentAuthCode(String account, String mail);
+    boolean sentRegisterAuthCode(String account, String mail);
 
 
     /**
@@ -30,4 +29,17 @@ public interface UserService {
      */
     RespBean<UserRegisterVo> userRegister(UserRegisterDTO userRegisterDTO);
 
+    /**
+     * 邮箱登录时发送验证码
+     * @param mail 邮箱
+     * @return 是否成功
+     */
+    boolean sentMailLoginAuthCode(String mail);
+
+    /**
+     * 根据用户id获取用户信息
+     * @param userId 用户id
+     * @return User
+     */
+    User getUserById(Integer userId);
 }

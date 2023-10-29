@@ -1,12 +1,14 @@
 package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.lingzhong.video.bean.dto.TempUser;
+import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.VideoLabelDTO;
 import com.lingzhong.video.bean.po.Label;
+import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.LabelVo;
-import com.lingzhong.video.service.LabelService;
 import com.lingzhong.video.mapper.LabelMapper;
+import com.lingzhong.video.service.LabelService;
+import com.lingzhong.video.utils.LoginUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,9 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public List<LabelVo> getAllLabel() {
-        TempUser tempUser = new TempUser();
+        User user = LoginUser.getUser();
         QueryWrapper<Label> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",tempUser.getUserId()).or().eq("user_id",-1);
+        queryWrapper.eq("user_id",user.getUserId()).or().eq("user_id",-1);
         List<Label> labels = labelMapper.selectList(queryWrapper);
         List<LabelVo> labelVos = new ArrayList<>();
         for (Label label : labels) {
@@ -61,8 +63,8 @@ public class LabelServiceImpl implements LabelService {
         Boolean isUser = videoLabelDTO.getIsUser();
         label.setLabelName(videoLabelDTO.getLabelName());
         if (isUser) {
-            TempUser tempUser = new TempUser();
-            label.setUserId(tempUser.getUserId());
+            User user = LoginUser.getUser();
+            label.setUserId(user.getUserId());
         }else {
             label.setUserId(-1);
         }
@@ -80,8 +82,8 @@ public class LabelServiceImpl implements LabelService {
         QueryWrapper<Label> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("label_name", videoLabelDTO.getLabelName());
         if (isUser) {
-            TempUser tempUser = new TempUser();
-            queryWrapper.eq("user_id",tempUser.getUserId());
+            User user = LoginUser.getUser();
+            queryWrapper.eq("user_id",user.getUserId());
         }else {
             queryWrapper.eq("user_id",-1);
         }

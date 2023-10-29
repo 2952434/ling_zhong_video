@@ -1,5 +1,6 @@
 package com.lingzhong.video.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
@@ -16,7 +17,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author ljx
@@ -35,20 +36,27 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
+    public static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(4, 5, 10, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(2000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+
 
     @Override
-    public boolean sentAuthCode(String account, String mail) {
-
-        try {
-            String code = sendMail.sendSimpleMail(mail, "注册凌众视频验证码", String.format("您的账号 %s 正在注册凌众视频,验证码五分钟内有效 ", account));
-            String key = String.format("%s:%s", mail, account);
-            redisTemplate.opsForValue().set(key, code);
-            redisTemplate.expire(key, 5, TimeUnit.MINUTES);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    public boolean sentRegisterAuthCode(String account, String mail) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserMail,mail);
+        User user = userMapper.selectOne(queryWrapper);
+        if (user != null) {
             return false;
         }
+        EXECUTOR.execute(() -> {
+            try {
+                String code = sendMail.sendSimpleMail(mail, "注册凌众视频验证码", String.format("您的账号 %s 正在注册凌众视频,验证码五分钟内有效 ", account));
+                String key = String.format("%s:%s", mail, account);
+                redisTemplate.opsForValue().set(key, code);
+                redisTemplate.expire(key, 5, TimeUnit.MINUTES);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         return true;
     }
 
@@ -84,9 +92,36 @@ public class UserServiceImpl implements UserService {
             return RespBean.error("注册失败");
         }
         UserRegisterVo userRegisterVo = new UserRegisterVo();
-        BeanUtils.copyProperties(user,userRegisterVo);
+        BeanUtils.copyProperties(user, userRegisterVo);
         redisTemplate.delete(key);
         return RespBean.ok(userRegisterVo);
+    }
+
+    @Override
+    public boolean sentMailLoginAuthCode(String mail) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserMail,mail);
+        User user = userMapper.selectOne(queryWrapper);
+        if (user == null) {
+            return false;
+        }
+        EXECUTOR.execute(() -> {
+            try {
+                String code = sendMail.sendSimpleMail(mail, "邮箱登录凌众视频验证码", "您正在登录 凌众视频,验证码五分钟内有效 ");
+                String key = String.format("mail:%s", mail);
+                redisTemplate.opsForValue().set(key, code);
+                redisTemplate.expire(key, 5, TimeUnit.MINUTES);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public User getUserById(Integer userId) {
+        User user = userMapper.selectById(userId);
+        return user;
     }
 }
 
