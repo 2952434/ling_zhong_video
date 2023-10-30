@@ -28,6 +28,11 @@ public class CommentLike implements Serializable {
     @ApiModelProperty(name = "评论id",dataType = "Long",required = true)
     private Long commentId;
     /**
+     * 被点赞评论用户id
+     */
+    @ApiModelProperty(name = "被点赞评论用户id",dataType = "Integer",required = true)
+    private Integer beUserId;
+    /**
      * 点赞时间
      */
     @ApiModelProperty(name = "点赞时间",dataType = "Date",required = true)
@@ -50,6 +55,7 @@ public class CommentLike implements Serializable {
         CommentLike other = (CommentLike) that;
         return ((this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
                 && (this.getCommentId() == null ? other.getCommentId() == null : this.getCommentId().equals(other.getCommentId()))
+                && (this.getBeUserId() == null ? other.getBeUserId() == null : this.getBeUserId().equals(other.getBeUserId()))
                 && (this.getLikeDate() == null ? other.getLikeDate() == null : this.getLikeDate().equals(other.getLikeDate())));
     }
 
@@ -59,6 +65,7 @@ public class CommentLike implements Serializable {
         int result = 1;
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getCommentId() == null) ? 0 : getCommentId().hashCode());
+        result = prime * result + ((getBeUserId() == null) ? 0 : getBeUserId().hashCode());
         result = prime * result + ((getLikeDate() == null) ? 0 : getLikeDate().hashCode());
         return result;
     }

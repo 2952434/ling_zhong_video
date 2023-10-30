@@ -6,18 +6,18 @@ import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.service.CommentLikeService;
 import com.lingzhong.video.service.CommentReplyService;
+import com.lingzhong.video.service.InformationService;
 import com.lingzhong.video.service.VideoDataService;
 import com.lingzhong.video.utils.LoginUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,13 +33,17 @@ public class CommentController {
 
     private VideoDataService videoDataService;
 
+    private InformationService informationService;
+
     private static final Integer ADD_NUM = 1;
     private static final Integer SUBTRACT_NUM = -1;
 
-    public CommentController(CommentReplyService commentReplyService, CommentLikeService commentLikeService, VideoDataService videoDataService) {
+    public CommentController(CommentReplyService commentReplyService, CommentLikeService commentLikeService,
+                             VideoDataService videoDataService, InformationService informationService) {
         this.commentReplyService = commentReplyService;
         this.commentLikeService = commentLikeService;
         this.videoDataService = videoDataService;
+        this.informationService = informationService;
     }
 
     @ApiOperation(value = "发表评论或回复")
@@ -81,32 +85,65 @@ public class CommentController {
         return RespBean.ok(resultList);
     }
 
-    @ApiOperation(value = "点赞或取消点赞，更改评论点赞数")
+    @ApiOperation(value = "点赞评论，更改评论点赞数")
     @RequestMapping(value = "/like" , method = RequestMethod.POST)
-    @ApiImplicitParam(name = "commentReply" , value = "评论所需信息" , required = true , dataTypeClass = CommentReply.class , example = "")
-    public RespBean<Integer> likeThisComment(@RequestBody CommentReply commentReply){
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "") ,
+            @ApiImplicitParam(name = "likeDate" , value = "点赞时间" , required = true , dataTypeClass = Date.class , example = "")
+    })
+
+    public RespBean<Integer> likeThisComment(@RequestParam("commentId") Long commentId , @RequestParam("likeDate") Date likeDate){
         User user = LoginUser.getUser();
         if (user == null)
             return RespBean.error("无法操作");
         Integer userId = user.getUserId();
-        commentReply.setUserId(userId);
-        Integer updateCommentLike = commentReplyService.updateCommentLike(commentReply);
-        /**
-         * 判断是否点赞过
-         */
-        CommentLike commentLike = commentLikeService.selectByUserIdAndCommentId(commentReply.getUserId(), commentReply.getCommentId());
-        if (commentLike != null){
-            commentLikeService.delCommentLike(commentReply.getUserId() , commentReply.getCommentId());
-        }
-        else {
-            CommentLike newCommentLike = new CommentLike();
-            newCommentLike.setUserId(commentReply.getUserId());
-            newCommentLike.setCommentId(commentReply.getCommentId());
-            newCommentLike.setLikeDate(commentReply.getReplyDate());
-            commentLikeService.addNewLike(newCommentLike);
-        }
 
-        return RespBean.ok(updateCommentLike);
+        CommentReply commentReply = commentReplyService.selectByCommentId(commentId);
+
+        CommentLike commentLike = new CommentLike();
+        commentLike.setCommentId(commentId);
+        commentLike.setBeUserId(commentReply.getUserId());
+        commentLike.setUserId(userId);
+        commentLike.setLikeDate(likeDate);
+
+        Integer addNewLikeStatus = commentLikeService.addNewLike(commentLike);
+
+        /**
+         * 消息推送
+         */
+        informationService.innerNewLikeCommentInformation(commentLike);
+
+        /**
+         * 视频评论量增加
+         */
+        Integer updateVideoCommentNum = videoDataService.updateVideoCommentNum(commentReply.getVideoId(), ADD_NUM);
+
+
+        return RespBean.ok(addNewLikeStatus);
+    }
+
+    @ApiOperation(value = "取消点赞评论，更改评论点赞数")
+    @RequestMapping(value = "/unlike" , method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "") ,
+            @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
+    })
+
+    public RespBean<Integer> unLikeThisComment(@RequestParam("videoId") Integer videoId, @RequestParam("commentId") Long commentId){
+        User user = LoginUser.getUser();
+        if (user == null)
+            return RespBean.error("无法操作");
+        Integer userId = user.getUserId();
+
+        Integer delStatus = commentLikeService.delCommentLike(userId , commentId);
+
+        /**
+         * 视频评论量减少
+         */
+        Integer updateVideoCommentNum = videoDataService.updateVideoCommentNum(videoId, SUBTRACT_NUM);
+
+
+        return RespBean.ok(delStatus);
     }
 
     @ApiOperation(value = "判断是否是该用户的评论")
@@ -125,7 +162,7 @@ public class CommentController {
     @RequestMapping(value = "/del" , method = RequestMethod.DELETE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "1"),
-            @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "1654651321")
+            @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
     })
     public RespBean<Integer> deleteMyComment(@RequestParam("videoId") Integer videoId , @RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
@@ -167,5 +204,25 @@ public class CommentController {
         List<CommentReply> userLikedCommentList = theVideoComments.stream().filter(theVideoComment -> likedCommentList.contains(theVideoComment.getCommentId())).collect(Collectors.toList());
 
         return RespBean.ok(userLikedCommentList);
+    }
+
+    @ApiOperation(value = "判断用户是否点赞过该评论")
+    @RequestMapping(value = "/check/liked" , method = RequestMethod.GET)
+    @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
+    public RespBean<Boolean> checkUserLikedComments(@RequestParam("commentId") Long commentId){
+        User user = LoginUser.getUser();
+        if (user == null)
+            return RespBean.error("无法操作");
+        Integer userId = user.getUserId();
+        CommentLike commentLike = commentLikeService.selectByUserIdAndCommentId(userId, commentId);
+        return RespBean.ok(commentLike != null);
+    }
+
+    @ApiOperation(value = "通过评论id查看评论详细内容")
+    @RequestMapping(value = "/look" , method = RequestMethod.GET)
+    @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
+    public RespBean<CommentReply> LookComment(@RequestParam("commentId") Long commentId){
+        CommentReply commentReply = commentReplyService.selectByCommentId(commentId);
+        return RespBean.ok(commentReply);
     }
 }

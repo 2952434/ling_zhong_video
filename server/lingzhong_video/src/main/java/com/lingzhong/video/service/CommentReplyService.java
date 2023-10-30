@@ -17,6 +17,11 @@ public interface CommentReplyService  {
     public Long insertNewComment(CommentReply commentReply);
 
     /**
+     * 通过评论id获取评论信息
+     */
+    public CommentReply selectByCommentId(Long commentId);
+
+    /**
      * 获取视频下所有评论及回复
      */
     public List<CommentReply> getAllCommentByVideoId(Integer videoId);

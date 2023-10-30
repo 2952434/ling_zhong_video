@@ -34,7 +34,7 @@ public class CommentReplyServiceImpl implements CommentReplyService{
             commentReply.setCommentLike(0L);
         }
         /**
-         * 雪花算法生成唯一评论id
+         * 使用时间戳生成唯一评论id
          */
         long commentId = System.currentTimeMillis();
         commentReply.setCommentId(commentId);
@@ -43,6 +43,13 @@ public class CommentReplyServiceImpl implements CommentReplyService{
          */
         int innerStatus = commentReplyMapper.insert(commentReply);
         return innerStatus >= 0 ? commentId : null;
+    }
+
+    @Override
+    public CommentReply selectByCommentId(Long commentId) {
+        QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comment_id" , commentId);
+        return commentReplyMapper.selectOne(queryWrapper);
     }
 
     @Override
@@ -90,14 +97,18 @@ public class CommentReplyServiceImpl implements CommentReplyService{
     public Integer updateCommentLike(CommentReply commentReply) {
         QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comment_id" , commentReply.getCommentId());
-
+        /**
+         * 查询评论的用户id
+         */
+        CommentReply commentUser = commentReplyMapper.selectOne(queryWrapper);
         /**
          * 新增点赞记录
          */
         CommentLike commentLike = new CommentLike();
-        commentLike.setUserId(commentReply.getUserId());
-        commentLike.setCommentId(commentReply.getCommentId());
-        commentLike.setLikeDate(commentReply.getReplyDate());
+        commentLike.setUserId(commentUser.getUserId());
+        commentLike.setCommentId(commentUser.getCommentId());
+        commentLike.setBeUserId(commentUser.getUserId());
+        commentLike.setLikeDate(commentUser.getReplyDate());
         Integer addNewLike = commentLikeService.addNewLike(commentLike);
 
         return commentReplyMapper.update(commentReply , queryWrapper);
