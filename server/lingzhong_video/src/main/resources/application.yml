@@ -1,0 +1,93 @@
+spring:
+  datasource:
+    name: mysql
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://82.157.145.197/lingzhong_video?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+      username: lingzhong
+      password: lingzhong
+      filter: stat
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 3600000
+      validation-query: SELECT 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: 20
+  level:
+    com.lingzhong.video: debug
+    org.springfromework.web: info
+    com.baomidou.mybatisplus: error
+#  整合邮件
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 2952434583@qq.com
+    password: nhgwclsvipfndcda
+    default-encoding: UTF-8
+    properties:
+      smtp:
+        socketFactoryClass: javax.net.ssl.SSLSocketFactory
+      debug: true
+  # ??????
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 100MB
+  #redis
+  redis:
+    host: 82.157.145.197
+    port: 6379
+    database: 0
+    password: asd.123
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+    timeout: 0
+#    mongodb
+  data:
+    mongodb:
+      uri: mongodb://82.157.145.197:27017/test
+
+#  mvc:
+#    view:
+#      suffix: .html
+#      prefix: /html/
+##    es????
+#  elasticsearch:
+#    rest:
+#      uris: 82.157.145.197:9200
+#      read-timeout: 30s
+#      connection-timeout: 5s
+
+
+
+server:
+  port: 8848
+
+
+
+
+#????
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: studio.banner.forumwebsite.bean
+
+
+qiniu:
+  accessKey: EeYNXo1hONmESybj2pe3YNBHO9Nar38Kf-QrbWEF
+  secretKey: lpiYGtDzQP3M0xNx--WyAposkw6KLWSXvWsod1aO
+  bucket: lingzhong
+  url: http://s32t6kk2m.hb-bkt.clouddn.com/
+
+

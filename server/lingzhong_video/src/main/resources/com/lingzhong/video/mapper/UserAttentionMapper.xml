@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingzhong.video.mapper.UserAttentionMapper">
+
+    <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.UserAttention">
+            <id property="attentionId" column="attention_id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="beUserId" column="be_user_id" jdbcType="INTEGER"/>
+            <result property="attentionDate" column="attention_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        attention_id,user_id,be_user_id,
+        attention_date
+    </sql>
+    <select id="getAttentionMyPeople" resultType="com.lingzhong.video.bean.vo.AttentionUserVo">
+        select u.user_id, u.user_name, u.user_photo, u.user_describe, a1.attention_id is not null is_be_attention
+        from user_attention a
+                 left join user_attention a1 on a.user_id = a1.be_user_id and a1.user_id = #{userId},
+             user u
+        where a.be_user_id = #{userId}
+          and a.user_id = u.user_id
+        order by a.attention_date desc
+        limit #{page},#{count};
+    </select>
+    <select id="getMyAttentionPeople" resultType="com.lingzhong.video.bean.vo.AttentionUserVo">
+        select u.user_id, u.user_name, u.user_photo, u.user_describe, a1.attention_id is not null is_be_attention
+        from user_attention a
+                 left join user_attention a1 on a.be_user_id = a1.user_id and a1.be_user_id = #{userId},
+             user u
+        where a.user_id = #{userId}
+          and a.be_user_id = u.user_id
+        order by a.attention_date desc
+        limit #{page},#{count};
+
+    </select>
+</mapper>

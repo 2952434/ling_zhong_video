@@ -1,0 +1,27 @@
+### 授权码模式
+### 第一步申请授权码(浏览器请求)/oauth/authorize?client_id=c1&response_type=code&scope=all&redirect_uri=http://www.51xuecheng.cn
+### 第二步申请令牌
+POST {{auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=authorization_code&code=KbG3Hl&redirect_uri=http://www.51xuecheng.cn
+
+
+### 密码模式
+POST {{auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=password&username=t1&password=111111
+
+###校验jwt令牌
+POST {{auth_host}}/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsibGluZ3pob25nLXZpZGVvIl0sInVzZXJfbmFtZSI6IntcInBlcm1pc3Npb25zXCI6W10sXCJ1c2VyQWNjb3VudFwiOlwiMTc4Mzk4ODk3MDNcIixcInVzZXJEYXRlXCI6MTY5ODYxMDIyNzAwMCxcInVzZXJEZXNjcmliZVwiOlwi55So5LiA5Y-l6K-d5p2l5o-P6L-w5L2g5ZCnXCIsXCJ1c2VySWRcIjoyLFwidXNlck1haWxcIjpcIjI5NTI0MzQ1ODNAcXEuY29tXCIsXCJ1c2VyTmFtZVwiOlwi5YeM5LyX6KeG6aKR55So5oi3NjAxMjgxMDAwMFwiLFwidXNlclBob3RvXCI6XCJodHRwOi8vczMydDZrazJtLmhiLWJrdC5jbG91ZGRuLmNvbS9waG90by84YTZkYjczOTk1NDU2NTllNDk4M2Y0ZDA0MmEyOGI5NS5qcGVnXCIsXCJ1c2VyU2V4XCI6MX0iLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNjk5MzA4OTEyLCJhdXRob3JpdGllcyI6WyJ0ZXN0Il0sImp0aSI6ImE5OTFkMjdlLTgwMGUtNDhmNS1hZGE3LWM0ZTIwZGQwNGY2ZSIsImNsaWVudF9pZCI6Imxpbmd6aG9uZyJ9.8yU6McC7av6eaV24p1zItZhar1ikQtivLaL7-qfDBYg
+
+
+### 密码模式，请求AuthParamsDto参数
+POST {{auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=password&username={"userMail":"2952434583@qq.com","password":"123456","authType":"password"}
+
+
+### 邮箱登录，请求AuthParamsDto参数
+POST {{auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=password&username={"userMail":"2952434583@qq.com","checkCode":"202718","authType":"mail"}
+
+
+### 密码模式，请求AuthParamsDto参数
+POST {{dev_auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=password&username={"userMail":"2952434583@qq.com","password":"123456","authType":"password"}
+
+
+### 邮箱登录，请求AuthParamsDto参数
+POST {{dev_auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=password&username={"userMail":"2952434583@qq.com","checkCode":"196499","authType":"mail"}

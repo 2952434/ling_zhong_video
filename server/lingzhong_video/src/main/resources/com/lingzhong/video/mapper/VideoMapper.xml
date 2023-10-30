@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingzhong.video.mapper.VideoMapper">
+
+    <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.Video">
+            <id property="videoId" column="video_id" jdbcType="INTEGER"/>
+            <result property="videoDescription" column="video_description" jdbcType="VARCHAR"/>
+            <result property="videoUrl" column="video_url" jdbcType="VARCHAR"/>
+            <result property="videoUserId" column="video_user_id" jdbcType="INTEGER"/>
+            <result property="videoAddress" column="video_address" jdbcType="VARCHAR"/>
+            <result property="videoPrivate" column="video_private" jdbcType="TINYINT"/>
+            <result property="videoDate" column="video_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        video_id,video_description,video_url,
+        video_user_id,video_address,video_private,
+        video_date
+    </sql>
+
+    <select id="getVideo" resultType="com.lingzhong.video.bean.vo.VideoVo">
+            select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
+            from video v,video_data d,user u
+            where v.video_id = d.video_id and v.video_user_id = u.user_id limit #{count},10;
+    </select>
+
+    <select id="selectLikeVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM video v
+        LEFT join video_like vl
+        on v.video_id = vl.video_id
+        where vl.user_id = #{user_id}
+    </select>
+    <select id="selectCollectVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM video v
+        LEFT join video_collect vc
+        on v.video_id = vc.video_id
+        where vc.user_id = #{user_id}
+    </select>
+    <select id="getUserVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
+            from video v,video_data d,user u
+            where u.user_id = #{userId} and v.video_id = d.video_id and v.video_user_id = u.user_id limit #{page},#{count};
+    </select>
+</mapper>

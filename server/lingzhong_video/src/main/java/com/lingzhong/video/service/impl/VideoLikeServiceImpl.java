@@ -1,0 +1,56 @@
+package com.lingzhong.video.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lingzhong.video.bean.po.VideoLike;
+import com.lingzhong.video.mapper.VideoLikeMapper;
+import com.lingzhong.video.service.VideoLikeService;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author ljx
+ * @description 针对表【video_like】的数据库操作Service实现
+ * @createDate 2023-10-27 20:30:22
+ */
+@Service
+public class VideoLikeServiceImpl implements VideoLikeService {
+
+    private VideoLikeMapper videoLikeMapper;
+
+    public VideoLikeServiceImpl(VideoLikeMapper videoLikeMapper) {
+        this.videoLikeMapper = videoLikeMapper;
+    }
+
+    @Override
+    public Integer addNewVideoLikeData(VideoLike videoLike) {
+        return videoLikeMapper.insert(videoLike);
+    }
+
+    @Override
+    public Integer delVideoLikeData(Integer videoId, Integer userId, Integer beUserId) {
+        QueryWrapper<VideoLike> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("video_id" , videoId)
+                .eq("user_id" , userId)
+                .eq("be_user_id" , beUserId);
+        return videoLikeMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public Integer delVideoLikeList(Integer videoId, Integer beUserId) {
+        QueryWrapper<VideoLike> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("video_id" , videoId)
+                .eq("be_user_id" , beUserId);
+        return videoLikeMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public VideoLike selectByUserIdAndVideoId(Integer userId, Integer videoId) {
+        QueryWrapper<VideoLike> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("video_id" , videoId)
+                .eq("user_id" , userId);
+        return videoLikeMapper.selectOne(queryWrapper);
+    }
+}
+
+
+
+
