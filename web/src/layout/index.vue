@@ -4,9 +4,7 @@
     <div class="container">
       <Menu />
       <div class="main">
-        <keep-alive include="home">
-          <router-view></router-view>
-        </keep-alive>
+        <router-view></router-view>
       </div>
     </div>
 

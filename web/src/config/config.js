@@ -61,6 +61,11 @@ export const MOUSE_CLICK_MENU_LIST = [
     label: "评论",
     value: 'comments',
     show: true
+  },
+  {
+    label: "快捷键说明",
+    value: 'key',
+    show: true
   }
 ]
 // 视频前进和后退一次的时间（秒）

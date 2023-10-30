@@ -1,22 +1,42 @@
 <template>
   <div :style="{ width: props.width + '%', height: props.height + '%' }" class="videoItem" ref="videoBox">
     <video @contextmenu.prevent.stop="rewriteVideoClick" @click="videoClick" @mousemove="mouseMoveHandle"
-      :src="props.videoUrl" ref="videoItem" autoplay @mouseleave="mouseLeaveHandle" mouted></video>
-    <VideoControls v-show="controlsShow" @mouseOverControls="mouseUpHandle" :videoStatus="videoStatus"
-      :videoInfo="videoItem" @mouseLeaveControls="mouseLeaveControlHandle" @controlsClickHandle="controlsClickHandle" />
+      :src="videoInfo.videoUrl" ref="videoItem" autoplay @mouseleave="mouseLeaveHandle" mouted></video>
+    <VideoControls v-show="true" @mouseOverControls="mouseUpHandle" :videoStatus="videoStatus" :videoInfo="videoItem"
+      @mouseLeaveControls="mouseLeaveControlHandle" @controlsClickHandle="controlsClickHandle" />
     <div class="click-menu" ref="menuList" v-show="menuShow">
       <ul class="menu-ul">
         <li v-for="(item, index) in MOUSE_CLICK_MENU_LIST" @click="menuListClick(item)" v-show="item.show">{{ item.label
         }}</li>
       </ul>
     </div>
+    <VideoDesc :videoInfo="videoDescInfo" />
+    <VideoZanInfo :videoNumInfo="videoNumInfo" />
+    <el-dialog v-model="dialogVisible" title="快捷键说明" width="30%">
+      <div>Space（空格）：暂停/播放</div>
+      <div>Left（左键）：后退5秒</div>
+      <div>Right（右键）：前进5秒</div>
+      <div>Down（下键）：下一个视频</div>
+      <div>Up（上键）：上一个视频</div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">
+            确定
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 // 引入视频控件
-import VideoControls from '@/components/videoControls/index.vue'
+import VideoControls from '@/components/videoComponent/videoControls/index.vue'
+// 引入视频信息
+import VideoDesc from '@/components/videoComponent/videoDesc/index.vue'
+// 引入右侧用户信息
+import VideoZanInfo from '@/components/videoComponent/VideoZanInfo/index.vue'
 import { MOUSE_CLICK_MENU_LIST } from '@/config/config.js'
 // 引入操作视频方法
 import {
@@ -27,6 +47,12 @@ import {
 } from '@/utils/video.js'
 // 引入操作的时间
 import { videoActionTime } from '@/config/config.js'
+/**
+ * 获取仓库中的数据
+ */
+import useVideoStore from '@/store/videoStore';
+const videoStore = useVideoStore()
+const videoInfo = ref('')
 // 操作剪切板
 import { copy } from '@/utils/utils.js'
 // 获取菜单实例
@@ -39,15 +65,14 @@ const videoItem = ref()
 const controlsShow = ref(false)
 // 视频播放状态
 const videoStatus = ref(true)
-// 视频信息
-// const videoInfo = reactive({
-//   currentTime: '',
-//   totalTime: ''
-// })
+// 对话框显示/消失
+const dialogVisible = ref(false)
 // 定时器
 let timer = null
-onMounted(() => {
+onMounted(async () => {
   keydownEvent()
+  await videoStore.getVideo()
+  videoInfo.value = videoStore.videoList[0]
   nextTick(() => {
     if (videoItem.value.paused) {
       videoStatus.value = false
@@ -76,6 +101,40 @@ const props = defineProps({
   videoUrl: {
     type: String,
     require: true
+  }
+})
+/**
+ * 计算属性，把VideoDesc需要的内容计算出来返回
+ */
+const videoDescInfo = computed(() => {
+  return {
+    // 用户名
+    userName: videoInfo.userName,
+    // 用户地址
+    videoAddress: videoInfo.videoAddress,
+    // 发表时间
+    videoDate: videoInfo.videoDate,
+    // 视频描述
+    videoDescription: videoInfo.videoDescription,
+    // 用户id
+    videoUserId: videoInfo.videoUserId
+  }
+})
+/**
+ * 把VideoZanInfo需要的信息返回
+ */
+const videoNumInfo = computed(() => {
+  return {
+    // 视频收藏量
+    videoCollectNum: videoInfo.videoCollectNum,
+    // 视频评论量
+    videoCommentNum: videoInfo.videoCommentNum,
+    // 视频点赞量
+    videoLikeNum: videoInfo.videoLikeNum,
+    // 用户头像
+    userPhoto: videoInfo.userPhoto,
+    // 视频id
+    videoId: videoInfo.videoId
   }
 })
 /**
@@ -118,7 +177,10 @@ const menuListClick = (item) => {
       videoStatus.value = true
       break
     case 'copy':
-      copy(props.videoUrl)
+      copy(videoInfo.videoUrl)
+      break
+    case 'key':
+      dialogVisible.value = true
       break
   }
 }
@@ -257,7 +319,7 @@ const controlsClickHandle = (type) => {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 50px;
+  min-height: 40px;
 }
 
 .menu-ul li:hover {

@@ -2,7 +2,7 @@
   <div class='videoControls' @mouseover="mouseUpHandle" @mouseleave="mouseLeaveHandle">
     <el-slider v-model="currentTime" :format-tooltip="formatTooltip" @change="timeChange" :max="maxTime" placement="right"
       style="height: 5px;" size="small" />
-    <div class="icons">
+    <div class="icons" v-if="showControls">
       <div class="iconLeft">
         <div class="iconItem" @click="controlsClickHandle('left')">
           <el-icon size="22">
@@ -49,6 +49,8 @@ const maxTime = ref(0)
 const playOrPause = ref(true)
 // 视频是否完成
 const videoEnded = ref(false)
+// 是否显示控件
+const showControls = ref(false)
 let timer = null
 // 当前视频播放状态
 const props = defineProps(['videoStatus', 'videoInfo'])
@@ -113,7 +115,7 @@ const formatTooltip = (val) => {
 <style scoped lang='scss'>
 .videoControls {
   width: 100%;
-  height: $video-contorls-height;
+  // height: $video-contorls-height;
   background-color: rgba(0, 0, 0, 0.3);
   position: absolute;
   z-index: 999;
@@ -125,7 +127,7 @@ const formatTooltip = (val) => {
 .icons {
   display: flex;
   width: 100%;
-  height: 55px;
+  height: 0;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
@@ -157,7 +159,6 @@ const formatTooltip = (val) => {
 
 .videoTime {
   color: lightgray;
-  line-height: 22px;
-
+  line-height: 22px
 }
 </style>
