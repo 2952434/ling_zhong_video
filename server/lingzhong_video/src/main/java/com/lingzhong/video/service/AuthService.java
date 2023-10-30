@@ -1,7 +1,7 @@
 package com.lingzhong.video.service;
 
 
-import com.lingzhong.video.bean.dto.AuthParamsDto;
+import com.lingzhong.video.bean.dto.AuthParamsDTO;
 import com.lingzhong.video.bean.dto.UserExt;
 
 /**
@@ -17,6 +17,6 @@ public interface AuthService {
      * @param authParamsDto 认证类
      * @return 用户信息
      */
-    UserExt execute(AuthParamsDto authParamsDto);
+    UserExt execute(AuthParamsDTO authParamsDto);
 
 }

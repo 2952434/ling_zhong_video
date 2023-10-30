@@ -33,12 +33,11 @@ public class UserController {
 
     @ApiOperation(value = "注册：根据手机号和邮箱发送验证码")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "account", value = "手机号", required = true, dataTypeClass = String.class, example = "xxx"),
             @ApiImplicitParam(name = "mail", value = "邮箱", required = true, dataTypeClass = String.class, example = "xxx@qq.com")
     })
     @PostMapping("/sentRegisterAuthCode")
-    public RespBean<String> sentRegisterAuthCode(String account, String mail) {
-        boolean judge = userService.sentRegisterAuthCode(account, mail);
+    public RespBean<String> sentRegisterAuthCode(String mail) {
+        boolean judge = userService.sentRegisterAuthCode(mail);
         if (judge) {
             return RespBean.ok("验证码发送成功");
         } else {

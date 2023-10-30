@@ -35,6 +35,15 @@ public interface VideoMapper extends BaseMapper<Video> {
      */
     List<VideoVo> selectCollectVideoByUserId(@Param("userId") Integer userId);
 
+    /**
+     * 根据用户ID查询该用户发表的视频
+     *
+     * @param userId 用户ID
+     * @param page   页数
+     * @param count  每页几条
+     * @return List<VideoVo>
+     */
+    List<VideoVo> getUserVideoByUserId(@Param("userId") Integer userId, @Param("page") Integer page, @Param("count") Integer count);
 }
 
 

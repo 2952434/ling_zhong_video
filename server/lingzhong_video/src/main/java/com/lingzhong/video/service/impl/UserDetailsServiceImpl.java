@@ -1,7 +1,7 @@
 package com.lingzhong.video.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.lingzhong.video.bean.dto.AuthParamsDto;
+import com.lingzhong.video.bean.dto.AuthParamsDTO;
 import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +35,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         //将传入的json转成AuthParamsDto对象
-        AuthParamsDto authParamsDto;
+        AuthParamsDTO authParamsDto;
         try {
-            authParamsDto = JSON.parseObject(s, AuthParamsDto.class);
+            authParamsDto = JSON.parseObject(s, AuthParamsDTO.class);
         } catch (Exception e) {
             throw new RuntimeException("请求认证参数不符合要求");
         }

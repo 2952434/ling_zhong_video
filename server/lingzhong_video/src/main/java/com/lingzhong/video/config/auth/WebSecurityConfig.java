@@ -2,10 +2,12 @@ package com.lingzhong.video.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,18 +47,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http 配置安全拦截机制
      * @throws Exception 未知异常
      */
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.authorizeRequests()
-//                //访问/r开始的请求需要认证通过
-//                .antMatchers("/r/**").authenticated()
-//                //其它请求全部放行
-//                .anyRequest().permitAll()
-//                .and()
-//                //登录成功跳转到/login-success
-//                .formLogin().successForwardUrl("/login-success").and().cors();
-//
-//    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                //访问/r开始的请求需要认证通过
+                .antMatchers("/r/**").authenticated()
+                //其它请求全部放行
+                .anyRequest().permitAll()
+                .and()
+                //登录成功跳转到/login-success
+                .formLogin().successForwardUrl("/login-success").and().cors();
+
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+//        放行所有请求
+        web.ignoring().antMatchers("/video/getVideo/**");
+    }
 
     public static void main(String[] args) {
         String password = "123456";

@@ -6,11 +6,14 @@ import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.UserRegisterVo;
+import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.mapper.UserMapper;
 import com.lingzhong.video.service.UserService;
 import com.lingzhong.video.utils.SendMail;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,21 +39,23 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(4, 5, 10, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(2000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
 
     @Override
-    public boolean sentRegisterAuthCode(String account, String mail) {
+    public boolean sentRegisterAuthCode(String mail) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUserMail,mail);
+        queryWrapper.eq(User::getUserMail, mail);
         User user = userMapper.selectOne(queryWrapper);
         if (user != null) {
             return false;
         }
         EXECUTOR.execute(() -> {
             try {
-                String code = sendMail.sendSimpleMail(mail, "注册凌众视频验证码", String.format("您的账号 %s 正在注册凌众视频,验证码五分钟内有效 ", account));
-                String key = String.format("%s:%s", mail, account);
+                String code = sendMail.sendSimpleMail(mail, "注册凌众视频验证码", String.format("您的账号 %s 正在注册凌众视频,验证码五分钟内有效 ", mail));
+                String key = String.format("%s:%s", "register", mail);
                 redisTemplate.opsForValue().set(key, code);
                 redisTemplate.expire(key, 5, TimeUnit.MINUTES);
             } catch (Exception e) {
@@ -62,17 +67,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RespBean<UserRegisterVo> userRegister(UserRegisterDTO userRegisterDTO) {
-        String userAccount = userRegisterDTO.getUserAccount();
         String userMail = userRegisterDTO.getUserMail();
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_account", userAccount)
-                .or()
+        queryWrapper
                 .eq("user_mail", userMail);
         List<User> users = userMapper.selectList(queryWrapper);
         if (users == null || users.size() > 0) {
-            return RespBean.error("该账号或邮箱已经注册，请确认是否填写正确");
+            return RespBean.error("该邮箱已经注册，请确认是否填写正确");
         }
-        String key = String.format("%s:%s", userMail, userAccount);
+        String key = String.format("%s:%s", "register", userMail);
         String code = redisTemplate.opsForValue().get(key);
         if (code == null) {
             return RespBean.error("未查询到发送的验证码，请重新发送");
@@ -82,10 +85,10 @@ public class UserServiceImpl implements UserService {
         }
         User user = new User();
         BeanUtils.copyProperties(userRegisterDTO, user);
+        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
         user.setUserName("凌众视频用户" + (new Random().nextInt(99999 - 10000 + 1) + 10000));
         user.setUserPhoto("http://s32t6kk2m.hb-bkt.clouddn.com/photo/8a6db7399545659e4983f4d042a28b95.jpeg");
         user.setUserSex(1);
-        user.setUserDescribe("用一句话来描述你吧");
         user.setUserDate(new Date());
         int insert = userMapper.insert(user);
         if (insert <= 0) {
@@ -100,7 +103,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean sentMailLoginAuthCode(String mail) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUserMail,mail);
+        queryWrapper.eq(User::getUserMail, mail);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
             return false;

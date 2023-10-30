@@ -12,12 +12,6 @@ import lombok.Data;
 public class UserRegisterDTO {
 
     /**
-     * 账号
-     */
-    @ApiModelProperty("手机号")
-    private String userAccount;
-
-    /**
      * 密码
      */
     @ApiModelProperty(value = "密码")

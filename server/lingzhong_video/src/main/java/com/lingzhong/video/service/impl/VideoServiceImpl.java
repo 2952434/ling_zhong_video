@@ -123,6 +123,12 @@ public class VideoServiceImpl implements VideoService {
         return videoMapper.selectCollectVideoByUserId(userId);
     }
 
+    @Override
+    public List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count) {
+        List<VideoVo> videoVos = videoMapper.getUserVideoByUserId(userId,page*count,count);
+        return videoVos;
+    }
+
 
     private String uploadVideo(MultipartFile file) {
         //构造一个带指定 Region 对象的配置类

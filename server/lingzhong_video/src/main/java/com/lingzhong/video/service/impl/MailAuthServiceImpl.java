@@ -2,7 +2,7 @@ package com.lingzhong.video.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.lingzhong.video.bean.dto.AuthParamsDto;
+import com.lingzhong.video.bean.dto.AuthParamsDTO;
 import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.mapper.UserMapper;
@@ -29,7 +29,7 @@ public class MailAuthServiceImpl implements AuthService {
     private UserMapper userMapper;
 
     @Override
-    public UserExt execute(AuthParamsDto authParamsDto) {
+    public UserExt execute(AuthParamsDTO authParamsDto) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUserMail, authParamsDto.getUserMail());
         User user = userMapper.selectOne(queryWrapper);

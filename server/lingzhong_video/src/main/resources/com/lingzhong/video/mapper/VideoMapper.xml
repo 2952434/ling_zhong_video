@@ -19,11 +19,13 @@
         video_user_id,video_address,video_private,
         video_date
     </sql>
+
     <select id="getVideo" resultType="com.lingzhong.video.bean.vo.VideoVo">
             select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
             from video v,video_data d,user u
             where v.video_id = d.video_id and v.video_user_id = u.user_id limit #{count},10;
     </select>
+
     <select id="selectLikeVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
         SELECT <include refid="Base_Column_List"/>
         FROM video v
@@ -37,5 +39,10 @@
         LEFT join video_collect vc
         on v.video_id = vc.video_id
         where vc.user_id = #{user_id}
+    </select>
+    <select id="getUserVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
+            from video v,video_data d,user u
+            where u.user_id = #{userId} and v.video_id = d.video_id and v.video_user_id = u.user_id limit #{page},#{count};
     </select>
 </mapper>

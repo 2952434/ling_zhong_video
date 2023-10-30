@@ -1,5 +1,6 @@
 package com.lingzhong.video.bean.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -14,7 +15,7 @@ public class UserAttention implements Serializable {
     /**
      * 用户关注主键
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer attentionId;
 
     /**

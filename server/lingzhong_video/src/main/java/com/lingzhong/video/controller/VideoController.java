@@ -4,6 +4,7 @@ import com.lingzhong.video.bean.dto.VideoPublishDTO;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.service.VideoService;
+import com.lingzhong.video.utils.LoginUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -50,6 +51,23 @@ public class VideoController {
         } else {
             return RespBean.ok(video);
         }
+    }
+
+    @ApiOperation(value = "根据用户ID分页查询视频")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true,dataTypeClass = Integer.class,example = "1"),
+            @ApiImplicitParam(name = "page", value = "页数，默认从0开始", required = true, dataTypeClass = Integer.class, example = "0"),
+            @ApiImplicitParam(name = "count", value = "每页视频条数", required = true, dataTypeClass = Integer.class, example = "20"),
+    })
+    @GetMapping("getUserVideoByUserId")
+    public RespBean<List<VideoVo>> getUserVideoByUserId(Integer userId, Integer page, Integer count) {
+        List<VideoVo> userVideoByUserId = videoService.getUserVideoByUserId(userId, page, count);
+        if (userVideoByUserId.size() == 0) {
+            return RespBean.error("到底了");
+        } else {
+            return RespBean.ok(userVideoByUserId);
+        }
+
     }
 
 

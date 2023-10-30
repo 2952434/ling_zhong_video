@@ -30,7 +30,7 @@ public class LoginUser {
             e.printStackTrace();
             throw new RuntimeException("用户身份失效");
         }
-        return null;
+        throw new RuntimeException("用户身份失效");
     }
 
 

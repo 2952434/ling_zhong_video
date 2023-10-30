@@ -2,8 +2,12 @@ package com.lingzhong.video.service;
 
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
+import com.lingzhong.video.bean.po.Video;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.UserRegisterVo;
+import com.lingzhong.video.bean.vo.VideoVo;
+
+import java.util.List;
 
 /**
  * @author ljx
@@ -13,12 +17,11 @@ import com.lingzhong.video.bean.vo.UserRegisterVo;
 public interface UserService {
 
     /**
-     * 根据账号和邮箱发送验证码
-     * @param account 账号
+     * 根据邮箱发送验证码
      * @param mail 邮箱
      * @return 是否成功
      */
-    boolean sentRegisterAuthCode(String account, String mail);
+    boolean sentRegisterAuthCode( String mail);
 
 
     /**
@@ -42,4 +45,7 @@ public interface UserService {
      * @return User
      */
     User getUserById(Integer userId);
+
+
+
 }

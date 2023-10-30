@@ -2,13 +2,12 @@ package com.lingzhong.video.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.lingzhong.video.bean.dto.AuthParamsDto;
+import com.lingzhong.video.bean.dto.AuthParamsDTO;
 import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.mapper.UserMapper;
 import com.lingzhong.video.service.AuthService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +30,9 @@ public class PasswordAuthServiceImpl implements AuthService {
 
 
     @Override
-    public UserExt execute(AuthParamsDto authParamsDto) {
-        String userAccount = authParamsDto.getUserAccount();
+    public UserExt execute(AuthParamsDTO authParamsDto) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUserAccount, userAccount);
+        queryWrapper.eq(User::getUserMail, authParamsDto.getUserMail());
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
             throw new RuntimeException("账号不存在");

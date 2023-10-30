@@ -18,7 +18,8 @@ public interface VideoService {
 
     /**
      * 用户发布视频
-     * @param file 视频文件
+     *
+     * @param file            视频文件
      * @param videoPublishDTO 发布视频需要携带的参数
      * @return 是否成功
      */
@@ -27,6 +28,7 @@ public interface VideoService {
 
     /**
      * 获取视频信息
+     *
      * @param page 第几页
      * @return List<VideoVo>
      */
@@ -46,5 +48,17 @@ public interface VideoService {
      * 查询用户收藏的视频信息
      */
     List<VideoVo> getUserCollectVideoList(Integer userId);
+
+
+    /**
+     * 根据用户ID查询该用户发表的视频
+     *
+     * @param userId 用户ID
+     * @param page   页数
+     * @param count  每页几条
+     * @return List<VideoVo>
+     */
+    List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count);
+
 
 }
