@@ -41,6 +41,14 @@ public class VideoLikeServiceImpl implements VideoLikeService {
                 .eq("be_user_id" , beUserId);
         return videoLikeMapper.delete(queryWrapper);
     }
+
+    @Override
+    public VideoLike selectByUserIdAndVideoId(Integer userId, Integer videoId) {
+        QueryWrapper<VideoLike> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("video_id" , videoId)
+                .eq("user_id" , userId);
+        return videoLikeMapper.selectOne(queryWrapper);
+    }
 }
 
 

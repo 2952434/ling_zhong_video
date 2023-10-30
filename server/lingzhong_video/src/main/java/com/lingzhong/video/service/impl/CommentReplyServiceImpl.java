@@ -80,9 +80,9 @@ public class CommentReplyServiceImpl implements CommentReplyService{
     }
 
     @Override
-    public Integer delUserComment(Long commentId) {
+    public Integer delUserComment(Integer userId, Long commentId) {
         QueryWrapper<CommentReply> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comment_id" , commentId);
+        queryWrapper.eq("comment_id" , commentId).eq("user_id",userId);
         return commentReplyMapper.delete(queryWrapper);
     }
 

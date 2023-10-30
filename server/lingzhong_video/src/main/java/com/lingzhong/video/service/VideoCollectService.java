@@ -24,5 +24,9 @@ public interface VideoCollectService {
      */
     public Integer delVideoCollectList(Integer videoId , Integer userId);
 
+    /**
+     * 查看用户是否收藏
+     */
+    public VideoCollect selectByUserIdAndVideoId(Integer userId , Integer videoId);
 
 }

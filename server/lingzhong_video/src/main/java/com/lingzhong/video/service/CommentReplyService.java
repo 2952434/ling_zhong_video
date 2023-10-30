@@ -28,9 +28,10 @@ public interface CommentReplyService  {
 
     /**
      * 删除本用户评论
+     * @param userId
      * @param commentId
      */
-    public Integer delUserComment(Long commentId);
+    public Integer delUserComment(Integer userId, Long commentId);
 
     /**
      * 更新点赞数

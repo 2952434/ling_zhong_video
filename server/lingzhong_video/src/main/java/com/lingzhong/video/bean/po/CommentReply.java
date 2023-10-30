@@ -41,8 +41,6 @@ public class CommentReply implements Serializable {
     /**
      * 发表评论的用户id
      */
-    @NotNull(message = "用户id不能为空")
-    @ApiModelProperty(name = "用户id",dataType = "Integer",required = true)
     private Integer userId;
 
     /**

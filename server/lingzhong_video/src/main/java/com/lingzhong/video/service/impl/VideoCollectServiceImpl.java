@@ -41,6 +41,14 @@ public class VideoCollectServiceImpl implements VideoCollectService {
                 .eq("user_id" , userId);
         return videoCollectMapper.delete(queryWrapper);
     }
+
+    @Override
+    public VideoCollect selectByUserIdAndVideoId(Integer userId, Integer videoId) {
+        QueryWrapper<VideoCollect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("video_id" , videoId)
+                .eq("user_id" , userId);
+        return videoCollectMapper.selectOne(queryWrapper);
+    }
 }
 
 

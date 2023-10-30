@@ -28,7 +28,6 @@ public class VideoLike implements Serializable {
     /**
      * 点赞的用户id
      */
-    @ApiModelProperty(name = "点赞的用户id" , dataType = "Integer" , required = true)
     private Integer userId;
 
     /**

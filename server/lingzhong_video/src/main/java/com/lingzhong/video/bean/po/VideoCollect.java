@@ -29,7 +29,6 @@ public class VideoCollect implements Serializable {
     /**
      * 用户id
      */
-    @ApiModelProperty(name = "用户id" , dataType = "Integer" , required = true)
     private Integer userId;
 
     /**

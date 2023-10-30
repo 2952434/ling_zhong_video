@@ -23,4 +23,9 @@ public interface VideoLikeService  {
      * 批量删除点赞记录
      */
     public Integer delVideoLikeList(Integer videoId , Integer beUserId);
+
+    /**
+     * 查看用户是否点赞
+     */
+    public VideoLike selectByUserIdAndVideoId(Integer userId , Integer videoId);
 }
