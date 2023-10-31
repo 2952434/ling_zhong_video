@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
-import com.lingzhong.video.bean.vo.UserRegisterVo;
-import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.mapper.UserMapper;
 import com.lingzhong.video.service.UserService;
 import com.lingzhong.video.utils.SendMail;
@@ -20,7 +18,10 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ljx
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RespBean<UserRegisterVo> userRegister(UserRegisterDTO userRegisterDTO) {
+    public RespBean<String> userRegister(UserRegisterDTO userRegisterDTO) {
         String userMail = userRegisterDTO.getUserMail();
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper
@@ -94,10 +95,8 @@ public class UserServiceImpl implements UserService {
         if (insert <= 0) {
             return RespBean.error("注册失败");
         }
-        UserRegisterVo userRegisterVo = new UserRegisterVo();
-        BeanUtils.copyProperties(user, userRegisterVo);
         redisTemplate.delete(key);
-        return RespBean.ok(userRegisterVo);
+        return RespBean.ok("注册成功");
     }
 
     @Override

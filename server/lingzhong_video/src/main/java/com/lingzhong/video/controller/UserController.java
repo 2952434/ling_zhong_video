@@ -4,7 +4,6 @@ import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
-import com.lingzhong.video.bean.vo.UserRegisterVo;
 import com.lingzhong.video.service.UserService;
 import com.lingzhong.video.utils.LoginUser;
 import io.swagger.annotations.Api;
@@ -48,7 +47,7 @@ public class UserController {
 
     @ApiOperation(value = "用户注册接口")
     @GetMapping("/userRegister")
-    public RespBean<UserRegisterVo> userRegister(UserRegisterDTO userRegisterDTO) {
+    public RespBean<String> userRegister(UserRegisterDTO userRegisterDTO) {
         return userService.userRegister(userRegisterDTO);
     }
 

@@ -13,9 +13,6 @@ import lombok.Data;
 @ApiModel(value = "用户认证信息")
 public class AuthParamsDTO {
 
-    @ApiModelProperty(value = "账号")
-    private String userAccount;
-
     @ApiModelProperty(value = "密码")
     private String password;
 
