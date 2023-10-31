@@ -1,8 +1,10 @@
 package com.lingzhong.video.service;
 
+import com.lingzhong.video.bean.dto.UpdateUserDTO;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author ljx
@@ -13,10 +15,11 @@ public interface UserService {
 
     /**
      * 根据邮箱发送验证码
+     *
      * @param mail 邮箱
      * @return 是否成功
      */
-    boolean sentRegisterAuthCode( String mail);
+    boolean sentRegisterAuthCode(String mail);
 
 
     /**
@@ -29,6 +32,7 @@ public interface UserService {
 
     /**
      * 邮箱登录时发送验证码
+     *
      * @param mail 邮箱
      * @return 是否成功
      */
@@ -36,11 +40,26 @@ public interface UserService {
 
     /**
      * 根据用户id获取用户信息
+     *
      * @param userId 用户id
      * @return User
      */
     User getUserById(Integer userId);
 
+
+    /**
+     * 上传用户头像
+     * @param photo 用户头像
+     * @return 地址
+     */
+    RespBean<String> uploadUserPhoto(MultipartFile photo);
+
+    /**
+     * 更新用户信息
+     * @param updateUserDTO 用户信息
+     * @return boolean
+     */
+    boolean updateUserInfo(UpdateUserDTO updateUserDTO);
 
 
 }

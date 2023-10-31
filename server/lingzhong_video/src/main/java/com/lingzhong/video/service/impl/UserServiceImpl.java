@@ -2,19 +2,35 @@ package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.gson.Gson;
+import com.lingzhong.video.bean.dto.UpdateUserDTO;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.mapper.UserMapper;
 import com.lingzhong.video.service.UserService;
+import com.lingzhong.video.utils.LoginUser;
 import com.lingzhong.video.utils.SendMail;
+import com.lingzhong.video.utils.TimeUtils;
+import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.storage.persistent.FileRecorder;
+import com.qiniu.util.Auth;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -30,6 +46,18 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Value("${qiniu.accessKey}")
+    private String accessKey;
+
+    @Value("${qiniu.secretKey}")
+    private String secretKey;
+
+    @Value("${qiniu.bucket}")
+    private String bucket;
+
+    @Value("${qiniu.url}")
+    private String url;
 
     @Resource
     private RedisTemplate<String, String> redisTemplate;
@@ -101,12 +129,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean sentMailLoginAuthCode(String mail) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUserMail, mail);
-        User user = userMapper.selectOne(queryWrapper);
-        if (user == null) {
-            return false;
-        }
         EXECUTOR.execute(() -> {
             try {
                 String code = sendMail.sendSimpleMail(mail, "邮箱登录凌众视频验证码", "您正在登录 凌众视频,验证码五分钟内有效 ");
@@ -124,6 +146,57 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Integer userId) {
         User user = userMapper.selectById(userId);
         return user;
+    }
+
+    @Override
+    public RespBean<String> uploadUserPhoto(MultipartFile photo) {
+        //构造一个带指定 Region 对象的配置类
+        Configuration cfg = new Configuration(Region.region1());
+        // 指定分片上传版本
+        cfg.resumableUploadAPIVersion = Configuration.ResumableUploadAPIVersion.V2;
+        UploadManager uploadManager = new UploadManager(cfg);
+        //默认不指定key的情况下，以文件内容的hash值作为文件名
+        String key = "photo/" + TimeUtils.getNowDateString("yyyy/MM/dd") + "/" + (new Random().nextInt(1000) + 1) + "/" + photo.getOriginalFilename();
+        Auth auth = Auth.create(accessKey, secretKey);
+        String upToken = auth.uploadToken(bucket);
+        try {
+            try {
+                Response response = uploadManager.put(photo.getBytes(), key, upToken);
+                //解析上传成功的结果
+                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+//                System.out.println(putRet.key);
+//                System.out.println(putRet.hash);
+            } catch (QiniuException ex) {
+                ex.printStackTrace();
+                if (ex.response != null) {
+                    System.err.println(ex.response);
+                    try {
+                        String body = ex.response.toString();
+                        System.err.println(body);
+                    } catch (Exception ignored) {
+                        return RespBean.error("上传失败");
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            return RespBean.error("上传失败");
+        }
+        return RespBean.ok(url + key);
+    }
+
+    @Override
+    public boolean updateUserInfo(UpdateUserDTO updateUserDTO) {
+        Integer userId = LoginUser.getUser().getUserId();
+        if (!userId.equals(updateUserDTO.getUserId())) {
+            return false;
+        }
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserId, userId);
+        User user = userMapper.selectOne(queryWrapper);
+        BeanUtils.copyProperties(updateUserDTO, user);
+        int update = userMapper.updateById(user);
+        return update > 0;
+
     }
 }
 

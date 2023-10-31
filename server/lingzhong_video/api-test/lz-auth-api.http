@@ -16,7 +16,7 @@ POST {{auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant
 
 
 ### 邮箱登录，请求AuthParamsDto参数
-POST {{auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=password&username={"userMail":"2952434583@qq.com","checkCode":"202718","authType":"mail"}
+POST {{auth_host}}/oauth/token?client_id=lingzhong&client_secret=lingzhong&grant_type=password&username={"userMail":"2952434583@qq.com","checkCode":"374608","authType":"mail"}
 
 
 ### 密码模式，请求AuthParamsDto参数

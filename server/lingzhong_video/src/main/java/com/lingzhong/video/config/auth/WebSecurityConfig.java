@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
 //        放行所有请求
-        web.ignoring().antMatchers("/video/getVideo/**");
+        web.ignoring().antMatchers("/video/getVideo/**","/user/sentMailLoginAuthCode/**");
     }
 
     public static void main(String[] args) {

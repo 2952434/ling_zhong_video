@@ -3,6 +3,7 @@ package com.lingzhong.video.service;
 
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
 import com.lingzhong.video.bean.po.Video;
+import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,14 @@ public interface VideoService {
      * @return 是否成功
      */
     Boolean uploadVideo(MultipartFile file, VideoPublishDTO videoPublishDTO) throws Exception;
+
+    /**
+     * 根据视频ID删除视频
+     * @param videoId 视频ID
+     * @return 是否删除成功
+     */
+    RespBean<String> deleteVideoById(Integer videoId);
+
 
 
     /**

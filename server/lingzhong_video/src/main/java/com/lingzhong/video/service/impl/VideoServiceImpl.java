@@ -1,5 +1,6 @@
 package com.lingzhong.video.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
@@ -7,6 +8,7 @@ import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.po.Video;
 import com.lingzhong.video.bean.po.VideoData;
 import com.lingzhong.video.bean.po.VideoLabel;
+import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.mapper.VideoLabelMapper;
 import com.lingzhong.video.mapper.VideoMapper;
@@ -16,6 +18,7 @@ import com.lingzhong.video.utils.LoginUser;
 import com.lingzhong.video.utils.TimeUtils;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
@@ -100,6 +103,26 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public RespBean<String> deleteVideoById(Integer videoId) {
+        User user = LoginUser.getUser();
+        LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Video::getVideoUserId, user.getUserId()).eq(Video::getVideoId, videoId);
+        Video video = videoMapper.selectOne(queryWrapper);
+        if (video == null) {
+            return RespBean.error("该视频不是您发表的删除失败");
+        }
+        String videoUrl = video.getVideoUrl();
+        String path = videoUrl.substring(url.length());
+        boolean deleted = deleteFile(path);
+        if (deleted) {
+            videoMapper.deleteById(videoId);
+            return RespBean.ok("删除视频成功");
+        }
+        return RespBean.error("删除视频失败");
+
+    }
+
+    @Override
     public List<VideoVo> getVideo(Integer page) {
 //        TODO 算法需要优化
         return videoMapper.getVideo(page * 10);
@@ -108,7 +131,7 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public Video getVideoById(Integer videoIds) {
         QueryWrapper<Video> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("video_id" , videoIds);
+        queryWrapper.eq("video_id", videoIds);
         return videoMapper.selectOne(queryWrapper);
     }
 
@@ -124,12 +147,25 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count) {
-        List<VideoVo> videoVos = videoMapper.getUserVideoByUserId(userId,page*count,count);
+        List<VideoVo> videoVos = videoMapper.getUserVideoByUserId(userId, page * count, count);
         return videoVos;
     }
 
 
-    private String uploadVideo(MultipartFile file) {
+    public boolean deleteFile(String filePath) {
+        Configuration configuration = new Configuration(Region.region1());
+        Auth auth = Auth.create(accessKey, secretKey);
+        BucketManager bucketManager = new BucketManager(auth, configuration);
+        try {
+            bucketManager.delete(bucket, filePath);
+            return true;
+        } catch (QiniuException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public String uploadVideo(MultipartFile file) {
         //构造一个带指定 Region 对象的配置类
         Configuration cfg = new Configuration(Region.region1());
         // 指定分片上传版本
@@ -138,7 +174,7 @@ public class VideoServiceImpl implements VideoService {
         cfg.resumableUploadMaxConcurrentTaskCount = 2;
 
         //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = "video/" + TimeUtils.getNowDateString("yyyy/MM/dd") + "/" + (new Random().nextInt(1000) + 1) +"/" + file.getOriginalFilename();
+        String key = "video/" + TimeUtils.getNowDateString("yyyy/MM/dd") + "/" + (new Random().nextInt(1000) + 1) + "/" + file.getOriginalFilename();
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
         String localTempDir = Paths.get(System.getenv("java.io.tmpdir"), bucket).toString();

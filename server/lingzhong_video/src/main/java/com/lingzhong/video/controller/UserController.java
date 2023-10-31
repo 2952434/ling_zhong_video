@@ -1,5 +1,6 @@
 package com.lingzhong.video.controller;
 
+import com.lingzhong.video.bean.dto.UpdateUserDTO;
 import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
@@ -10,10 +11,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -30,6 +29,7 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Deprecated
     @ApiOperation(value = "注册：根据手机号和邮箱发送验证码")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "mail", value = "邮箱", required = true, dataTypeClass = String.class, example = "xxx@qq.com")
@@ -44,7 +44,7 @@ public class UserController {
         }
     }
 
-
+    @Deprecated
     @ApiOperation(value = "用户注册接口")
     @GetMapping("/userRegister")
     public RespBean<String> userRegister(UserRegisterDTO userRegisterDTO) {
@@ -84,6 +84,24 @@ public class UserController {
             return RespBean.error("该用户不存在");
         }
         return RespBean.ok(user);
+    }
+
+    @ApiOperation(value = "上传头像并返回地址")
+    @PostMapping("/uploadUserPhoto")
+    public RespBean<String> uploadUserPhoto(@RequestPart MultipartFile photo) {
+        return userService.uploadUserPhoto(photo);
+    }
+
+
+    @ApiOperation("更新用户信息")
+    @PutMapping("/updateUserInfo")
+    public RespBean<String> updateUserInfo(UpdateUserDTO updateUserDTO) {
+        boolean updated = userService.updateUserInfo(updateUserDTO);
+        if (updated) {
+            return RespBean.ok("更新成功");
+        } else {
+            return RespBean.error("更新失败");
+        }
     }
 
 

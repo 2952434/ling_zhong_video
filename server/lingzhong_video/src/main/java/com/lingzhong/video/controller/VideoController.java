@@ -41,6 +41,14 @@ public class VideoController {
     }
 
 
+    @ApiOperation("根据视频ID删除视频")
+    @ApiImplicitParam(name = "videoId", value = "视频ID", required = true, dataTypeClass = Integer.class)
+    @DeleteMapping("deleteVideoById/{videoId}")
+    public RespBean<String> deleteVideoById(@PathVariable Integer videoId) {
+        return videoService.deleteVideoById(videoId);
+    }
+
+
     @ApiOperation(value = "分页查询视频")
     @ApiImplicitParam(name = "page", value = "页数，默认从0开始，一页10条数据", required = true, dataTypeClass = Integer.class, example = "0")
     @GetMapping("getVideo/{page}")
@@ -55,7 +63,7 @@ public class VideoController {
 
     @ApiOperation(value = "根据用户ID分页查询视频")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", required = true,dataTypeClass = Integer.class,example = "1"),
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = Integer.class, example = "1"),
             @ApiImplicitParam(name = "page", value = "页数，默认从0开始", required = true, dataTypeClass = Integer.class, example = "0"),
             @ApiImplicitParam(name = "count", value = "每页视频条数", required = true, dataTypeClass = Integer.class, example = "20"),
     })
