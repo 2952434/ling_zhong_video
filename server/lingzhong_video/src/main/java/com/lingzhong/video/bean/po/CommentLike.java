@@ -20,22 +20,22 @@ public class CommentLike implements Serializable {
     /**
      * 用户id
      */
-    @ApiModelProperty(name = "用户id",dataType = "Integer",required = true)
+    @ApiModelProperty(name = "用户id",dataType = "Integer")
     private Integer userId;
     /**
      * 评论id
      */
-    @ApiModelProperty(name = "评论id",dataType = "Long",required = true)
+    @ApiModelProperty(name = "评论id",dataType = "Long")
     private Long commentId;
     /**
      * 被点赞评论用户id
      */
-    @ApiModelProperty(name = "被点赞评论用户id",dataType = "Integer",required = true)
+    @ApiModelProperty(name = "被点赞评论用户id",dataType = "Integer")
     private Integer beUserId;
     /**
      * 点赞时间
      */
-    @ApiModelProperty(name = "点赞时间",dataType = "Date",required = true)
+    @ApiModelProperty(name = "点赞时间",dataType = "Date")
     private Date likeDate;
 
     @TableField(exist = false)

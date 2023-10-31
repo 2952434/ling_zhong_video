@@ -39,7 +39,6 @@ public class VideoLike implements Serializable {
     /**
      * 点赞时间（用于排序）
      */
-    @ApiModelProperty(name = "点赞时间" , dataType = "Date" , required = true)
     private Date likeDate;
 
     @TableField(exist = false)

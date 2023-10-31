@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -46,15 +47,23 @@ public class VideoRelevantDataController {
         this.informationService = informationService;
     }
 
-    @RequestMapping(value = "/collect/add" , method = RequestMethod.PUT)
+    @RequestMapping(value = "/collect/add" , method = RequestMethod.POST)
     @ApiOperation(value = "收藏视频")
-    @ApiImplicitParam(name = "videoCollect", value = "收藏所需信息", required = true, dataTypeClass = VideoCollect.class, example = "")
-    public RespBean<Integer> addCollectVideo(@RequestBody VideoCollect videoCollect){
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "1"),
+            @ApiImplicitParam(name = "beUserId" , value = "被收藏视频的用户id" , required = true , dataTypeClass = Integer.class , example = "1")
+    })
+    public RespBean<Integer> addCollectVideo(@RequestParam("videoId") Integer videoId ,
+                                             @RequestParam("beUserId") Integer beUserId){
         User user = LoginUser.getUser();
         if (user == null)
             return RespBean.error("无法操作");
         Integer userId = user.getUserId();
+        VideoCollect videoCollect = new VideoCollect();
+        videoCollect.setVideoId(videoId);
+        videoCollect.setBeUserId(beUserId);
         videoCollect.setUserId(userId);
+        videoCollect.setCollectDate(new Date());
 
         Integer addNewVideoCollectDataStatus = videoCollectService.addNewVideoCollectData(videoCollect);
         Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoCollect.getVideoId(), ADD_NUM);
@@ -66,7 +75,7 @@ public class VideoRelevantDataController {
         return RespBean.ok(addNewVideoCollectDataStatus);
     }
 
-    @RequestMapping(value = "/collect/cancel" , method = RequestMethod.POST)
+    @RequestMapping(value = "/collect/cancel" , method = RequestMethod.DELETE)
     @ApiOperation(value = "取消收藏")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "1"),
@@ -83,15 +92,22 @@ public class VideoRelevantDataController {
         return RespBean.ok(delVideoCollectDataStatus);
     }
 
-    @RequestMapping(value = "/like/add" , method = RequestMethod.PUT)
+    @RequestMapping(value = "/like/add" , method = RequestMethod.POST)
     @ApiOperation(value = "喜欢视频")
-    @ApiImplicitParam(name = "videoLike", value = "喜欢所需信息", required = true, dataTypeClass = VideoLike.class, example = "")
-    public RespBean<Integer> addLikeVideo(@RequestBody VideoLike videoLike){
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "1"),
+            @ApiImplicitParam(name = "beUserId" , value = "被收藏视频的用户id" , required = true , dataTypeClass = Integer.class , example = "1")
+    })
+    public RespBean<Integer> addLikeVideo(@RequestParam("videoId") Integer videoId ,@RequestParam("beUserId") Integer beUserId){
         User user = LoginUser.getUser();
         if (user == null)
             return RespBean.error("无法操作");
         Integer userId = user.getUserId();
+        VideoLike videoLike = new VideoLike();
+        videoLike.setVideoId(videoId);
+        videoLike.setBeUserId(beUserId);
         videoLike.setUserId(userId);
+        videoLike.setLikeDate(new Date());
         Integer addNewVideoLikeDataStatus = videoLikeService.addNewVideoLikeData(videoLike);
         Integer updateVideoLikeNumStatus = videoDataService.updateVideoLikeNum(videoLike.getVideoId(), ADD_NUM);
         /**
@@ -102,7 +118,7 @@ public class VideoRelevantDataController {
         return RespBean.ok(addNewVideoLikeDataStatus);
     }
 
-    @RequestMapping(value = "/like/cancel" , method = RequestMethod.POST)
+    @RequestMapping(value = "/like/cancel" , method = RequestMethod.DELETE)
     @ApiOperation(value = "取消喜欢")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "1"),
