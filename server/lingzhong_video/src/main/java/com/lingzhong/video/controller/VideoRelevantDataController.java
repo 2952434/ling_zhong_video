@@ -7,10 +7,7 @@ import com.lingzhong.video.bean.po.VideoCollect;
 import com.lingzhong.video.bean.po.VideoLike;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
-import com.lingzhong.video.service.VideoCollectService;
-import com.lingzhong.video.service.VideoDataService;
-import com.lingzhong.video.service.VideoLikeService;
-import com.lingzhong.video.service.VideoService;
+import com.lingzhong.video.service.*;
 import com.lingzhong.video.utils.LoginUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -35,15 +32,18 @@ public class VideoRelevantDataController {
 
     private VideoService videoService;
 
+    private InformationService informationService;
+
     private static final Integer ADD_NUM = 1;
     private static final Integer SUBTRACT_NUM = -1;
 
     public VideoRelevantDataController(VideoLikeService videoLikeService, VideoDataService videoDataService,
-                                       VideoCollectService videoCollectService, VideoService videoService) {
+                                       VideoCollectService videoCollectService, VideoService videoService, InformationService informationService) {
         this.videoLikeService = videoLikeService;
         this.videoDataService = videoDataService;
         this.videoCollectService = videoCollectService;
         this.videoService = videoService;
+        this.informationService = informationService;
     }
 
     @RequestMapping(value = "/collect/add" , method = RequestMethod.PUT)
@@ -55,12 +55,13 @@ public class VideoRelevantDataController {
             return RespBean.error("无法操作");
         Integer userId = user.getUserId();
         videoCollect.setUserId(userId);
+
         Integer addNewVideoCollectDataStatus = videoCollectService.addNewVideoCollectData(videoCollect);
         Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoCollect.getVideoId(), ADD_NUM);
         /**
          * 通知被收藏用户
          */
-
+        informationService.innerNewCollectInformation(videoCollect);
 
         return RespBean.ok(addNewVideoCollectDataStatus);
     }
@@ -96,7 +97,7 @@ public class VideoRelevantDataController {
         /**
          * 通知被喜欢用户
          */
-
+        informationService.innerNewLikeInformation(videoLike);
 
         return RespBean.ok(addNewVideoLikeDataStatus);
     }

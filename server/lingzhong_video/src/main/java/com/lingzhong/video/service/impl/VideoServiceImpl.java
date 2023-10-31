@@ -2,7 +2,6 @@ package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
-import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.po.Video;
@@ -107,10 +106,10 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<Video> getListById(List<Integer> videoIds) {
+    public Video getVideoById(Integer videoIds) {
         QueryWrapper<Video> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("video_id" , videoIds);
-        return videoMapper.selectList(queryWrapper);
+        queryWrapper.eq("video_id" , videoIds);
+        return videoMapper.selectOne(queryWrapper);
     }
 
     @Override

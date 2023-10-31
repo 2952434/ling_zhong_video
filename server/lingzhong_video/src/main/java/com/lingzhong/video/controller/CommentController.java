@@ -55,6 +55,7 @@ public class CommentController {
             return RespBean.error("无法操作");
         Integer userId = user.getUserId();
         commentReply.setUserId(userId);
+
         /**
          * 添加评论回复记录
          */
@@ -63,6 +64,16 @@ public class CommentController {
          * 视频评论数增加
          */
         Integer videoCommentInner = videoDataService.updateVideoCommentNum(commentReply.getVideoId(), ADD_NUM);
+
+        /**
+         * 消息通知
+         */
+        commentReply.setCommentId(result);
+        if (commentReply.getCommentFid() != null){
+            informationService.innerNewCommentInformation(commentReply);
+        }else {
+            informationService.innerVideoCommentInformation(commentReply);
+        }
         return RespBean.ok(result);
     }
 
@@ -91,7 +102,6 @@ public class CommentController {
             @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "") ,
             @ApiImplicitParam(name = "likeDate" , value = "点赞时间" , required = true , dataTypeClass = Date.class , example = "")
     })
-
     public RespBean<Integer> likeThisComment(@RequestParam("commentId") Long commentId , @RequestParam("likeDate") Date likeDate){
         User user = LoginUser.getUser();
         if (user == null)
