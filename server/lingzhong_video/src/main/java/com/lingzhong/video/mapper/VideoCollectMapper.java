@@ -2,6 +2,7 @@ package com.lingzhong.video.mapper;
 
 import com.lingzhong.video.bean.po.VideoCollect;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author ljx
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface VideoCollectMapper extends BaseMapper<VideoCollect> {
 
+    public Integer innerNewVideoCollect(@Param("videoCollect") VideoCollect videoCollect);
 }
 
 

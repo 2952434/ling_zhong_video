@@ -27,18 +27,22 @@
     </select>
 
     <select id="selectLikeVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
-        SELECT <include refid="Base_Column_List"/>
+        SELECT v.video_id,v.video_description,v.video_url,
+               v.video_user_id,v.video_address,v.video_private,
+               v.video_date
         FROM video v
         LEFT join video_like vl
         on v.video_id = vl.video_id
-        where vl.user_id = #{user_id}
+        where vl.user_id = #{userId}
     </select>
     <select id="selectCollectVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
-        SELECT <include refid="Base_Column_List"/>
+        SELECT v.video_id,v.video_description,v.video_url,
+               v.video_user_id,v.video_address,v.video_private,
+               v.video_date
         FROM video v
         LEFT join video_collect vc
         on v.video_id = vc.video_id
-        where vc.user_id = #{user_id}
+        where vc.user_id = #{userId}
     </select>
     <select id="getUserVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
         select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo

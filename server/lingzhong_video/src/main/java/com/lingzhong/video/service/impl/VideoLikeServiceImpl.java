@@ -22,7 +22,7 @@ public class VideoLikeServiceImpl implements VideoLikeService {
 
     @Override
     public Integer addNewVideoLikeData(VideoLike videoLike) {
-        return videoLikeMapper.insert(videoLike);
+        return videoLikeMapper.innerNewVideoLike(videoLike);
     }
 
     @Override

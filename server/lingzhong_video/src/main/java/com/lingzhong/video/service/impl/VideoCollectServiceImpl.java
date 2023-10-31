@@ -22,7 +22,7 @@ public class VideoCollectServiceImpl implements VideoCollectService {
 
     @Override
     public Integer addNewVideoCollectData(VideoCollect videoCollect) {
-        return videoCollectMapper.insert(videoCollect);
+        return videoCollectMapper.innerNewVideoCollect(videoCollect);
     }
 
     @Override

@@ -14,11 +14,7 @@ import lombok.Data;
 @TableName(value ="video_collect")
 @Data
 public class VideoCollect implements Serializable {
-    /**
-     * 收藏主键
-     */
-    @TableId
-    private Integer collectId;
+
 
     /**
      * 收藏的视频id
@@ -55,18 +51,16 @@ public class VideoCollect implements Serializable {
             return false;
         }
         VideoCollect other = (VideoCollect) that;
-        return (this.getCollectId() == null ? other.getCollectId() == null : this.getCollectId().equals(other.getCollectId()))
-            && (this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
+        return ((this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
             && (this.getBeUserId() == null ? other.getBeUserId() == null : this.getBeUserId().equals(other.getBeUserId()))
-            && (this.getCollectDate() == null ? other.getCollectDate() == null : this.getCollectDate().equals(other.getCollectDate()));
+            && (this.getCollectDate() == null ? other.getCollectDate() == null : this.getCollectDate().equals(other.getCollectDate())));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getCollectId() == null) ? 0 : getCollectId().hashCode());
         result = prime * result + ((getVideoId() == null) ? 0 : getVideoId().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getBeUserId() == null) ? 0 : getBeUserId().hashCode());
@@ -80,7 +74,6 @@ public class VideoCollect implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", collectId=").append(collectId);
         sb.append(", videoId=").append(videoId);
         sb.append(", userId=").append(userId);
         sb.append(", beUserId=").append(beUserId);

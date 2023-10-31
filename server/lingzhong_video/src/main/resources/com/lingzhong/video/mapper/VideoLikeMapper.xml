@@ -5,15 +5,19 @@
 <mapper namespace="com.lingzhong.video.mapper.VideoLikeMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.VideoLike">
-            <id property="likeId" column="like_id" jdbcType="INTEGER"/>
-            <result property="videoId" column="video_id" jdbcType="INTEGER"/>
-            <result property="userId" column="user_id" jdbcType="INTEGER"/>
-            <result property="beUserId" column="be_user_id" jdbcType="INTEGER"/>
+            <id property="videoId" column="video_id" jdbcType="INTEGER"/>
+            <id property="userId" column="user_id" jdbcType="INTEGER"/>
+            <id property="beUserId" column="be_user_id" jdbcType="INTEGER"/>
             <result property="likeDate" column="like_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        like_id,video_id,user_id,
+        video_id,user_id,
         be_user_id,like_date
     </sql>
+    <insert id="innerNewVideoLike">
+        insert into video_like(<include refid="Base_Column_List"/>)
+        value (#{videoLike.videoId},#{videoLike.userId},#{videoLike.beUserId},#{videoLike.likeDate})
+        ON DUPLICATE KEY UPDATE like_date = #{videoLike.likeDate}
+    </insert>
 </mapper>
