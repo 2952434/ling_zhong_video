@@ -4,9 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @Author: 李君祥
  * @Date: 2023/10/29 20:27
@@ -14,10 +11,7 @@ import java.util.Map;
  */
 @Data
 @ApiModel(value = "用户认证信息")
-public class AuthParamsDto {
-
-    @ApiModelProperty(value = "账号")
-    private String userAccount;
+public class AuthParamsDTO {
 
     @ApiModelProperty(value = "密码")
     private String password;
