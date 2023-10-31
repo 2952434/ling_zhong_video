@@ -37,7 +37,7 @@ public interface VideoService {
     /**
      * 根据视频id获取视频信息
      */
-    List<Video> getListById(List<Integer> videoIds);
+    Video getVideoById(Integer videoIds);
 
     /**
      * 查询用户喜欢的视频信息

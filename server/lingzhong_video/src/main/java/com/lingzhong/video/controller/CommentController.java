@@ -15,8 +15,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,14 +45,22 @@ public class CommentController {
     }
 
     @ApiOperation(value = "发表评论或回复")
-    @RequestMapping(value = "/send" , method = RequestMethod.PUT)
-    @ApiImplicitParam(name = "commentReply" , value = "评论所需信息" , required = true , dataTypeClass = CommentReply.class , example = "")
-    public RespBean<Long> sendComment(@RequestBody @Valid CommentReply commentReply){
+    @RequestMapping(value = "/send" , method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "") ,
+            @ApiImplicitParam(name = "commentTxt" , value = "评论内容" , required = true , dataTypeClass = String.class , example = "")
+    })
+    public RespBean<Long> sendComment(@RequestParam("videoId") Integer videoId ,@RequestParam("commentTxt") String commentTxt){
         User user = LoginUser.getUser();
         if (user == null)
             return RespBean.error("无法操作");
         Integer userId = user.getUserId();
+        CommentReply commentReply = new CommentReply();
+        commentReply.setVideoId(videoId);
+        commentReply.setCommentTxt(commentTxt);
         commentReply.setUserId(userId);
+        commentReply.setReplyDate(new Date());
+
         /**
          * 添加评论回复记录
          */
@@ -63,6 +69,16 @@ public class CommentController {
          * 视频评论数增加
          */
         Integer videoCommentInner = videoDataService.updateVideoCommentNum(commentReply.getVideoId(), ADD_NUM);
+
+        /**
+         * 消息通知
+         */
+        commentReply.setCommentId(result);
+        if (commentReply.getCommentFid() != null){
+            informationService.innerNewCommentInformation(commentReply);
+        }else {
+            informationService.innerVideoCommentInformation(commentReply);
+        }
         return RespBean.ok(result);
     }
 
@@ -86,13 +102,9 @@ public class CommentController {
     }
 
     @ApiOperation(value = "点赞评论，更改评论点赞数")
-    @RequestMapping(value = "/like" , method = RequestMethod.POST)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "") ,
-            @ApiImplicitParam(name = "likeDate" , value = "点赞时间" , required = true , dataTypeClass = Date.class , example = "")
-    })
-
-    public RespBean<Integer> likeThisComment(@RequestParam("commentId") Long commentId , @RequestParam("likeDate") Date likeDate){
+    @RequestMapping(value = "/like" , method = RequestMethod.PUT)
+    @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
+    public RespBean<Integer> likeThisComment(@RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
         if (user == null)
             return RespBean.error("无法操作");
@@ -104,7 +116,7 @@ public class CommentController {
         commentLike.setCommentId(commentId);
         commentLike.setBeUserId(commentReply.getUserId());
         commentLike.setUserId(userId);
-        commentLike.setLikeDate(likeDate);
+        commentLike.setLikeDate(new Date());
 
         Integer addNewLikeStatus = commentLikeService.addNewLike(commentLike);
 
@@ -123,12 +135,11 @@ public class CommentController {
     }
 
     @ApiOperation(value = "取消点赞评论，更改评论点赞数")
-    @RequestMapping(value = "/unlike" , method = RequestMethod.POST)
+    @RequestMapping(value = "/unlike" , method = RequestMethod.DELETE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "") ,
             @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
     })
-
     public RespBean<Integer> unLikeThisComment(@RequestParam("videoId") Integer videoId, @RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
         if (user == null)

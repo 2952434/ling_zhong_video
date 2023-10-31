@@ -34,8 +34,6 @@ public class CommentReply implements Serializable {
     /**
      * 视频id
      */
-    @NotNull(message = "视频id不能为空")
-    @ApiModelProperty(name = "视频id",dataType = "Integer",required = true)
     private Integer videoId;
 
     /**
@@ -46,8 +44,6 @@ public class CommentReply implements Serializable {
     /**
      * 评论内容
      */
-    @NotNull(message = "评论内容不能为空")
-    @ApiModelProperty(name = "评论内容",dataType = "String",required = true)
     private String commentTxt;
 
     /**
@@ -63,8 +59,6 @@ public class CommentReply implements Serializable {
     /**
      * 发表时间
      */
-    @NotNull(message = "发表时间不能为空")
-    @ApiModelProperty(name = "发表时间",dataType = "Date",required = true)
     private Date replyDate;
 
     /**

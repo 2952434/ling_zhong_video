@@ -2,12 +2,7 @@ package com.lingzhong.video.service;
 
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
-import com.lingzhong.video.bean.po.Video;
 import com.lingzhong.video.bean.vo.RespBean;
-import com.lingzhong.video.bean.vo.UserRegisterVo;
-import com.lingzhong.video.bean.vo.VideoVo;
-
-import java.util.List;
 
 /**
  * @author ljx
@@ -30,7 +25,7 @@ public interface UserService {
      * @param userRegisterDTO 用户注册信息
      * @return UserRegisterVo
      */
-    RespBean<UserRegisterVo> userRegister(UserRegisterDTO userRegisterDTO);
+    RespBean<String> userRegister(UserRegisterDTO userRegisterDTO);
 
     /**
      * 邮箱登录时发送验证码
