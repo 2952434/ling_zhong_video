@@ -30,11 +30,6 @@ public class UpdateUserDTO {
     @ApiModelProperty(value = "邮箱")
     private String userMail;
 
-    /**
-     * 用户头像
-     */
-    @ApiModelProperty(value = "用户头像")
-    private String userPhoto;
 
     /**
      * 用户性别（0：女，1：男）

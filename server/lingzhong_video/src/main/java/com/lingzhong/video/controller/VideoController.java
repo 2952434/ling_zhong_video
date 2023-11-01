@@ -48,7 +48,7 @@ public class VideoController {
         return videoService.deleteVideoById(videoId);
     }
 
-
+    @Deprecated
     @ApiOperation(value = "分页查询视频")
     @ApiImplicitParam(name = "page", value = "页数，默认从0开始，一页10条数据", required = true, dataTypeClass = Integer.class, example = "0")
     @GetMapping("getVideo/{page}")
@@ -60,6 +60,18 @@ public class VideoController {
             return RespBean.ok(video);
         }
     }
+
+    @ApiOperation(value = "根据用户IP获取视频")
+    @ApiImplicitParam(name = "userIp", value = "用户IP", required = true, dataTypeClass = String.class, example = "192.168.001")
+    @GetMapping("/getVideoByIp/{userIp}")
+    public RespBean<List<VideoVo>> getVideoByIp(@PathVariable String userIp) {
+        List<VideoVo> videoVos = videoService.getVideoByIp(userIp);
+        if (videoVos.size() == 0) {
+            return RespBean.error("视频到底了");
+        }
+        return RespBean.ok(videoVos);
+    }
+
 
     @ApiOperation(value = "根据用户ID分页查询视频")
     @ApiImplicitParams({

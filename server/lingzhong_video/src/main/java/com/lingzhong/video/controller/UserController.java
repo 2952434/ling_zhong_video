@@ -67,10 +67,11 @@ public class UserController {
     @ApiOperation("获取当前登录用户信息")
     @GetMapping("/getLoginUserInfo")
     public RespBean<User> getLoginUserInfo() {
-        User user = LoginUser.getUser();
+        User user = userService.getUserById(LoginUser.getUser().getUserId());
         if (user == null) {
             return RespBean.error("用户未登录");
         }
+        user.setUserPassword(null);
         return RespBean.ok(user);
     }
 
@@ -86,7 +87,7 @@ public class UserController {
         return RespBean.ok(user);
     }
 
-    @ApiOperation(value = "上传头像并返回地址")
+    @ApiOperation(value = "修改用户头像")
     @PostMapping("/uploadUserPhoto")
     public RespBean<String> uploadUserPhoto(@RequestPart MultipartFile photo) {
         return userService.uploadUserPhoto(photo);

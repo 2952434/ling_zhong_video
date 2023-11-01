@@ -43,6 +43,16 @@ public interface VideoService {
      */
     List<VideoVo> getVideo(Integer page);
 
+
+    /**
+     * 根据用户IP获取视频
+     * @param userIp 用户IP
+     * @return List<VideoVo>
+     */
+    List<VideoVo> getVideoByIp(String userIp);
+
+
+
     /**
      * 根据视频id获取视频信息
      */
@@ -68,6 +78,9 @@ public interface VideoService {
      * @return List<VideoVo>
      */
     List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count);
+
+
+
 
 
 }

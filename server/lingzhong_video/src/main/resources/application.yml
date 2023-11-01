@@ -24,7 +24,7 @@ spring:
     com.lingzhong.video: debug
     org.springfromework.web: info
     com.baomidou.mybatisplus: error
-#  整合邮件
+  #  整合邮件
   mail:
     host: smtp.qq.com
     port: 587
@@ -53,7 +53,7 @@ spring:
         max-idle: 8
         min-idle: 0
     timeout: 0
-#    mongodb
+  #    mongodb
   data:
     mongodb:
       uri: mongodb://82.157.145.197:27017/test
@@ -90,4 +90,9 @@ qiniu:
   bucket: lingzhong
   url: http://s32t6kk2m.hb-bkt.clouddn.com/
 
-
+#调试 security
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG

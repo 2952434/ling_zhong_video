@@ -9,6 +9,7 @@ import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.mapper.UserMapper;
 import com.lingzhong.video.service.UserService;
+import com.lingzhong.video.utils.FinalName;
 import com.lingzhong.video.utils.LoginUser;
 import com.lingzhong.video.utils.SendMail;
 import com.lingzhong.video.utils.TimeUtils;
@@ -26,6 +27,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -47,17 +49,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Value("${qiniu.accessKey}")
-    private String accessKey;
-
-    @Value("${qiniu.secretKey}")
-    private String secretKey;
-
-    @Value("${qiniu.bucket}")
-    private String bucket;
-
-    @Value("${qiniu.url}")
-    private String url;
+    @Resource
+    private QiNiuService qiNiuService;
 
     @Resource
     private RedisTemplate<String, String> redisTemplate;
@@ -116,7 +109,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userRegisterDTO, user);
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
         user.setUserName("凌众视频用户" + (new Random().nextInt(99999 - 10000 + 1) + 10000));
-        user.setUserPhoto("http://s32t6kk2m.hb-bkt.clouddn.com/photo/8a6db7399545659e4983f4d042a28b95.jpeg");
+        user.setUserPhoto(FinalName.USER_PHOTO);
         user.setUserSex(1);
         user.setUserDate(new Date());
         int insert = userMapper.insert(user);
@@ -144,44 +137,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Integer userId) {
-        User user = userMapper.selectById(userId);
-        return user;
+        return userMapper.selectById(userId);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RespBean<String> uploadUserPhoto(MultipartFile photo) {
-        //构造一个带指定 Region 对象的配置类
-        Configuration cfg = new Configuration(Region.region1());
-        // 指定分片上传版本
-        cfg.resumableUploadAPIVersion = Configuration.ResumableUploadAPIVersion.V2;
-        UploadManager uploadManager = new UploadManager(cfg);
-        //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = "photo/" + TimeUtils.getNowDateString("yyyy/MM/dd") + "/" + (new Random().nextInt(1000) + 1) + "/" + photo.getOriginalFilename();
-        Auth auth = Auth.create(accessKey, secretKey);
-        String upToken = auth.uploadToken(bucket);
-        try {
-            try {
-                Response response = uploadManager.put(photo.getBytes(), key, upToken);
-                //解析上传成功的结果
-                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-//                System.out.println(putRet.key);
-//                System.out.println(putRet.hash);
-            } catch (QiniuException ex) {
-                ex.printStackTrace();
-                if (ex.response != null) {
-                    System.err.println(ex.response);
-                    try {
-                        String body = ex.response.toString();
-                        System.err.println(body);
-                    } catch (Exception ignored) {
-                        return RespBean.error("上传失败");
-                    }
-                }
+        String imageUrl = qiNiuService.uploadImage(photo);
+        User user = userMapper.selectById(LoginUser.getUser().getUserId());
+        String userPhoto = user.getUserPhoto();
+        user.setUserPhoto(imageUrl);
+        int update = userMapper.updateById(user);
+        if (update > 0) {
+            if (!FinalName.USER_PHOTO.equals(userPhoto)) {
+                qiNiuService.deleteFile(userPhoto);
             }
-        } catch (IOException ex) {
-            return RespBean.error("上传失败");
         }
-        return RespBean.ok(url + key);
+        return RespBean.ok(imageUrl);
     }
 
     @Override
