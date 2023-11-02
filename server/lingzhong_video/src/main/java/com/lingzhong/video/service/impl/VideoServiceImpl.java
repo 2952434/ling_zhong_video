@@ -1,5 +1,6 @@
 package com.lingzhong.video.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
@@ -7,6 +8,7 @@ import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.po.Video;
 import com.lingzhong.video.bean.po.VideoData;
 import com.lingzhong.video.bean.po.VideoLabel;
+import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.mapper.VideoLabelMapper;
 import com.lingzhong.video.mapper.VideoMapper;
@@ -16,6 +18,7 @@ import com.lingzhong.video.utils.LoginUser;
 import com.lingzhong.video.utils.TimeUtils;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
@@ -26,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,9 +37,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ljx
@@ -47,17 +53,11 @@ public class VideoServiceImpl implements VideoService {
 
     private static final Logger logger = LoggerFactory.getLogger(VideoServiceImpl.class);
 
-    @Value("${qiniu.accessKey}")
-    private String accessKey;
+    @Resource
+    private QiNiuService qiNiuService;
 
-    @Value("${qiniu.secretKey}")
-    private String secretKey;
-
-    @Value("${qiniu.bucket}")
-    private String bucket;
-
-    @Value("${qiniu.url}")
-    private String url;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
     private VideoMapper videoMapper;
@@ -74,7 +74,7 @@ public class VideoServiceImpl implements VideoService {
     public Boolean uploadVideo(MultipartFile file, VideoPublishDTO videoPublishDTO) throws Exception {
         try {
             User user = LoginUser.getUser();
-            String videoUrl = uploadVideo(file);
+            String videoUrl = qiNiuService.uploadVideo(file);
             Video video = new Video();
             BeanUtils.copyProperties(videoPublishDTO, video);
             video.setVideoUserId(user.getUserId());
@@ -100,15 +100,59 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public RespBean<String> deleteVideoById(Integer videoId) {
+        User user = LoginUser.getUser();
+        LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Video::getVideoUserId, user.getUserId()).eq(Video::getVideoId, videoId);
+        Video video = videoMapper.selectOne(queryWrapper);
+        if (video == null) {
+            return RespBean.error("该视频不是您发表的删除失败");
+        }
+        String videoUrl = video.getVideoUrl();
+        boolean deleted = qiNiuService.deleteFile(videoUrl);
+        if (deleted) {
+            videoMapper.deleteById(videoId);
+            videoDataService.delVideoDataById(videoId);
+            return RespBean.ok("删除视频成功");
+        }
+        return RespBean.error("删除视频失败");
+
+    }
+
+    @Override
     public List<VideoVo> getVideo(Integer page) {
+
+
 //        TODO 算法需要优化
         return videoMapper.getVideo(page * 10);
     }
 
     @Override
+    public List<VideoVo> getVideoByIp(String userIp) {
+        String key = "browse:" + userIp;
+        List<Object> rangeIds = redisTemplate.opsForList().range(key, 0, -1);
+        List<Integer> videoIds = new ArrayList<>();
+        if (rangeIds != null) {
+            for (Object rangeId : rangeIds) {
+                videoIds.add((Integer) rangeId);
+            }
+        }
+        List<VideoVo> videoVos = videoMapper.getVideoByIp(videoIds);
+        videoVos.forEach(item -> {
+            Integer videoId = item.getVideoId();
+            redisTemplate.opsForList().leftPush(key, videoId);
+        });
+        if (videoVos.size() < 10) {
+            redisTemplate.delete(key);
+        }
+        redisTemplate.expire(key,1, TimeUnit.HOURS);
+        return videoVos;
+    }
+
+    @Override
     public Video getVideoById(Integer videoIds) {
         QueryWrapper<Video> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("video_id" , videoIds);
+        queryWrapper.eq("video_id", videoIds);
         return videoMapper.selectOne(queryWrapper);
     }
 
@@ -124,50 +168,10 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count) {
-        List<VideoVo> videoVos = videoMapper.getUserVideoByUserId(userId,page*count,count);
-        return videoVos;
+        return videoMapper.getUserVideoByUserId(userId, page * count, count);
     }
 
 
-    private String uploadVideo(MultipartFile file) {
-        //构造一个带指定 Region 对象的配置类
-        Configuration cfg = new Configuration(Region.region1());
-        // 指定分片上传版本
-        cfg.resumableUploadAPIVersion = Configuration.ResumableUploadAPIVersion.V2;
-        // 设置分片上传并发，1：采用同步上传；大于1：采用并发上传
-        cfg.resumableUploadMaxConcurrentTaskCount = 2;
-
-        //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = "video/" + TimeUtils.getNowDateString("yyyy/MM/dd") + "/" + (new Random().nextInt(1000) + 1) +"/" + file.getOriginalFilename();
-        Auth auth = Auth.create(accessKey, secretKey);
-        String upToken = auth.uploadToken(bucket);
-        String localTempDir = Paths.get(System.getenv("java.io.tmpdir"), bucket).toString();
-        try {
-            //设置断点续传文件进度保存目录
-            FileRecorder fileRecorder = new FileRecorder(localTempDir);
-            UploadManager uploadManager = new UploadManager(cfg, fileRecorder);
-            try {
-                Response response = uploadManager.put(file.getBytes(), key, upToken);
-                //解析上传成功的结果
-                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-//                System.out.println(putRet.key);
-//                System.out.println(putRet.hash);
-            } catch (QiniuException ex) {
-                ex.printStackTrace();
-                if (ex.response != null) {
-                    System.err.println(ex.response);
-                    try {
-                        String body = ex.response.toString();
-                        System.err.println(body);
-                    } catch (Exception ignored) {
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return url + key;
-    }
 }
 
 

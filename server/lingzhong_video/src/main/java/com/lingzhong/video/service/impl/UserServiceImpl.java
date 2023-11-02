@@ -2,19 +2,37 @@ package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.gson.Gson;
+import com.lingzhong.video.bean.dto.UpdateUserDTO;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.mapper.UserMapper;
 import com.lingzhong.video.service.UserService;
+import com.lingzhong.video.utils.FinalName;
+import com.lingzhong.video.utils.LoginUser;
 import com.lingzhong.video.utils.SendMail;
+import com.lingzhong.video.utils.TimeUtils;
+import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.storage.persistent.FileRecorder;
+import com.qiniu.util.Auth;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -30,6 +48,9 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Resource
+    private QiNiuService qiNiuService;
 
     @Resource
     private RedisTemplate<String, String> redisTemplate;
@@ -88,7 +109,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userRegisterDTO, user);
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
         user.setUserName("凌众视频用户" + (new Random().nextInt(99999 - 10000 + 1) + 10000));
-        user.setUserPhoto("http://s32t6kk2m.hb-bkt.clouddn.com/photo/8a6db7399545659e4983f4d042a28b95.jpeg");
+        user.setUserPhoto(FinalName.USER_PHOTO);
         user.setUserSex(1);
         user.setUserDate(new Date());
         int insert = userMapper.insert(user);
@@ -101,12 +122,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean sentMailLoginAuthCode(String mail) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUserMail, mail);
-        User user = userMapper.selectOne(queryWrapper);
-        if (user == null) {
-            return false;
-        }
         EXECUTOR.execute(() -> {
             try {
                 String code = sendMail.sendSimpleMail(mail, "邮箱登录凌众视频验证码", "您正在登录 凌众视频,验证码五分钟内有效 ");
@@ -122,8 +137,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Integer userId) {
-        User user = userMapper.selectById(userId);
-        return user;
+        return userMapper.selectById(userId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public RespBean<String> uploadUserPhoto(MultipartFile photo) {
+        String imageUrl = qiNiuService.uploadImage(photo);
+        User user = userMapper.selectById(LoginUser.getUser().getUserId());
+        String userPhoto = user.getUserPhoto();
+        user.setUserPhoto(imageUrl);
+        int update = userMapper.updateById(user);
+        if (update > 0) {
+            if (!FinalName.USER_PHOTO.equals(userPhoto)) {
+                qiNiuService.deleteFile(userPhoto);
+            }
+        }
+        return RespBean.ok(imageUrl);
+    }
+
+    @Override
+    public boolean updateUserInfo(UpdateUserDTO updateUserDTO) {
+        Integer userId = LoginUser.getUser().getUserId();
+        if (!userId.equals(updateUserDTO.getUserId())) {
+            return false;
+        }
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserId, userId);
+        User user = userMapper.selectOne(queryWrapper);
+        BeanUtils.copyProperties(updateUserDTO, user);
+        int update = userMapper.updateById(user);
+        return update > 0;
+
     }
 }
 

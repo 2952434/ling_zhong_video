@@ -166,7 +166,7 @@ public class VideoRelevantDataController {
             return RespBean.error("未登录");
         Integer userId = user.getUserId();
         Integer isLike = videoLikeService.selectByUserIdAndVideoId(userId, videoId) == null ? 0 : 1;
-        Integer isCollect = videoCollectService.selectByUserIdAndVideoId(userId, videoId) == null ? 0 : 1;
+        Integer isCollect = videoCollectService.selectByUserIdAndVideoId(userId, videoId) == null ? 0 : 2;
         return RespBean.ok(isLike + isCollect);
     }
 

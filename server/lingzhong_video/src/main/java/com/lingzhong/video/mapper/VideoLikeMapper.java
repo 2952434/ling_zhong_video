@@ -2,6 +2,7 @@ package com.lingzhong.video.mapper;
 
 import com.lingzhong.video.bean.po.VideoLike;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author ljx
@@ -11,6 +12,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface VideoLikeMapper extends BaseMapper<VideoLike> {
 
+    /**
+     * 添加点赞记录
+     */
+    public Integer innerNewVideoLike(@Param("videoLike") VideoLike videoLike);
 }
 
 

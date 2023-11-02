@@ -44,6 +44,13 @@ public interface VideoMapper extends BaseMapper<Video> {
      * @return List<VideoVo>
      */
     List<VideoVo> getUserVideoByUserId(@Param("userId") Integer userId, @Param("page") Integer page, @Param("count") Integer count);
+
+    /**
+     * 排除videoIds的视频
+     * @param videoIds 视频ID集合
+     * @return List<VideoVo>
+     */
+    List<VideoVo> getVideoByIp(@Param("videoIds") List<Integer> videoIds);
 }
 
 

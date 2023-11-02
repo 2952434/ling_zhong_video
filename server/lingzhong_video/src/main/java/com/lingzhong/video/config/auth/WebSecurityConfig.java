@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @Description: 安全管理配置
  */
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -43,7 +43,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     *
      * @param http 配置安全拦截机制
      * @throws Exception 未知异常
      */
@@ -51,19 +50,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 //访问/r开始的请求需要认证通过
-                .antMatchers("/r/**").authenticated()
+                .antMatchers("/r/**", "/user/sentMailLoginAuthCode/**", "/video/getVideoByIp/**").permitAll()
                 //其它请求全部放行
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
                 .and()
                 //登录成功跳转到/login-success
-                .formLogin().successForwardUrl("/login-success").and().cors();
+                .formLogin().and().httpBasic();
 
     }
 
     @Override
     public void configure(WebSecurity web) {
 //        放行所有请求
-        web.ignoring().antMatchers("/video/getVideo/**");
+        web.ignoring().antMatchers("/video/getVideo/**", "/user/sentMailLoginAuthCode/**", "/video/getVideoByIp/**");
     }
 
     public static void main(String[] args) {

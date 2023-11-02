@@ -12,7 +12,10 @@ ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom","-agentlib:jdwp=tr
 MAINTAINER lijunxiang
 RUN echo 'lijunxiang'
 
-
+#docker stop lingzhong
+#docker rm lingzhong
+#docker rmi lingzhong:v1.0
 #docker build -f Dockerfile -t lingzhong:v1.0 .
 
 #docker run -d --name lingzhong -p 8848:8848 lingzhong:v1.0
+#docker logs --tail f lingzhong
