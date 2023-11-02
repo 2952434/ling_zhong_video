@@ -2,7 +2,9 @@
   <div class=''>
     <button class="btn-31">
       <span class="text-container">
-        <span class="text">登录</span>
+        <span class="text">
+          <slot></slot>
+        </span>
       </span>
     </button>
   </div>

@@ -59,8 +59,8 @@ const emits = defineEmits(['mouseOverControls', 'mouseLeaveControls', 'controlsC
 onMounted(() => {
   chargePauseOrPlay()
   setTimeout(() => {
-    maxTime.value = (props.videoInfo.duration)
-  }, 100);
+    maxTime.value = props.videoInfo.duration
+  }, 1000);
   timer = setInterval(() => {
     currentTime.value = props.videoInfo.currentTime
     if (props.videoInfo.ended) {
@@ -101,14 +101,26 @@ const controlsClickHandle = (type) => {
  * 拖拽时间条
  */
 const timeChange = (e) => {
-  emits('controlsClickHandle', 'play')
-  props.videoInfo.currentTime = e
+  if (isNaN(e)) {
+    emits('controlsClickHandle', 'play')
+    props.videoInfo.currentTime = 2
+
+  } else {
+    emits('controlsClickHandle', 'play')
+    props.videoInfo.currentTime = e
+  }
+
 }
 /**
  * 格式化时间条信息
  */
 const formatTooltip = (val) => {
+  if (NaN) {
+    return secondToMinute(10)
+
+  }
   return secondToMinute(val)
+
 }
 </script>
 

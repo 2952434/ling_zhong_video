@@ -1,32 +1,56 @@
 <template>
-  <div class="loginDialog">
-    <div class="left">
-      <img src="../../assets/images/logo.png" alt="">
-      <div class="left-text">
-        <p>凌 众 短 视 频</p>
-        <span class="oneWord">--发现你的热爱--</span>
-      </div>
-    </div>
-    <div class="right">
-      <div class="right-text">
-        用 户 登 录
-      </div>
-      <!-- 邮箱密码登录 -->
-      <el-form :model="loginByPassword" status-icon :rules="rules" ref="ruleFormRef">
-        <el-form-item label="邮箱" prop="email" style="margin: 5px 0 40px 0;">
-          <el-input v-model="loginByPassword.email" placeholder="请输入邮箱"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="loginByPassword.password" show-password placeholder="请输入密码" type="password"></el-input>
-        </el-form-item>
-        <div class="loginByPasswordButton">
-          <LoginButton @click="passwordLogin(ruleFormRef)">登录</LoginButton>
+  <div>
+    <div class="loginDialog">
+      <div class="left">
+        <img src="../../assets/images/logo.png" alt="">
+        <div class="left-text">
+          <p>凌 众 短 视 频</p>
+          <span class="oneWord">--发现你的热爱--</span>
         </div>
-      </el-form>
-    </div>
-  </div>
-  <div class="mark">
+      </div>
+      <div class="right">
+        <div class="right-login-container" v-if="loginOrSign">
+          <div class="right-text">
+            用 户 登 录
+          </div>
+          <!-- 邮箱密码登录 -->
+          <el-form :model="loginByPassword" status-icon :rules="rules" ref="ruleFormRef">
+            <el-form-item label="邮箱" prop="email" style="margin: 5px 0 40px 0;">
+              <el-input v-model="loginByPassword.email" placeholder="请输入邮箱"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="loginByPassword.password" show-password placeholder="请输入密码" type="password"></el-input>
+            </el-form-item>
+            <div class="loginByPasswordButton">
+              <LoginButton @click.prevent="checkPasswordEvent(ruleFormRef)" style="margin-right: 20px;">登录</LoginButton>
+              <el-button type="text" style="transform: translateY(7px);" @click="loginOrSign = false">没有账号？去注册</el-button>
+            </div>
+          </el-form>
+        </div>
+        <div class="right-signin-container" v-if="!loginOrSign">
+          <div class="right-text">
+            用 户 注 册
+          </div>
+          <el-form :model="loginByPassword" status-icon :rules="rules" ref="ruleFormRef">
+            <el-form-item label="邮箱" prop="email" style="margin: 5px 0 40px 0;">
+              <el-input v-model="loginByPassword.email" placeholder="请输入邮箱"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="loginByPassword.password" show-password placeholder="请输入密码" type="password"></el-input>
+            </el-form-item>
+            <div class="loginByPasswordButton">
+              <LoginButton @click.prevent="checkPasswordEvent(ruleFormRef)" style="margin-right: 20px;">登录</LoginButton>
+              <el-button type="text" style="transform: translateY(7px);" @click="loginOrSign = false">没有账号？去注册</el-button>
+            </div>
+          </el-form>
+        </div>
 
+      </div>
+
+    </div>
+    <div class="mark">
+
+    </div>
   </div>
 </template>
 
@@ -41,10 +65,13 @@ const loginByPassword = reactive({
   email: '',
   password: ''
 })
+// 用户注册信息收集
+// 注册还是登录 true:登录；false：注册
+const loginOrSign = ref(true)
 // 验证邮箱
 const checkEmail = (rule, value, callback) => {
   if (value === '') {
-    ElMessage.warning('请输入邮箱')
+    // ElMessage.warning('请输入邮箱')
     callback(new Error('请输入邮箱'))
   } else {
     // 验证邮箱正则表达式
@@ -59,7 +86,7 @@ const checkEmail = (rule, value, callback) => {
 // 验证密码
 const checkPassword = (rule, value, callback) => {
   if (value === '') {
-    ElMessage.warning('请输入密码')
+    // ElMessage.warning('请输入密码')
     callback(new Error('请输入密码'))
   } else {
     if (value.length < 6) {
@@ -80,18 +107,22 @@ const rules = reactive({
   ]
 })
 
-// 账号密码登录事件
-const passwordLogin = (formEl) => {
+// 账号密码登录判断
+const checkPasswordEvent = (formEl) => {
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
       console.log('submit!')
     } else {
-      console.log('error submit!')
       return false
     }
   })
 }
+// 账号密码登录
+const loginByPasswordAndEmail = () => {
+
+}
+
 </script>
 
 <style scoped lang='scss'>

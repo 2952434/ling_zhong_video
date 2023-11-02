@@ -26,7 +26,7 @@ let useVideoStore = defineStore({
       return new Promise((resolve, reject) => {
         getVideoByPages(this.videoListPage).then((res) => {
           if (res.status === 200) {
-            this.videoList = res.obj;
+            this.videoList.push(...res.obj);
             resolve(res);
           } else {
             reject(res);
@@ -44,6 +44,15 @@ let useVideoStore = defineStore({
     addTotalVideoCount() {
       this.totalVideoCount += 1
     },
+  },
+  getters: {
+    allVideoList() {
+      return this.videoList.map((item, index) => {
+        item.id = index
+        return item
+      })
+
+    }
   }
 })
 export default useVideoStore;

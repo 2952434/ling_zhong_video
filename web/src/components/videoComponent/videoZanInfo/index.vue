@@ -38,11 +38,9 @@ const liveVideo = () => {
 }
 // 打开评论
 const openChat = () => {
-  console.log('chat');
 }
 // 收藏此视频
 const collectVideo = () => {
-  console.log('collect');
 }
 </script>
 

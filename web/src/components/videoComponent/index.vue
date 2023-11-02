@@ -1,7 +1,7 @@
 <template>
   <div :style="{ width: props.width + '%', height: props.height + '%' }" class="videoItem" ref="videoBox">
     <video @contextmenu.prevent.stop="rewriteVideoClick" @click="videoClick" @mousemove="mouseMoveHandle"
-      :src="videoInfo.videoUrl" ref="videoItem" autoplay @mouseleave="mouseLeaveHandle" mouted></video>
+      :src="props.videoInfo.videoUrl" ref="videoItem" @mouseleave="mouseLeaveHandle"></video>
     <VideoControls v-show="true" @mouseOverControls="mouseUpHandle" :videoStatus="videoStatus" :videoInfo="videoItem"
       @mouseLeaveControls="mouseLeaveControlHandle" @controlsClickHandle="controlsClickHandle" />
     <div class="click-menu" ref="menuList" v-show="menuShow">
@@ -47,14 +47,10 @@ import {
 } from '@/utils/video.js'
 // 引入操作的时间
 import { videoActionTime } from '@/config/config.js'
-/**
- * 获取仓库中的数据
- */
-import useVideoStore from '@/store/videoStore';
-const videoStore = useVideoStore()
-const videoInfo = ref('')
 // 操作剪切板
 import { copy } from '@/utils/utils.js'
+import useVideoStore from '../../store/videoStore'
+const videoStore = useVideoStore()
 // 获取菜单实例
 const menuList = ref()
 // 控制菜单显示和隐藏
@@ -71,15 +67,6 @@ const dialogVisible = ref(false)
 let timer = null
 onMounted(async () => {
   keydownEvent()
-  await videoStore.getVideo()
-  videoInfo.value = videoStore.videoList[0]
-  nextTick(() => {
-    if (videoItem.value.paused) {
-      videoStatus.value = false
-    } else {
-      videoStatus.value = true
-    }
-  })
 
 })
 /**
@@ -97,27 +84,30 @@ const props = defineProps({
     type: Number,
     default: 100,
   },
-  // 视频路径，必传，传绝对地址
-  videoUrl: {
-    type: String,
-    require: true
+  videoInfo: {
+    type: Object,
+    require: false
   }
 })
+/**
+ * 获取事件
+ */
+const emits = defineEmits(['preVideo', 'nextVideo'])
 /**
  * 计算属性，把VideoDesc需要的内容计算出来返回
  */
 const videoDescInfo = computed(() => {
   return {
     // 用户名
-    userName: videoInfo.userName,
+    userName: props.videoInfo.userName,
     // 用户地址
-    videoAddress: videoInfo.videoAddress,
+    videoAddress: props.videoInfo.videoAddress,
     // 发表时间
-    videoDate: videoInfo.videoDate,
+    videoDate: props.videoInfo.videoDate,
     // 视频描述
-    videoDescription: videoInfo.videoDescription,
+    videoDescription: props.videoInfo.videoDescription,
     // 用户id
-    videoUserId: videoInfo.videoUserId
+    videoUserId: props.videoInfo.videoUserId
   }
 })
 /**
@@ -126,15 +116,15 @@ const videoDescInfo = computed(() => {
 const videoNumInfo = computed(() => {
   return {
     // 视频收藏量
-    videoCollectNum: videoInfo.videoCollectNum,
+    videoCollectNum: props.videoInfo.videoCollectNum,
     // 视频评论量
-    videoCommentNum: videoInfo.videoCommentNum,
+    videoCommentNum: props.videoInfo.videoCommentNum,
     // 视频点赞量
-    videoLikeNum: videoInfo.videoLikeNum,
+    videoLikeNum: props.videoInfo.videoLikeNum,
     // 用户头像
-    userPhoto: videoInfo.userPhoto,
+    userPhoto: props.videoInfo.userPhoto,
     // 视频id
-    videoId: videoInfo.videoId
+    videoId: props.videoInfo.videoId
   }
 })
 /**
@@ -177,7 +167,7 @@ const menuListClick = (item) => {
       videoStatus.value = true
       break
     case 'copy':
-      copy(videoInfo.videoUrl)
+      copy(props.videoInfo.videoUrl)
       break
     case 'key':
       dialogVisible.value = true
@@ -188,7 +178,8 @@ const menuListClick = (item) => {
  * 键盘事件
  */
 const keydownEvent = () => {
-  document.body.addEventListener('keyup', (e) => {
+  document.body.onkeyup = (e) => {
+
     switch (e.code) {
       case 'Space':
         if (videoItem.value.paused) {
@@ -200,18 +191,43 @@ const keydownEvent = () => {
         }
         break
       case 'ArrowUp':
+        emits('preVideo')
+        setTimeout(() => {
+          const video = document.querySelector('.video-active video');
+          const videoDisplay = document.querySelectorAll('.video-display video');
+          videoDisplay.forEach(item => {
+            console.log(123);
+            item.pause()
+          })
+          video.play()
+        }, 10);
         break
       case 'ArrowDown':
-        break
-      case 'ArrowLeft':
-        rewind(videoItem.value, videoActionTime)
-        break
-      case 'ArrowRight':
-        seek(videoItem.value, videoActionTime)
+        emits('nextVideo')
+        setTimeout(() => {
+          const video = document.querySelector('.video-active video');
+          const videoDisplay = document.querySelectorAll('.video-display video');
+          videoDisplay.forEach(item => {
+            item.pause()
+          })
+          video.play()
+        }, 10);
 
         break
+      case 'ArrowLeft':
+        setTimeout(() => {
+          const video = document.querySelector('.video-active video');
+          rewind(video, videoActionTime)
+        }, 10);
+        break
+      case 'ArrowRight':
+        setTimeout(() => {
+          const video = document.querySelector('.video-active video');
+          seek(video, videoActionTime)
+        }, 10);
+        break
     }
-  })
+  }
 }
 
 /**
@@ -221,7 +237,7 @@ const mouseLeaveHandle = () => {
   if (timer) clearTimeout(timer)
   timer = setTimeout(() => {
     controlsShow.value = false
-    videoItem.value.style.cursor = 'none'
+    videoItem.value ? videoItem.value.style.cursor = 'none' : ''
     timer = null
   }, 1000);
 }

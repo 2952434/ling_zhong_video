@@ -2,6 +2,7 @@
  * 秒转分钟
  */
 export const secondToMinute = (second) => {
+  if (isNaN(second)) second = 20
   var minute = parseInt(second / 60);
   var second = parseInt(second % 60);
   return addZero(minute) + ":" + addZero(second);

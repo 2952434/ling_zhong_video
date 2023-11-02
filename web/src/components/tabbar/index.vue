@@ -23,7 +23,6 @@ import LoginItem from '@/components/loginItem/index.vue'
 const loginShow = ref(false)
 // 点击登录按钮出现的内容
 const loginClick = () => {
-  console.log(123);
   if (loginShow.value) {
     loginShow.value = false
   } else {

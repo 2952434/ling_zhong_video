@@ -2,8 +2,6 @@
   <div class='videoDesc'>
     <div class="userInfo">
       <span class="userName">@{{ props.videoInfo.userName }}</span>
-
-
     </div>
     <div class="desc">
       {{ props.videoInfo.videoDescription }}
@@ -26,7 +24,6 @@ import { ref, reactive, onMounted } from 'vue'
 // 传过来的视频信息
 const props = defineProps(['videoInfo'])
 onMounted(() => {
-  console.log(props.videoInfo)
 })
 </script>
 
