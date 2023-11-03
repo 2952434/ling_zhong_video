@@ -80,7 +80,27 @@ public interface VideoService {
     List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count);
 
 
+    /**
+     * 更新Es
+     */
+    void updateVideoEs();
 
+
+    /**
+     * 根据内容从ES中分页查询并高亮显示
+     * @param content 内容
+     * @param page 第几页
+     * @param count 每页条数
+     * @return List<VideoVo>
+     */
+    List<VideoVo> getVideoByEsAndHighLight(String content,Integer page,Integer count);
+
+
+    /**
+     * 根据视频ID删除ES中的视频数据
+     * @param videoId 视频ID
+     */
+    void deleteVideoEsById(Integer videoId);
 
 
 }

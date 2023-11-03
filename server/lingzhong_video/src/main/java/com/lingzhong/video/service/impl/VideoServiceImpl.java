@@ -2,7 +2,7 @@ package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.gson.Gson;
+import com.lingzhong.video.bean.dto.VideoEsDTO;
 import com.lingzhong.video.bean.dto.VideoPublishDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.po.Video;
@@ -10,37 +10,33 @@ import com.lingzhong.video.bean.po.VideoData;
 import com.lingzhong.video.bean.po.VideoLabel;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
+import com.lingzhong.video.mapper.VideoEsMapper;
 import com.lingzhong.video.mapper.VideoLabelMapper;
 import com.lingzhong.video.mapper.VideoMapper;
 import com.lingzhong.video.service.VideoDataService;
 import com.lingzhong.video.service.VideoService;
 import com.lingzhong.video.utils.LoginUser;
-import com.lingzhong.video.utils.TimeUtils;
-import com.qiniu.common.QiniuException;
-import com.qiniu.http.Response;
-import com.qiniu.storage.BucketManager;
-import com.qiniu.storage.Configuration;
-import com.qiniu.storage.Region;
-import com.qiniu.storage.UploadManager;
-import com.qiniu.storage.model.DefaultPutRet;
-import com.qiniu.storage.persistent.FileRecorder;
-import com.qiniu.util.Auth;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,6 +53,9 @@ public class VideoServiceImpl implements VideoService {
     private QiNiuService qiNiuService;
 
     @Resource
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+    @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
@@ -67,6 +66,9 @@ public class VideoServiceImpl implements VideoService {
 
     @Resource
     private VideoDataService videoDataService;
+
+    @Resource
+    private VideoEsMapper videoEsMapper;
 
 
     @Override
@@ -80,6 +82,7 @@ public class VideoServiceImpl implements VideoService {
             video.setVideoUserId(user.getUserId());
             video.setVideoUrl(videoUrl);
             video.setVideoDate(new Date());
+            video.setVideoSign(1);
             int insert = videoMapper.insert(video);
             System.out.println(insert);
             List<Integer> labelIds = videoPublishDTO.getLabelIds();
@@ -113,6 +116,7 @@ public class VideoServiceImpl implements VideoService {
         if (deleted) {
             videoMapper.deleteById(videoId);
             videoDataService.delVideoDataById(videoId);
+            deleteVideoEsById(videoId);
             return RespBean.ok("删除视频成功");
         }
         return RespBean.error("删除视频失败");
@@ -145,7 +149,7 @@ public class VideoServiceImpl implements VideoService {
         if (videoVos.size() < 10) {
             redisTemplate.delete(key);
         }
-        redisTemplate.expire(key,1, TimeUnit.HOURS);
+        redisTemplate.expire(key, 1, TimeUnit.HOURS);
         return videoVos;
     }
 
@@ -169,6 +173,70 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count) {
         return videoMapper.getUserVideoByUserId(userId, page * count, count);
+    }
+
+    @Override
+    @Scheduled(cron = "0 */10 * * * ?")
+    public void updateVideoEs() {
+        List<VideoEsDTO> videoEsBeans = videoMapper.getVideoEsBeans();
+        if (videoEsBeans.size() > 0) {
+            videoEsMapper.saveAll(videoEsBeans);
+            List<Integer> videoIds = new ArrayList<>();
+            for (VideoEsDTO videoEsBean : videoEsBeans) {
+                videoIds.add(videoEsBean.getVideoId());
+            }
+            videoMapper.updateVideoSign(videoIds);
+        }
+    }
+
+    @Override
+    public List<VideoVo> getVideoByEsAndHighLight(String content, Integer page, Integer count) {
+        //根据一个值查询多个字段  并高亮显示  这里的查询是取并集，即多个字段只需要有一个字段满足即可
+        //需要查询的字段
+        BoolQueryBuilder boolQueryBuilder= QueryBuilders.boolQuery()
+                .should(QueryBuilders.matchQuery("videoDescription",content))
+                .should(QueryBuilders.matchQuery("videoAddress",content))
+                .should(QueryBuilders.matchQuery("userName",content));
+        Pageable pageable = PageRequest.of(page, 10);
+        //构建高亮查询
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withPageable(pageable)
+                .withHighlightFields(
+                        new HighlightBuilder.Field("videoDescription"),
+                        new HighlightBuilder.Field("videoAddress"),
+                        new HighlightBuilder.Field("userName"))
+                .withHighlightBuilder(new HighlightBuilder().preTags("<span style='color:red'>").postTags("</span>"))
+                .build();
+        //查询
+        SearchHits<VideoEsDTO> search = elasticsearchRestTemplate.search(searchQuery, VideoEsDTO.class);
+        //得到查询返回的内容
+        List<org.springframework.data.elasticsearch.core.SearchHit<VideoEsDTO>> searchHits = search.getSearchHits();
+        //设置一个最后需要返回的实体类集合
+        List<VideoEsDTO> videoEsDTOS = new ArrayList<>();
+        //遍历返回的内容进行处理
+        for(SearchHit<VideoEsDTO> searchHit:searchHits){
+            //高亮的内容
+            Map<String, List<String>> highlightFields = searchHit.getHighlightFields();
+            //将高亮的内容填充到content中
+            searchHit.getContent().setVideoDescription(highlightFields.get("videoDescription")==null ? searchHit.getContent().getVideoDescription():highlightFields.get("videoDescription").get(0));
+            searchHit.getContent().setVideoAddress(highlightFields.get("videoAddress")==null ? searchHit.getContent().getVideoAddress():highlightFields.get("videoAddress").get(0));
+            searchHit.getContent().setUserName(highlightFields.get("userName")==null ? searchHit.getContent().getUserName():highlightFields.get("userName").get(0));
+            //放到实体类中
+            videoEsDTOS.add(searchHit.getContent());
+        }
+        List<VideoVo> videoVos = new ArrayList<>();
+        for (VideoEsDTO videoEsDTO : videoEsDTOS) {
+            VideoVo videoVo = videoMapper.getVideoVoById(videoEsDTO.getVideoId());
+            BeanUtils.copyProperties(videoEsDTO,videoVo);
+            videoVos.add(videoVo);
+        }
+        return videoVos;
+    }
+
+    @Override
+    public void deleteVideoEsById(Integer videoId) {
+        videoEsMapper.deleteById(videoId);
     }
 
 

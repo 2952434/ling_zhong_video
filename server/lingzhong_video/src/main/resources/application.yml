@@ -1,3 +1,6 @@
+server:
+  port: 8848
+
 spring:
   datasource:
     name: mysql
@@ -58,21 +61,19 @@ spring:
     mongodb:
       uri: mongodb://82.157.145.197:27017/test
 
+  elasticsearch:
+    rest:
+      uris: 82.157.145.197:9200
+      read-timeout: 30s
+      connection-timeout: 5s
+
 #  mvc:
 #    view:
 #      suffix: .html
 #      prefix: /html/
-##    es????
-#  elasticsearch:
-#    rest:
-#      uris: 82.157.145.197:9200
-#      read-timeout: 30s
-#      connection-timeout: 5s
 
 
 
-server:
-  port: 8848
 
 
 
@@ -81,7 +82,7 @@ server:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  type-aliases-package: studio.banner.forumwebsite.bean
+  type-aliases-package: com.lingzhong.video.bean.po
 
 
 qiniu:

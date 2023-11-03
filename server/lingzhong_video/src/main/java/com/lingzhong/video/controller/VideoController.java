@@ -90,5 +90,21 @@ public class VideoController {
 
     }
 
+    @ApiOperation(value = "根据输入内容高亮搜索视频")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "content", value = "查询的内容", required = true, dataTypeClass = String.class, example = "视频"),
+            @ApiImplicitParam(name = "page", value = "页数，默认从0开始", required = true, dataTypeClass = Integer.class, example = "0"),
+            @ApiImplicitParam(name = "count", value = "每页视频条数", required = true, dataTypeClass = Integer.class, example = "10"),
+    })
+    @GetMapping("/getVideoByEsAndHighLight/{content}/{page}/{count}")
+    public RespBean<List<VideoVo>> getVideoByEsAndHighLight(@PathVariable String content, @PathVariable Integer page, @PathVariable Integer count) {
+        List<VideoVo> videoByEsAndHighLight = videoService.getVideoByEsAndHighLight(content, page, count);
+        if (videoByEsAndHighLight.size() == 0) {
+            return RespBean.error("没有搜索到内容，换个搜索词试试");
+        } else {
+            return RespBean.ok(videoByEsAndHighLight);
+        }
+    }
+
 
 }

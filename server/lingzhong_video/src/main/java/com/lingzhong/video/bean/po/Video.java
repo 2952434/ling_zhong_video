@@ -50,4 +50,7 @@ public class Video implements Serializable {
      */
     private Date videoDate;
 
+
+    private Integer videoSign;
+
 }

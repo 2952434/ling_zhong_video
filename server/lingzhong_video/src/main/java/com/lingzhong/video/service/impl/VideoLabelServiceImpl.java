@@ -24,9 +24,7 @@ public class VideoLabelServiceImpl implements VideoLabelService {
     @Override
     public List<VideoVo> getVideoByLabelId(Integer labelId, Integer page) {
 
-        List<VideoVo> videoVos = videoLabelMapper.getVideoByLabelId(labelId, page * 10);
-
-        return videoVos;
+        return videoLabelMapper.getVideoByLabelId(labelId, page * 10);
     }
 }
 

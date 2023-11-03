@@ -1,5 +1,6 @@
 package com.lingzhong.video.mapper;
 
+import com.lingzhong.video.bean.dto.VideoEsDTO;
 import com.lingzhong.video.bean.po.Video;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lingzhong.video.bean.vo.VideoVo;
@@ -51,6 +52,25 @@ public interface VideoMapper extends BaseMapper<Video> {
      * @return List<VideoVo>
      */
     List<VideoVo> getVideoByIp(@Param("videoIds") List<Integer> videoIds);
+
+    /**
+     * 查询出同步到es的数据
+     * @return List<VideoEsDTO>
+     */
+    List<VideoEsDTO> getVideoEsBeans();
+
+    /**
+     * 根据视频id集合更新标记位为0
+     * @param videoIds 视频id集合
+     */
+    void updateVideoSign(@Param("videoIds") List<Integer> videoIds);
+
+    /**
+     * 根据id获取视频信息
+     * @param videoId 视频id
+     * @return 视频信息
+     */
+    VideoVo getVideoVoById(@Param("videoId") Integer videoId);
 }
 
 
