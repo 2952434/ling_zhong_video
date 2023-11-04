@@ -5,7 +5,6 @@ import com.lingzhong.video.bean.po.Video;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lingzhong.video.bean.vo.VideoVo;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -49,9 +48,10 @@ public interface VideoMapper extends BaseMapper<Video> {
     /**
      * 排除videoIds的视频
      * @param videoIds 视频ID集合
+     * @param count 查询视频的条数
      * @return List<VideoVo>
      */
-    List<VideoVo> getVideoByIp(@Param("videoIds") List<Integer> videoIds);
+    List<VideoVo> getVideoByNotVideoIds(@Param("videoIds") List<Integer> videoIds, @Param("count") Integer count);
 
     /**
      * 查询出同步到es的数据
@@ -71,6 +71,23 @@ public interface VideoMapper extends BaseMapper<Video> {
      * @return 视频信息
      */
     VideoVo getVideoVoById(@Param("videoId") Integer videoId);
+
+    /**
+     * 根据视频ID集合获取视频信息
+     * @param videoIds 视频ID集合
+     * @return 视频信息集合
+     */
+    List<VideoVo> getVideoVoByVideoIds(@Param("videoIds") List<Integer> videoIds);
+
+    /**
+     * 根据标签集合获取视频信息
+     *
+     * @param labels         标签集合
+     * @param count          获取几个
+     * @param ignoreVideoIds 忽略看过的视频集合
+     * @return 视频信息
+     */
+    List<VideoVo> getVideoVoByLabelIds(@Param("labels") List<Integer> labels, @Param("count") Integer count, @Param("ignoreVideoIds") List<Integer> ignoreVideoIds);
 }
 
 

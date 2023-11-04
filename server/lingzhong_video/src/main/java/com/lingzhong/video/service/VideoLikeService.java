@@ -12,20 +12,20 @@ public interface VideoLikeService  {
     /**
      * 添加点赞记录
      */
-    public Integer addNewVideoLikeData(VideoLike videoLike);
+    Integer addNewVideoLikeData(VideoLike videoLike);
 
     /**
      * 删除点赞记录
      */
-    public Integer delVideoLikeData(Integer videoId , Integer userId , Integer beUserId);
+    Integer delVideoLikeData(Integer videoId , Integer userId , Integer beUserId);
 
     /**
      * 批量删除点赞记录
      */
-    public Integer delVideoLikeList(Integer videoId , Integer beUserId);
+    Integer delVideoLikeList(Integer videoId , Integer beUserId);
 
     /**
      * 查看用户是否点赞
      */
-    public VideoLike selectByUserIdAndVideoId(Integer userId , Integer videoId);
+    VideoLike selectByUserIdAndVideoId(Integer userId , Integer videoId);
 }

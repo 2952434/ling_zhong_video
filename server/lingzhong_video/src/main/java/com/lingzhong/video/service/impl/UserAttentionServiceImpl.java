@@ -1,14 +1,14 @@
 package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.po.UserAttention;
 import com.lingzhong.video.bean.vo.AttentionUserVo;
-import com.lingzhong.video.service.UserAttentionService;
 import com.lingzhong.video.mapper.UserAttentionMapper;
+import com.lingzhong.video.service.UserAttentionService;
+import com.lingzhong.video.utils.FinalName;
 import com.lingzhong.video.utils.LoginUser;
-import org.springframework.stereotype.Indexed;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,6 +23,8 @@ import java.util.List;
 @Service
 public class UserAttentionServiceImpl implements UserAttentionService {
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
     private UserAttentionMapper userAttentionMapper;
@@ -41,6 +43,9 @@ public class UserAttentionServiceImpl implements UserAttentionService {
         userAttention.setBeUserId(beUserId);
         userAttention.setAttentionDate(new Date());
         int insert = userAttentionMapper.insert(userAttention);
+//        添加到Redis用于视频推送
+        redisTemplate.opsForSet().add(FinalName.USER_ATTENTION_KEY + beUserId, user.getUserId());
+
         return insert > 0;
     }
 
@@ -50,6 +55,9 @@ public class UserAttentionServiceImpl implements UserAttentionService {
         LambdaQueryWrapper<UserAttention> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserAttention::getUserId, user.getUserId()).eq(UserAttention::getBeUserId, beUserId);
         int delete = userAttentionMapper.delete(queryWrapper);
+//        删除推送
+        redisTemplate.opsForSet().remove(FinalName.USER_ATTENTION_KEY + beUserId, user.getUserId());
+
         return delete > 0;
     }
 
@@ -58,8 +66,7 @@ public class UserAttentionServiceImpl implements UserAttentionService {
         User user = LoginUser.getUser();
         Integer userId = user.getUserId();
         Integer count = 30;
-        List<AttentionUserVo> attentionUserVos = userAttentionMapper.getAttentionMyPeople(userId, page * count, count);
-        return attentionUserVos;
+        return userAttentionMapper.getAttentionMyPeople(userId, page * count, count);
     }
 
     @Override
@@ -67,8 +74,7 @@ public class UserAttentionServiceImpl implements UserAttentionService {
         User user = LoginUser.getUser();
         Integer userId = user.getUserId();
         Integer count = 30;
-        List<AttentionUserVo> attentionUserVos = userAttentionMapper.getMyAttentionPeople(userId, page * count, count);
-        return attentionUserVos;
+        return userAttentionMapper.getMyAttentionPeople(userId, page * count, count);
 
     }
 
@@ -79,8 +85,7 @@ public class UserAttentionServiceImpl implements UserAttentionService {
         }
         LambdaQueryWrapper<UserAttention> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserAttention::getBeUserId, userId);
-        Integer integer = userAttentionMapper.selectCount(queryWrapper);
-        return integer;
+        return userAttentionMapper.selectCount(queryWrapper);
     }
 
     @Override
@@ -90,8 +95,7 @@ public class UserAttentionServiceImpl implements UserAttentionService {
         }
         LambdaQueryWrapper<UserAttention> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserAttention::getUserId, userId);
-        Integer integer = userAttentionMapper.selectCount(queryWrapper);
-        return integer;
+        return userAttentionMapper.selectCount(queryWrapper);
     }
 }
 

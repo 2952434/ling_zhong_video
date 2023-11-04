@@ -15,6 +15,7 @@ import com.lingzhong.video.mapper.VideoLabelMapper;
 import com.lingzhong.video.mapper.VideoMapper;
 import com.lingzhong.video.service.VideoDataService;
 import com.lingzhong.video.service.VideoService;
+import com.lingzhong.video.utils.FinalName;
 import com.lingzhong.video.utils.LoginUser;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -38,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author ljx
@@ -95,6 +97,14 @@ public class VideoServiceImpl implements VideoService {
             VideoData videoData = new VideoData();
             videoData.setVideoId(video.getVideoId());
             videoDataService.insertVideoData(videoData);
+//            推送视频
+            Set<Object> members = redisTemplate.opsForSet().members(FinalName.USER_ATTENTION_KEY + user.getUserId());
+            if (members != null && members.size() > 0) {
+                for (Object member : members) {
+                    redisTemplate.opsForSet().add(FinalName.VIDEO_WAREHOUSE_KEY + member.toString(), video.getVideoId());
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("添加视频失败");
@@ -112,11 +122,23 @@ public class VideoServiceImpl implements VideoService {
             return RespBean.error("该视频不是您发表的删除失败");
         }
         String videoUrl = video.getVideoUrl();
+//        删除文件
         boolean deleted = qiNiuService.deleteFile(videoUrl);
         if (deleted) {
+//            删除视频
             videoMapper.deleteById(videoId);
+//            删除视频数据
             videoDataService.delVideoDataById(videoId);
+//            删除ES
             deleteVideoEsById(videoId);
+//            删除推送
+            Set<Object> members = redisTemplate.opsForSet().members(FinalName.USER_ATTENTION_KEY + user.getUserId());
+            if (members != null && members.size() > 0) {
+                for (Object member : members) {
+                    redisTemplate.opsForSet().remove(FinalName.VIDEO_WAREHOUSE_KEY + member.toString(), videoId);
+                }
+            }
+
             return RespBean.ok("删除视频成功");
         }
         return RespBean.error("删除视频失败");
@@ -125,8 +147,6 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public List<VideoVo> getVideo(Integer page) {
-
-
 //        TODO 算法需要优化
         return videoMapper.getVideo(page * 10);
     }
@@ -136,12 +156,12 @@ public class VideoServiceImpl implements VideoService {
         String key = "browse:" + userIp;
         List<Object> rangeIds = redisTemplate.opsForList().range(key, 0, -1);
         List<Integer> videoIds = new ArrayList<>();
-        if (rangeIds != null) {
+        if (rangeIds != null && rangeIds.size() > 0) {
             for (Object rangeId : rangeIds) {
                 videoIds.add((Integer) rangeId);
             }
         }
-        List<VideoVo> videoVos = videoMapper.getVideoByIp(videoIds);
+        List<VideoVo> videoVos = videoMapper.getVideoByNotVideoIds(videoIds, 10);
         videoVos.forEach(item -> {
             Integer videoId = item.getVideoId();
             redisTemplate.opsForList().leftPush(key, videoId);
@@ -151,6 +171,74 @@ public class VideoServiceImpl implements VideoService {
         }
         redisTemplate.expire(key, 1, TimeUnit.HOURS);
         return videoVos;
+    }
+
+    @Override
+    public List<VideoVo> recommendVideo(Integer count) {
+        Integer userId = LoginUser.getUser().getUserId();
+        String redisKey = FinalName.USER_BROWSE_VIDEO_KEY + userId;
+//        根据关注推荐视频
+        List<VideoVo> videoVoByVideoIds = getVideoVoByVideoIds(userId, (long) (count * 0.2), redisKey);
+        List<VideoVo> ren = new ArrayList<>(videoVoByVideoIds);
+//        根据点赞和收藏的视频类型推荐视频
+        List<VideoVo> videoVoByLabelIds = getVideoVoByLabelIds(userId, (int) (count * 0.6), redisKey);
+        ren.addAll(videoVoByLabelIds);
+
+        //            忽略看过的视频
+        Set<Object> members = redisTemplate.opsForSet().members(redisKey);
+        List<Integer> ignoreVideoIds = new ArrayList<>();
+        if (members != null && members.size() > 0) {
+            ignoreVideoIds = members.stream().map(item -> (Integer) item).collect(Collectors.toList());
+        }
+//        根据点赞，收藏，评论的数量推荐视频
+        List<VideoVo> videoByNotVideoIds = videoMapper.getVideoByNotVideoIds(ignoreVideoIds, count - ren.size());
+        ren.addAll(videoByNotVideoIds);
+        //            添加到用户看过的视频中
+        videoByNotVideoIds.forEach(item -> {
+            redisTemplate.opsForSet().add(redisKey, item.getVideoId());
+        });
+        redisTemplate.expire(redisKey, 10, TimeUnit.DAYS);
+        if (ren.size() < count) {
+            redisTemplate.delete(redisKey);
+        }
+        return ren;
+    }
+
+
+    public List<VideoVo> getVideoVoByLabelIds(Integer userId, Integer count, String redisKey) {
+        List<VideoVo> videoVoByLabelIds = new ArrayList<>();
+        Set<Object> top3Labels = redisTemplate.opsForZSet().range(FinalName.USER_LIKE_VIDEO_LABEL_KEY + userId, 0, 2);
+        if (top3Labels != null && top3Labels.size() > 0) {
+//            忽略看过的视频
+            Set<Object> members = redisTemplate.opsForSet().members(redisKey);
+            List<Integer> ignoreVideoIds = new ArrayList<>();
+            if (members != null && members.size() > 0) {
+                ignoreVideoIds = members.stream().map(item -> (Integer) item).collect(Collectors.toList());
+            }
+            List<Integer> top3LabelIds = top3Labels.stream().map(item -> (Integer) item).collect(Collectors.toList());
+            videoVoByLabelIds = videoMapper.getVideoVoByLabelIds(top3LabelIds, count, ignoreVideoIds);
+//            添加到用户看过的视频中
+            videoVoByLabelIds.forEach(item -> {
+                redisTemplate.opsForSet().add(redisKey, item.getVideoId());
+            });
+        }
+        return videoVoByLabelIds;
+    }
+
+
+    public List<VideoVo> getVideoVoByVideoIds(Integer userId, long count, String redisKey) {
+        //        关注的用户发布的视频ID集合
+        List<Object> attentionVideoIds = redisTemplate.opsForSet().pop(FinalName.VIDEO_WAREHOUSE_KEY + userId, count);
+        List<VideoVo> videoVoByVideoIds = new ArrayList<>();
+        if (attentionVideoIds != null && attentionVideoIds.size() > 0) {
+            List<Integer> videoIds = attentionVideoIds.stream().map(item -> (Integer) item).collect(Collectors.toList());
+            videoVoByVideoIds = videoMapper.getVideoVoByVideoIds(videoIds);
+//            添加到浏览过的视频集合中
+            for (Integer videoId : videoIds) {
+                redisTemplate.opsForSet().add(redisKey, videoId);
+            }
+        }
+        return videoVoByVideoIds;
     }
 
     @Override
@@ -193,10 +281,10 @@ public class VideoServiceImpl implements VideoService {
     public List<VideoVo> getVideoByEsAndHighLight(String content, Integer page, Integer count) {
         //根据一个值查询多个字段  并高亮显示  这里的查询是取并集，即多个字段只需要有一个字段满足即可
         //需要查询的字段
-        BoolQueryBuilder boolQueryBuilder= QueryBuilders.boolQuery()
-                .should(QueryBuilders.matchQuery("videoDescription",content))
-                .should(QueryBuilders.matchQuery("videoAddress",content))
-                .should(QueryBuilders.matchQuery("userName",content));
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .should(QueryBuilders.matchQuery("videoDescription", content))
+                .should(QueryBuilders.matchQuery("videoAddress", content))
+                .should(QueryBuilders.matchQuery("userName", content));
         Pageable pageable = PageRequest.of(page, 10);
         //构建高亮查询
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
@@ -215,20 +303,20 @@ public class VideoServiceImpl implements VideoService {
         //设置一个最后需要返回的实体类集合
         List<VideoEsDTO> videoEsDTOS = new ArrayList<>();
         //遍历返回的内容进行处理
-        for(SearchHit<VideoEsDTO> searchHit:searchHits){
+        for (SearchHit<VideoEsDTO> searchHit : searchHits) {
             //高亮的内容
             Map<String, List<String>> highlightFields = searchHit.getHighlightFields();
             //将高亮的内容填充到content中
-            searchHit.getContent().setVideoDescription(highlightFields.get("videoDescription")==null ? searchHit.getContent().getVideoDescription():highlightFields.get("videoDescription").get(0));
-            searchHit.getContent().setVideoAddress(highlightFields.get("videoAddress")==null ? searchHit.getContent().getVideoAddress():highlightFields.get("videoAddress").get(0));
-            searchHit.getContent().setUserName(highlightFields.get("userName")==null ? searchHit.getContent().getUserName():highlightFields.get("userName").get(0));
+            searchHit.getContent().setVideoDescription(highlightFields.get("videoDescription") == null ? searchHit.getContent().getVideoDescription() : highlightFields.get("videoDescription").get(0));
+            searchHit.getContent().setVideoAddress(highlightFields.get("videoAddress") == null ? searchHit.getContent().getVideoAddress() : highlightFields.get("videoAddress").get(0));
+            searchHit.getContent().setUserName(highlightFields.get("userName") == null ? searchHit.getContent().getUserName() : highlightFields.get("userName").get(0));
             //放到实体类中
             videoEsDTOS.add(searchHit.getContent());
         }
         List<VideoVo> videoVos = new ArrayList<>();
         for (VideoEsDTO videoEsDTO : videoEsDTOS) {
             VideoVo videoVo = videoMapper.getVideoVoById(videoEsDTO.getVideoId());
-            BeanUtils.copyProperties(videoEsDTO,videoVo);
+            BeanUtils.copyProperties(videoEsDTO, videoVo);
             videoVos.add(videoVo);
         }
         return videoVos;

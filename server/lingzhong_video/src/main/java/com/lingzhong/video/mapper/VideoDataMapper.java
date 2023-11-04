@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 */
 @Repository
 public interface VideoDataMapper extends BaseMapper<VideoData> {
-    public Integer updateVideoDataByFiled(@Param("filed") String filed ,@Param("videoId") Integer videoId ,@Param("num") Integer num);
+    Integer updateVideoDataByFiled(@Param("filed") String filed ,@Param("videoId") Integer videoId ,@Param("num") Integer num);
 }
 
 

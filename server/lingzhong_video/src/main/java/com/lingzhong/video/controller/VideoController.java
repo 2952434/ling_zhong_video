@@ -4,15 +4,14 @@ import com.lingzhong.video.bean.dto.VideoPublishDTO;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.service.VideoService;
-import com.lingzhong.video.utils.LoginUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -26,7 +25,7 @@ import java.util.List;
 @RequestMapping("/video")
 public class VideoController {
 
-    @Autowired
+    @Resource
     private VideoService videoService;
 
     @ApiOperation(value = "视频上传接口")
@@ -69,6 +68,15 @@ public class VideoController {
         if (videoVos.size() == 0) {
             return RespBean.error("视频到底了");
         }
+        return RespBean.ok(videoVos);
+    }
+
+
+    @ApiOperation("登录后根据用户行为推荐视频")
+    @ApiImplicitParam(name = "count", value = "推荐视频的条数", required = true, dataTypeClass = Integer.class, example = "10")
+    @GetMapping("recommendVideo/{count}")
+    public RespBean<List<VideoVo>> recommendVideo(@PathVariable Integer count) {
+        List<VideoVo> videoVos = videoService.recommendVideo(count);
         return RespBean.ok(videoVos);
     }
 

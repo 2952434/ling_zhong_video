@@ -56,8 +56,9 @@ public class VideoRelevantDataController {
     public RespBean<Integer> addCollectVideo(@RequestParam("videoId") Integer videoId ,
                                              @RequestParam("beUserId") Integer beUserId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         VideoCollect videoCollect = new VideoCollect();
         videoCollect.setVideoId(videoId);
@@ -84,8 +85,9 @@ public class VideoRelevantDataController {
     public RespBean<Integer> cancelCollectVideo(@RequestParam("videoId") Integer videoId ,
                                                       @RequestParam("beUserId") Integer beUserId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         Integer delVideoCollectDataStatus = videoCollectService.delVideoCollectData(videoId, userId, beUserId);
         Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoId, SUBTRACT_NUM);
@@ -96,12 +98,13 @@ public class VideoRelevantDataController {
     @ApiOperation(value = "喜欢视频")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "1"),
-            @ApiImplicitParam(name = "beUserId" , value = "被收藏视频的用户id" , required = true , dataTypeClass = Integer.class , example = "1")
+            @ApiImplicitParam(name = "beUserId" , value = "被点赞视频的用户id" , required = true , dataTypeClass = Integer.class , example = "1")
     })
     public RespBean<Integer> addLikeVideo(@RequestParam("videoId") Integer videoId ,@RequestParam("beUserId") Integer beUserId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         VideoLike videoLike = new VideoLike();
         videoLike.setVideoId(videoId);
@@ -110,8 +113,8 @@ public class VideoRelevantDataController {
         videoLike.setLikeDate(new Date());
         Integer addNewVideoLikeDataStatus = videoLikeService.addNewVideoLikeData(videoLike);
         Integer updateVideoLikeNumStatus = videoDataService.updateVideoLikeNum(videoLike.getVideoId(), ADD_NUM);
-        /**
-         * 通知被喜欢用户
+        /*
+          通知被喜欢用户
          */
         informationService.innerNewLikeInformation(videoLike);
 
@@ -127,8 +130,9 @@ public class VideoRelevantDataController {
     public RespBean<Integer> cancelLikeVideo(@RequestParam("videoId") Integer videoId ,
                                                       @RequestParam("beUserId") Integer beUserId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         Integer delVideoLikeDataStatus = videoLikeService.delVideoLikeData(videoId, userId, beUserId);
         Integer updateVideoLikeNumStatus = videoDataService.updateVideoCollectNum(videoId, SUBTRACT_NUM);
@@ -140,8 +144,9 @@ public class VideoRelevantDataController {
     @ApiOperation(value = "查看用户喜欢的视频")
     public RespBean<List<VideoVo>> checkUserLike(){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         List<VideoVo> videoList = videoService.getUserLikeVideoList(userId);
         return RespBean.ok(videoList);
@@ -151,8 +156,9 @@ public class VideoRelevantDataController {
     @ApiOperation(value = "查看用户收藏的视频")
     public RespBean<List<VideoVo>> checkUserCollect(){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         List<VideoVo> videoList = videoService.getUserCollectVideoList(userId);
         return RespBean.ok(videoList);
@@ -162,8 +168,9 @@ public class VideoRelevantDataController {
     @ApiOperation(value = "查看用户是否喜欢了该视频(0代表未喜欢也未收藏，1代表喜欢，2代表收藏，3代表收藏且喜欢)")
     public RespBean<Integer> checkUserLikeOrCollect(Integer videoId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("未登录");
+        }
         Integer userId = user.getUserId();
         Integer isLike = videoLikeService.selectByUserIdAndVideoId(userId, videoId) == null ? 0 : 1;
         Integer isCollect = videoCollectService.selectByUserIdAndVideoId(userId, videoId) == null ? 0 : 2;

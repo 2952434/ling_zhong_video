@@ -1,7 +1,6 @@
 package com.lingzhong.video.controller;
 
 import com.lingzhong.video.bean.dto.UpdateUserDTO;
-import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
 import com.lingzhong.video.bean.vo.RespBean;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 
 /**
  * @Author: 李君祥
@@ -52,6 +52,7 @@ public class UserController {
     }
 
 
+    @PermitAll
     @ApiOperation(value = "邮箱登录时发送验证码")
     @ApiImplicitParam(name = "mail", value = "邮箱", required = true, dataTypeClass = String.class, example = "xxx@qq.com")
     @PostMapping("/sentMailLoginAuthCode")
@@ -75,7 +76,7 @@ public class UserController {
         return RespBean.ok(user);
     }
 
-
+    @PermitAll
     @ApiOperation(value = "根据用户id查询用户")
     @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = Integer.class, example = "1")
     @GetMapping("/getUserById")
