@@ -68,8 +68,8 @@ public class VideoRelevantDataController {
 
         Integer addNewVideoCollectDataStatus = videoCollectService.addNewVideoCollectData(videoCollect);
         Integer updateVideoCollectNumStatus = videoDataService.updateVideoCollectNum(videoCollect.getVideoId(), ADD_NUM);
-        /**
-         * 通知被收藏用户
+        /*
+          通知被收藏用户
          */
         informationService.innerNewCollectInformation(videoCollect);
 
@@ -135,7 +135,7 @@ public class VideoRelevantDataController {
         }
         Integer userId = user.getUserId();
         Integer delVideoLikeDataStatus = videoLikeService.delVideoLikeData(videoId, userId, beUserId);
-        Integer updateVideoLikeNumStatus = videoDataService.updateVideoCollectNum(videoId, SUBTRACT_NUM);
+        Integer updateVideoLikeNumStatus = videoDataService.updateVideoLikeNum(videoId, SUBTRACT_NUM);
         return RespBean.ok(delVideoLikeDataStatus);
     }
 
