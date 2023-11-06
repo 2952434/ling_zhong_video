@@ -1,11 +1,15 @@
 <template>
   <div class='category'>
-    分类
+    <videoTags></videoTags>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+// 引入分类Tag
+import videoTags from '@/components/videoTags/index.vue'
+
+
 </script>
 
 <style scoped lang='scss'></style>

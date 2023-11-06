@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, nextTick } from 'vue'
+import { ref, reactive, onMounted, nextTick, onUnmounted } from 'vue'
 import { secondToMinute } from '@/utils/time.js'
 // 当前视频时间
 const currentTime = ref(0)
@@ -51,7 +51,7 @@ const playOrPause = ref(true)
 const videoEnded = ref(false)
 // 是否显示控件
 const showControls = ref(false)
-let timer = null
+let timer = ref(null)
 // 当前视频播放状态
 const props = defineProps(['videoStatus', 'videoInfo'])
 // 自定义事件
@@ -61,13 +61,16 @@ onMounted(() => {
   setTimeout(() => {
     maxTime.value = props.videoInfo.duration
   }, 1000);
-  timer = setInterval(() => {
+  timer.value = setInterval(() => {
     currentTime.value = props.videoInfo.currentTime
     if (props.videoInfo.ended) {
-      timer = null
+      timer.value = null
       videoEnded.value = true
     }
   }, 1000);
+})
+onUnmounted(() => {
+  clearInterval(timer.value)
 })
 /**
  * 鼠标置上事件
@@ -101,14 +104,8 @@ const controlsClickHandle = (type) => {
  * 拖拽时间条
  */
 const timeChange = (e) => {
-  if (isNaN(e)) {
-    emits('controlsClickHandle', 'play')
-    props.videoInfo.currentTime = 2
-
-  } else {
-    emits('controlsClickHandle', 'play')
-    props.videoInfo.currentTime = e
-  }
+  emits('controlsClickHandle', 'play')
+  props.videoInfo.currentTime = e
 
 }
 /**

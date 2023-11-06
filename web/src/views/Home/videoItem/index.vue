@@ -1,6 +1,6 @@
 <template>
   <div class='videoItem'>
-    <el-carousel :initial-index="videoStore.videoCurrentCount" :loop="false" ref="carousel"
+    <el-carousel @change="videoChange" :initial-index="videoStore.videoCurrentCount" :loop="true" ref="carousel"
       v-if="videoStore.allVideoList.length !== 0" height="calc(100vh - 60px - 30px)" class="carousel-item"
       direction="vertical" :autoplay="false" indicator-position="none">
       <el-carousel-item v-loading="loading" v-for="item in videoStore.allVideoList" :key="item">
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 /**
  * 引入视频组件
  */
@@ -37,9 +37,22 @@ const loading = ref(false)
 onMounted(async () => {
   await videoStore.getVideo()
   loading.value = false
+  nextTick(() => {
+    const video = document.querySelector('.video-active video');
+    video.play()
+  })
+
 })
 // 上一条视频
 const preVideo = () => {
+  setTimeout(() => {
+    const video = document.querySelector('.video-active video');
+    const videoDisplay = document.querySelectorAll('.video-display video');
+    videoDisplay.forEach(item => {
+      item.pause()
+    })
+    video.play()
+  }, 10);
   if (videoStore.videoCurrentCount <= 0) {
     ElMessage.warning('已经是第一条了')
   } else {
@@ -51,16 +64,26 @@ const preVideo = () => {
 const nextVideo = async () => {
   if (videoStore.videoCurrentCount >= videoStore.allVideoList.length - 1) {
     loading.value = true
-    console.log('下一页');
     videoStore.videoListPage += 1
     await videoStore.getVideo()
     carousel.value.next()
     loading.value = false
     videoStore.videoCurrentCount += 1
-
   } else {
     carousel.value.next()
     videoStore.videoCurrentCount += 1
+  }
+}
+const videoChange = (index, oldIndex) => {
+  if (index > oldIndex) {
+    setTimeout(() => {
+      const video = document.querySelector('.video-active video');
+      const videoDisplay = document.querySelectorAll('.video-display video');
+      videoDisplay.forEach(item => {
+        item.pause()
+      })
+      video.play()
+    }, 10);
   }
 }
 </script>

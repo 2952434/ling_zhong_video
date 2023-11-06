@@ -30,6 +30,18 @@ export const constantRoute = [
     component: () => import('@/views/follow/index.vue'),
   },
   {
+    // 搜索
+    path: '/search',
+    name: 'search',
+    component: () => import('@/views/search/index.vue'),
+  },
+  {
+    // 搜索
+    path: '/upload',
+    name: 'upload',
+    component: () => import('@/views/upload/index.vue'),
+  },
+  {
     // 404路由
     path: '/404',
     name: '404',

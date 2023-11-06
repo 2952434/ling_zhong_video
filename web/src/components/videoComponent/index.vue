@@ -11,7 +11,7 @@
       </ul>
     </div>
     <VideoDesc :videoInfo="videoDescInfo" />
-    <VideoZanInfo :videoNumInfo="videoNumInfo" />
+    <VideoZanInfo :videoNumInfo="props.videoInfo" />
     <el-dialog v-model="dialogVisible" title="快捷键说明" width="30%">
       <div>Space（空格）：暂停/播放</div>
       <div>Left（左键）：后退5秒</div>
@@ -192,27 +192,9 @@ const keydownEvent = () => {
         break
       case 'ArrowUp':
         emits('preVideo')
-        setTimeout(() => {
-          const video = document.querySelector('.video-active video');
-          const videoDisplay = document.querySelectorAll('.video-display video');
-          videoDisplay.forEach(item => {
-            console.log(123);
-            item.pause()
-          })
-          video.play()
-        }, 10);
         break
       case 'ArrowDown':
         emits('nextVideo')
-        setTimeout(() => {
-          const video = document.querySelector('.video-active video');
-          const videoDisplay = document.querySelectorAll('.video-display video');
-          videoDisplay.forEach(item => {
-            item.pause()
-          })
-          video.play()
-        }, 10);
-
         break
       case 'ArrowLeft':
         setTimeout(() => {

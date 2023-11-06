@@ -4,6 +4,7 @@
 import { defineStore } from "pinia";
 import { getVideoByPages } from "@/api/video";
 import { ElMessage } from "element-plus";
+import { likeVideo, unlikeVideo, isLikeThisVideo, collectVideo, disCollectVideo, loginGetVideo } from "@/api/userControlVideo";
 // 创建Video小仓库
 let useVideoStore = defineStore({
   id: 'video',
@@ -22,18 +23,38 @@ let useVideoStore = defineStore({
     }
   },
   actions: {
+    /**
+     * 获取视频
+     * 如果登录：根据用户推荐
+     * 如果未登录：
+     * @returns Promise
+     */
     getVideo() {
       return new Promise((resolve, reject) => {
-        getVideoByPages(this.videoListPage).then((res) => {
-          if (res.status === 200) {
-            this.videoList.push(...res.obj);
-            resolve(res);
-          } else {
-            reject(res);
-          }
-        }, (err) => {
-          ElMessage.error('认证失败，请先登录！')
-        });
+        if (localStorage.getItem('token')) {
+          loginGetVideo(10).then((res) => {
+            if (res.status === 200) {
+              this.videoList.push(...res.obj);
+              resolve(res);
+            } else {
+              reject(res);
+            }
+          }, (err) => {
+            ElMessage.error('认证失败，请先登录！')
+          });
+        } else {
+          getVideoByPages(this.videoListPage).then((res) => {
+            if (res.status === 200) {
+              this.videoList.push(...res.obj);
+              resolve(res);
+            } else {
+              reject(res);
+            }
+          }, (err) => {
+            ElMessage.error('认证失败，请先登录！')
+          });
+        }
+
       });
     },
     // 当前视频增加
@@ -44,6 +65,56 @@ let useVideoStore = defineStore({
     addTotalVideoCount() {
       this.totalVideoCount += 1
     },
+    // 喜欢视频
+    likeVideo(userId, videoId) {
+      return new Promise((resolve, reject) => {
+        likeVideo(userId, videoId).then((res) => {
+          resolve(res);
+        }, (err) => {
+          reject(err)
+        });
+      })
+    },
+    // 取消喜欢视频
+    cancelLikeVideo(userId, videoId) {
+      return new Promise((resolve, reject) => {
+        unlikeVideo(userId, videoId).then((res) => {
+          resolve(res);
+        }, (err) => {
+          reject(err)
+        });
+      })
+    },
+    // 判断用户是否喜欢了此视频
+    isLikeVideo(videoId) {
+      return new Promise((resolve, reject) => {
+        isLikeThisVideo(videoId).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    // 收藏视频
+    collectVideo(userId, videoId) {
+      return new Promise((resolve, reject) => {
+        collectVideo(userId, videoId).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    // 取消收藏视频
+    disCollectVideo(userId, videoId) {
+      return new Promise((resolve, reject) => {
+        disCollectVideo(userId, videoId).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    }
   },
   getters: {
     allVideoList() {

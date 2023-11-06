@@ -26,4 +26,19 @@
   #app {
     height: 100vh;
   }
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  /* 滚动槽 */
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  /* 滚动条滑块 */
+  ::-webkit-scrollbar-thumb {
+    width: 10px;
+    background-color: rgb(47, 23, 30);
+    border-radius: 10px;
+  }
 }

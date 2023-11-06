@@ -6,7 +6,8 @@
       </div>
     </div>
     <div class="like videoInfo" @click="liveVideo">
-      <i class="iconfont icon-Heart" ref="iconHeart"></i>
+      <i class="iconfont icon-Heart" ref="iconHeart"
+        :style="{ color: likeVideo === 1 || likeVideo === 3 ? 'red' : 'white' }"></i>
       {{ props.videoNumInfo.videoLikeNum }}
     </div>
     <div class="comment videoInfo" @click="openChat">
@@ -14,33 +15,77 @@
       {{ props.videoNumInfo.videoCommentNum }}
     </div>
     <div class="collect videoInfo" @click="collectVideo">
-      <i class="iconfont icon-Star" ref="iconStar"></i>
+      <i class="iconfont icon-Star" ref="iconStar"
+        :style="{ color: likeVideo === 2 || likeVideo === 3 ? 'yellow' : 'white' }"></i>
       {{ props.videoNumInfo.videoCollectNum }}
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 const props = defineProps(['videoNumInfo'])
+// 引入视频仓库
+import useVideoStore from '@/store/videoStore'
+/**
+ * 用户对此视频的状态
+ * 0：未喜欢，未收藏
+ * 1：喜欢
+ * 2：收藏
+ * 3：收藏且喜欢
+ */
+const likeVideo = ref(0)
+const videoStore = useVideoStore()
+onMounted(() => {
+  if (videoStore.videoCurrentCount === props.videoNumInfo.id) {
+    getVideoLike()
+  }
+
+})
+// 获取当前视频点赞消息
+const getVideoLike = async () => {
+  let res = await videoStore.isLikeVideo(props.videoNumInfo.videoId)
+  likeVideo.value = res.obj
+}
+// 监听props变化
+watch(() => props.videoNumInfo, (newValue, oldValue) => {
+  getVideoLike()
+}, { deep: true, immediate: true })
+
 // 获取到三个图标
 const iconHeart = ref()
 const iconChat = ref()
 const iconStar = ref()
 // 喜欢此视频
-const liveVideo = () => {
+const liveVideo = async () => {
   if (iconHeart.value.style.color === 'red') {
+    await videoStore.cancelLikeVideo(props.videoNumInfo.videoUserId, props.videoNumInfo.videoId)
     iconHeart.value.style.color = 'white'
+    props.videoNumInfo.videoLikeNum -= 1
+    getVideoLike()
   } else {
+    await videoStore.likeVideo(props.videoNumInfo.videoUserId, props.videoNumInfo.videoId)
+    props.videoNumInfo.videoLikeNum += 1
     iconHeart.value.style.color = 'red'
+    getVideoLike()
   }
-
 }
 // 打开评论
 const openChat = () => {
 }
 // 收藏此视频
-const collectVideo = () => {
+const collectVideo = async () => {
+  if (iconStar.value.style.color === 'yellow') {
+    await videoStore.disCollectVideo(props.videoNumInfo.videoUserId, props.videoNumInfo.videoId)
+    iconHeart.value.style.color = 'white'
+    props.videoNumInfo.videoCollectNum -= 1
+    getVideoLike()
+  } else {
+    await videoStore.collectVideo(props.videoNumInfo.videoUserId, props.videoNumInfo.videoId)
+    props.videoNumInfo.videoCollectNum += 1
+    iconStar.value.style.color = 'yellow'
+    getVideoLike()
+  }
 }
 </script>
 

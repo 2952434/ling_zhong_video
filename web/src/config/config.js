@@ -25,20 +25,20 @@ export const MENU_LIST = [
     path: '/user',
     isActive: false
   },
-  {
-    title: '关于',
-    icon: 'StarFilled',
-    value: '',
-    path: '/about',
-    isActive: false
-  },
-  {
-    title: '关注',
-    icon: 'Avatar',
-    value: '',
-    path: '/follow',
-    isActive: false
-  },
+  // {
+  //   title: '关于',
+  //   icon: 'StarFilled',
+  //   value: '',
+  //   path: '/about',
+  //   isActive: false
+  // },
+  // {
+  //   title: '关注',
+  //   icon: 'Avatar',
+  //   value: '',
+  //   path: '/follow',
+  //   isActive: false
+  // },
 ]
 // 视频鼠标右键出现的选项
 export const MOUSE_CLICK_MENU_LIST = [
