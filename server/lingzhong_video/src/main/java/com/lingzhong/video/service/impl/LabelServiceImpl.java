@@ -1,10 +1,12 @@
 package com.lingzhong.video.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.VideoLabelDTO;
 import com.lingzhong.video.bean.po.Label;
 import com.lingzhong.video.bean.po.User;
+import com.lingzhong.video.bean.po.VideoLabel;
 import com.lingzhong.video.bean.vo.LabelVo;
 import com.lingzhong.video.mapper.LabelMapper;
 import com.lingzhong.video.service.LabelService;
@@ -71,6 +73,8 @@ public class LabelServiceImpl implements LabelService {
         int insert = labelMapper.insert(label);
         return insert > 0;
     }
+
+
 
     /**
      * 判断标签是否存在

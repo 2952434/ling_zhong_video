@@ -23,16 +23,17 @@ public interface VideoService {
      * @param file            视频文件
      * @param videoPublishDTO 发布视频需要携带的参数
      * @return 是否成功
+     * @throws Exception 文件上传异常
      */
     Boolean uploadVideo(MultipartFile file, VideoPublishDTO videoPublishDTO) throws Exception;
 
     /**
      * 根据视频ID删除视频
+     *
      * @param videoId 视频ID
      * @return 是否删除成功
      */
     RespBean<String> deleteVideoById(Integer videoId);
-
 
 
     /**
@@ -46,10 +47,19 @@ public interface VideoService {
 
     /**
      * 根据用户IP获取视频
+     *
      * @param userIp 用户IP
      * @return List<VideoVo>
      */
     List<VideoVo> getVideoByIp(String userIp);
+
+
+    /**
+     * 用户登录后用于推荐视频
+     * @param count 每次推荐视频的个数
+     * @return List<VideoVo>
+     */
+    List<VideoVo> recommendVideo(Integer count);
 
 
 
@@ -80,7 +90,29 @@ public interface VideoService {
     List<VideoVo> getUserVideoByUserId(Integer userId, Integer page, Integer count);
 
 
+    /**
+     * 更新Es
+     */
+    void updateVideoEs();
 
+
+    /**
+     * 根据内容从ES中分页查询并高亮显示
+     *
+     * @param content 内容
+     * @param page    第几页
+     * @param count   每页条数
+     * @return List<VideoVo>
+     */
+    List<VideoVo> getVideoByEsAndHighLight(String content, Integer page, Integer count);
+
+
+    /**
+     * 根据视频ID删除ES中的视频数据
+     *
+     * @param videoId 视频ID
+     */
+    void deleteVideoEsById(Integer videoId);
 
 
 }

@@ -12,13 +12,24 @@
             <result property="videoAddress" column="video_address" jdbcType="VARCHAR"/>
             <result property="videoPrivate" column="video_private" jdbcType="TINYINT"/>
             <result property="videoDate" column="video_date" jdbcType="TIMESTAMP"/>
+            <result property="videoSign" column="video_sign" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         video_id,video_description,video_url,
         video_user_id,video_address,video_private,
-        video_date
+        video_date,video_sign
     </sql>
+    <update id="updateVideoSign">
+        <if test="videoIds != null and videoIds.size() > 0">
+            update video
+            set video_sign = 0
+            where video_id in
+                <foreach collection="videoIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+        </if>
+    </update>
 
     <select id="getVideo" resultType="com.lingzhong.video.bean.vo.VideoVo">
         select v.video_id,
@@ -43,29 +54,55 @@
     </select>
 
     <select id="selectLikeVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
-        SELECT v.video_id,v.video_description,v.video_url,
-               v.video_user_id,v.video_address,v.video_private,
-               v.video_date
-        FROM video v
-        LEFT join video_like vl
-        on v.video_id = vl.video_id
-        where vl.user_id = #{userId}
+        select v.video_id,
+               video_description,
+               video_url,
+               video_user_id,
+               video_address,
+               video_date,
+               video_like_num,
+               video_collect_num,
+               video_comment_num,
+               u.user_name,
+               u.user_photo
+        from video v,
+             video_data d,
+             user u,
+             video_like l
+        where v.video_id = d.video_id
+          and v.video_user_id = u.user_id
+          and l.video_id = v.video_id
+          and l.user_id = #{userId}
+        order by l.like_date DESC;
     </select>
     <select id="selectCollectVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
-        SELECT v.video_id,v.video_description,v.video_url,
-               v.video_user_id,v.video_address,v.video_private,
-               v.video_date
-        FROM video v
-        LEFT join video_collect vc
-        on v.video_id = vc.video_id
-        where vc.user_id = #{userId}
+        select v.video_id,
+               video_description,
+               video_url,
+               video_user_id,
+               video_address,
+               video_date,
+               video_like_num,
+               video_collect_num,
+               video_comment_num,
+               u.user_name,
+               u.user_photo
+        from video v,
+             video_data d,
+             user u,
+             video_collect c
+        where v.video_id = d.video_id
+          and v.video_user_id = u.user_id
+          and c.video_id = v.video_id
+          and c.user_id = #{userId}
+        order by c.collect_date DESC;
     </select>
     <select id="getUserVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
         select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
             from video v,video_data d,user u
             where u.user_id = #{userId} and v.video_id = d.video_id and v.video_user_id = u.user_id limit #{page},#{count};
     </select>
-    <select id="getVideoByIp" resultType="com.lingzhong.video.bean.vo.VideoVo">
+    <select id="getVideoByNotVideoIds" resultType="com.lingzhong.video.bean.vo.VideoVo">
         select v.video_id,
                video_description,
                video_url,
@@ -83,6 +120,7 @@
              user u
         where v.video_id = d.video_id
           and v.video_user_id = u.user_id
+          and v.video_private = 0
         <if test="videoIds.size() > 0">
             and v.video_id not in
             <foreach collection="videoIds" item="item" open="(" separator="," close=")">
@@ -90,6 +128,76 @@
             </foreach>
         </if>
         order by data_sum DESC
-        limit 0,10;
+        limit 0,#{count};
+    </select>
+    <select id="getVideoEsBeans" resultType="com.lingzhong.video.bean.dto.VideoEsDTO">
+        select video_id, video_description, video_address, user_id, user_name
+        from video v,
+             user u
+        where v.video_private = 0
+          and v.video_sign != 0
+          and v.video_user_id = u.user_id
+    </select>
+    <select id="getVideoVoById" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
+            from video v,video_data d,user u
+            where v.video_id = #{videoId} and v.video_id = d.video_id and v.video_user_id = u.user_id;
+    </select>
+    <select id="getVideoVoByVideoIds" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select v.video_id,
+        video_description,
+        video_url,
+        video_user_id,
+        video_address,
+        video_date,
+        video_like_num,
+        video_collect_num,
+        video_comment_num,
+        u.user_name,
+        u.user_photo
+        from video v,
+        video_data d,
+        user u
+        where v.video_id = d.video_id
+        and v.video_user_id = u.user_id
+        and v.video_id in
+        <foreach collection="videoIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by v.video_id DESC;
+    </select>
+    <select id="getVideoVoByLabelIds" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select distinct v.video_id,
+        video_description,
+        video_url,
+        video_user_id,
+        video_address,
+        video_date,
+        video_like_num,
+        video_collect_num,
+        video_comment_num,
+        u.user_name,
+        u.user_photo,
+        d.video_like_num * 0.25 + d.video_collect_num * 0.4 + d.video_comment_num * 0.35 data_sum
+        from video_label vl,
+        video v,
+        video_data d,
+        user u
+        where vl.label_id in
+        <foreach collection="labels" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and vl.video_id = v.video_id
+        and v.video_private = 0
+        and v.video_id = d.video_id
+        and v.video_user_id = u.user_id
+        <if test="ignoreVideoIds.size()>0">
+            and v.video_id not in
+            <foreach collection="ignoreVideoIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by data_sum DESC, v.video_date DESC
+        limit 0,#{count};
     </select>
 </mapper>

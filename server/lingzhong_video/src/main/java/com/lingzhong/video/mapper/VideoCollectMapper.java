@@ -3,6 +3,7 @@ package com.lingzhong.video.mapper;
 import com.lingzhong.video.bean.po.VideoCollect;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author ljx
@@ -10,9 +11,10 @@ import org.apache.ibatis.annotations.Param;
 * @createDate 2023-10-27 20:30:22
 * @Entity com.lingzhong.video.bean.po.VideoCollect
 */
+@Repository
 public interface VideoCollectMapper extends BaseMapper<VideoCollect> {
 
-    public Integer innerNewVideoCollect(@Param("videoCollect") VideoCollect videoCollect);
+    Integer innerNewVideoCollect(@Param("videoCollect") VideoCollect videoCollect);
 }
 
 

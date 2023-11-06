@@ -4,15 +4,14 @@ import com.lingzhong.video.bean.dto.VideoPublishDTO;
 import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.bean.vo.VideoVo;
 import com.lingzhong.video.service.VideoService;
-import com.lingzhong.video.utils.LoginUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -26,7 +25,7 @@ import java.util.List;
 @RequestMapping("/video")
 public class VideoController {
 
-    @Autowired
+    @Resource
     private VideoService videoService;
 
     @ApiOperation(value = "视频上传接口")
@@ -73,6 +72,15 @@ public class VideoController {
     }
 
 
+    @ApiOperation("登录后根据用户行为推荐视频")
+    @ApiImplicitParam(name = "count", value = "推荐视频的条数", required = true, dataTypeClass = Integer.class, example = "10")
+    @GetMapping("recommendVideo/{count}")
+    public RespBean<List<VideoVo>> recommendVideo(@PathVariable Integer count) {
+        List<VideoVo> videoVos = videoService.recommendVideo(count);
+        return RespBean.ok(videoVos);
+    }
+
+
     @ApiOperation(value = "根据用户ID分页查询视频")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = Integer.class, example = "1"),
@@ -88,6 +96,22 @@ public class VideoController {
             return RespBean.ok(userVideoByUserId);
         }
 
+    }
+
+    @ApiOperation(value = "根据输入内容高亮搜索视频")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "content", value = "查询的内容", required = true, dataTypeClass = String.class, example = "视频"),
+            @ApiImplicitParam(name = "page", value = "页数，默认从0开始", required = true, dataTypeClass = Integer.class, example = "0"),
+            @ApiImplicitParam(name = "count", value = "每页视频条数", required = true, dataTypeClass = Integer.class, example = "10"),
+    })
+    @GetMapping("/getVideoByEsAndHighLight/{content}/{page}/{count}")
+    public RespBean<List<VideoVo>> getVideoByEsAndHighLight(@PathVariable String content, @PathVariable Integer page, @PathVariable Integer count) {
+        List<VideoVo> videoByEsAndHighLight = videoService.getVideoByEsAndHighLight(content, page, count);
+        if (videoByEsAndHighLight.size() == 0) {
+            return RespBean.error("没有搜索到内容，换个搜索词试试");
+        } else {
+            return RespBean.ok(videoByEsAndHighLight);
+        }
     }
 
 

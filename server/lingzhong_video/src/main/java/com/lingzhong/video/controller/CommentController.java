@@ -52,8 +52,9 @@ public class CommentController {
     })
     public RespBean<Long> sendComment(@RequestParam("videoId") Integer videoId ,@RequestParam("commentTxt") String commentTxt){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         CommentReply commentReply = new CommentReply();
         commentReply.setVideoId(videoId);
@@ -94,8 +95,9 @@ public class CommentController {
     @RequestMapping(value = "/get/user" , method = RequestMethod.GET)
     public RespBean<List<CommentReply>> getUserAllComment(){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         List<CommentReply> resultList = commentReplyService.getCommentByUserId(userId);
         return RespBean.ok(resultList);
@@ -106,8 +108,9 @@ public class CommentController {
     @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
     public RespBean<Integer> likeThisComment(@RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
 
         CommentReply commentReply = commentReplyService.selectByCommentId(commentId);
@@ -142,8 +145,9 @@ public class CommentController {
     })
     public RespBean<Integer> unLikeThisComment(@RequestParam("videoId") Integer videoId, @RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
 
         Integer delStatus = commentLikeService.delCommentLike(userId , commentId);
@@ -162,8 +166,9 @@ public class CommentController {
     @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "1")
     public RespBean<Boolean> checkUserComment(@RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         CommentReply userComment = commentReplyService.getCommentByUserIdAndCommentId(userId, commentId);
         return RespBean.ok(userComment != null);
@@ -177,8 +182,9 @@ public class CommentController {
     })
     public RespBean<Integer> deleteMyComment(@RequestParam("videoId") Integer videoId , @RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         /**
          * 删除评论和该评论的所有点赞记录
@@ -199,8 +205,9 @@ public class CommentController {
     @ApiImplicitParam(name = "videoId" , value = "视频id" , required = true , dataTypeClass = Integer.class , example = "1")
     public RespBean<List<CommentReply>> getUserLikedComments(@RequestParam("videoId") Integer videoId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         /**
          * 获取视频下所有评论及回复
@@ -222,8 +229,9 @@ public class CommentController {
     @ApiImplicitParam(name = "commentId" , value = "评论id" , required = true , dataTypeClass = Long.class , example = "")
     public RespBean<Boolean> checkUserLikedComments(@RequestParam("commentId") Long commentId){
         User user = LoginUser.getUser();
-        if (user == null)
+        if (user == null) {
             return RespBean.error("无法操作");
+        }
         Integer userId = user.getUserId();
         CommentLike commentLike = commentLikeService.selectByUserIdAndCommentId(userId, commentId);
         return RespBean.ok(commentLike != null);
