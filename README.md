@@ -16,9 +16,9 @@
 
 ### 项目演示：
 
-> 提示：若视频不能播放请查看docs下的视频
+> **提示：若视频不能播放请查看docs下的视频**
 
-<video src="http://s32t6kk2m.hb-bkt.clouddn.com/video/2023/11/01/693/stock-footage-woman-petting-cat-lying-on-sofa-in-living-room-human-hand-stroking-furry-cat-close-up.mp4"></video>
+[**项目演示视频链接** >>>]()
 
 ### 程序运行说明
 
