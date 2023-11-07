@@ -5,6 +5,7 @@ import { defineStore } from "pinia";
 import { getVideoByPages } from "@/api/video";
 import { ElMessage } from "element-plus";
 import { likeVideo, unlikeVideo, isLikeThisVideo, collectVideo, disCollectVideo, loginGetVideo } from "@/api/userControlVideo";
+import { getVideoInfoById } from '@/api/video.js'
 // 创建Video小仓库
 let useVideoStore = defineStore({
   id: 'video',
@@ -109,6 +110,17 @@ let useVideoStore = defineStore({
     disCollectVideo(userId, videoId) {
       return new Promise((resolve, reject) => {
         disCollectVideo(userId, videoId).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    // 根据视频id获取视频
+    getVideoById(videoId) {
+      return new Promise((resolve, reject) => {
+        getVideoInfoById(videoId).then(res => {
+
           resolve(res)
         }).catch(err => {
           reject(err)

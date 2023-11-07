@@ -76,3 +76,17 @@ export const getCollectVideo = () => {
 export const locationCity = (latitude, longitude) => {
   return axios.get(`https://restapi.amap.com/v3/ip?ip=114.247.50.2&output=json&key=ecbe23551ef1b1eabffd996309f559a5`)
 }
+// 根据用户id查询用户
+export const getUserInfoById = (userId) => {
+  return request.get('/user/getUserById', {
+    params: {
+      userId
+    }
+  })
+}
+// 判断用户是否关注了某人
+export const followOne = (beUserId) => {
+  return request.get('/attention/judgeMyIsAttention', {
+    params: { beUserId }
+  })
+}

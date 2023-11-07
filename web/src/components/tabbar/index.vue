@@ -34,7 +34,7 @@
   </div>
   <!-- 登录弹出框 -->
   <Transition name="slide-fade">
-    <LoginItem v-if="loginShow" @maskHidden="maskHidden"></LoginItem>
+    <LoginItem v-if="userStore.loginShow || loginShow" @maskHidden="maskHidden"></LoginItem>
   </Transition>
 </template>
 
@@ -60,16 +60,23 @@ const loginShow = ref(false)
 const loginClick = () => {
   if (loginShow.value) {
     loginShow.value = false
+    userStore.loginShow = false
   } else {
     loginShow.value = true
+    userStore.loginShow = false
+
   }
 }
 // 隐藏蒙层事件
 const maskHidden = () => {
   loginShow.value = false
+  userStore.loginShow = false
+
 }
 onMounted(() => {
-  getUserInfo()
+  if (localStorage.getItem('token')) {
+    getUserInfo()
+  }
 })
 // 获取用户信息
 const getUserInfo = async () => {

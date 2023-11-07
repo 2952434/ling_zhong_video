@@ -20,11 +20,11 @@ const { toClipboard } = useClipboard()
 export const copy = async (text) => {
   try {
     await toClipboard(text);  //实现复制
-    ElMessage({
-      message: '复制成功！',
-      grouping: true,
-      type: 'success',
-    })
+    // ElMessage({
+    //   message: '复制成功！',
+    //   grouping: true,
+    //   type: 'success',
+    // })
   } catch (e) {
     ElMessage({
       message: '复制失败！',
