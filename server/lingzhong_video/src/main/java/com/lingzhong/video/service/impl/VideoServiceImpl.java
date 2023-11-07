@@ -327,6 +327,11 @@ public class VideoServiceImpl implements VideoService {
         videoEsMapper.deleteById(videoId);
     }
 
+    @Override
+    public VideoVo getVideoVoByVideoId(Integer videoId) {
+        return videoMapper.getVideoVoByVideoId(videoId);
+    }
+
 
 }
 

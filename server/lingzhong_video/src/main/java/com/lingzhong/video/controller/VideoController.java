@@ -115,4 +115,12 @@ public class VideoController {
     }
 
 
+    @ApiOperation(value = "根据视频ID获取视频信息")
+    @ApiImplicitParam(name = "videoId", value = "视频ID", required = true, dataTypeClass = Integer.class)
+    @GetMapping("/getVideoVoByVideoId")
+    public RespBean<VideoVo> getVideoVoByVideoId(Integer videoId) {
+        return RespBean.ok(videoService.getVideoVoByVideoId(videoId));
+    }
+
+
 }

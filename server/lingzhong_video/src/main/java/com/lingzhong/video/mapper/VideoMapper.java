@@ -28,6 +28,7 @@ public interface VideoMapper extends BaseMapper<Video> {
 
     /**
      * 查询用户喜欢的视频
+     *
      * @param userId 用户Id
      * @return List<VideoVo>
      */
@@ -35,6 +36,7 @@ public interface VideoMapper extends BaseMapper<Video> {
 
     /**
      * 查询用户收藏的视频
+     *
      * @param userId 用户Id
      * @return List<VideoVo>
      */
@@ -98,6 +100,14 @@ public interface VideoMapper extends BaseMapper<Video> {
      * @return 视频信息
      */
     List<VideoVo> getVideoVoByLabelIds(@Param("labels") List<Integer> labels, @Param("count") Integer count, @Param("ignoreVideoIds") List<Integer> ignoreVideoIds);
+
+    /**
+     * 根据视频ID获取视频信息
+     *
+     * @param videoId 视频ID
+     * @return VideoVo
+     */
+    VideoVo getVideoVoByVideoId(@Param("videoId") Integer videoId);
 }
 
 

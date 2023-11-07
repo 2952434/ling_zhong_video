@@ -1,23 +1,29 @@
 # 凌众短视频
 
-#### 成员介绍
+### 项目体验
+
+- [**凌众视频**](http://www.ivikey.top/lingzhongvideo)
+
+### 成员介绍
 
 * 前端成员：*陈士博*
 * 后端成员：*孙铭杰、李君祥*
 
-#### 项目介绍
+### 项目介绍
 
 1. 凌众短视频是一款三人团队打造的短视频娱乐项目，适合休闲放松的简易娱乐选择。在娱乐主流的互联网时代下凌众短视频让你居家环游世界!
 2. 本项目提供了 *简单的操作方式*、*专注用户的喜好推荐*、*美观的页面设计*、*视频专题专类的展示*、*交互交流的平台*、*随心分享记录生活的空间*、*喜好收藏的个人空间*......
 
-#### 项目演示
+### 项目演示：
 
-1. [**项目演示视频链接** >>>]()
-2. [项目在线文档介绍 >>>](https://lingzhong.yuque.com/gga2fz/project_doc/rfe4gage4c6te8i4)
+> 提示：若视频不能播放请查看docs下的视频
 
-#### 程序运行说明
+<video src="http://s32t6kk2m.hb-bkt.clouddn.com/video/2023/11/01/693/stock-footage-woman-petting-cat-lying-on-sofa-in-living-room-human-hand-stroking-furry-cat-close-up.mp4"></video>
 
-**前端运行**：
+### 程序运行说明
+
+#### 前端运行：
+
 1. 使用git克隆代码：
 ```bash
  git clone git@gitee.com:sminjer/350-start.git
@@ -45,7 +51,8 @@ npm run dev
 ```
 6. 将会自动打开浏览器，并展示效果，项目运行在3000端口
 
-**后端运行**：
+#### 后端运行：
+
 1. 使用git克隆代码：
 ```bash
 git clone git@gitee.com:sminjer/350-start.git
@@ -56,9 +63,9 @@ git clone git@gitee.com:sminjer/350-start.git
 5. 进入`server/lingzhong_video/api-test/lz-auth-api.http`下按照流程申请Token。
 6. 访问接口文档[http://localhost:8848/doc.html](http://localhost:8848/doc.html)，将"Bearer "+Token填写到文档Authorize目录下，刷新页面后即可尽情访问服务。
 
-#### 技术栈
+### 技术栈
 
-##### 前端技术栈
+#### 前端技术栈
 1. 框架：`Vue3`
 2. 脚手架：`Vite`
 3. UI组件库：`ElementUI Plus`
@@ -67,7 +74,7 @@ git clone git@gitee.com:sminjer/350-start.git
 6. css预处理器：`scss`
 7. 库管理器：`npm`
 
-##### 后端技术栈
+#### 后端技术栈
 1. 主体架构：`SpringBoot`
 2. 安全访问框架：`SpringSecurity`
 3. 数据访问：`MybatisPlus`、`MySQL`

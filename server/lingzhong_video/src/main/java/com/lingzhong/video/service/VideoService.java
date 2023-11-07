@@ -124,4 +124,13 @@ public interface VideoService {
     void deleteVideoEsById(Integer videoId);
 
 
+    /**
+     * 根据视频ID获取视频
+     *
+     * @param videoId 视频ID
+     * @return VideoVo
+     */
+    VideoVo getVideoVoByVideoId(Integer videoId);
+
+
 }

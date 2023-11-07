@@ -229,4 +229,23 @@
         order by data_sum DESC, v.video_date DESC
         limit 0,#{count};
     </select>
+    <select id="getVideoVoByVideoId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select v.video_id,
+        video_description,
+        video_url,
+        video_user_id,
+        video_address,
+        video_date,
+        video_like_num,
+        video_collect_num,
+        video_comment_num,
+        u.user_name,
+        u.user_photo
+        from video v,
+        video_data d,
+        user u
+        where v.video_id = d.video_id
+        and v.video_user_id = u.user_id
+        and v.video_id = #{videoId}
+    </select>
 </mapper>
