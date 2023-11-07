@@ -69,7 +69,7 @@ public class RespBean<T> {
         return msg;
     }
 
-    public  RespBean setMsg(String msg) {
+    public RespBean setMsg(String msg) {
         this.msg = msg;
         return this;
     }

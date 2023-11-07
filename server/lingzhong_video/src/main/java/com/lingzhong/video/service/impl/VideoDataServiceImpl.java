@@ -7,15 +7,15 @@ import com.lingzhong.video.mapper.VideoDataMapper;
 import org.springframework.stereotype.Service;
 
 /**
-* @author ljx
-* @description 针对表【video_data】的数据库操作Service实现
-* @createDate 2023-10-27 21:36:13
-*/
+ * @author ljx
+ * @description 针对表【video_data】的数据库操作Service实现
+ * @createDate 2023-10-27 21:36:13
+ */
 @Service
 public class VideoDataServiceImpl extends ServiceImpl<VideoDataMapper, VideoData>
-    implements VideoDataService{
+        implements VideoDataService {
 
-    private VideoDataMapper videoDataMapper;
+    private final VideoDataMapper videoDataMapper;
 
     public VideoDataServiceImpl(VideoDataMapper videoDataMapper) {
         this.videoDataMapper = videoDataMapper;
@@ -23,17 +23,17 @@ public class VideoDataServiceImpl extends ServiceImpl<VideoDataMapper, VideoData
 
     @Override
     public Integer updateVideoCommentNum(Integer videoId, Integer addCommentNum) {
-        return videoDataMapper.updateVideoDataByFiled("video_comment_num" , videoId , addCommentNum);
+        return videoDataMapper.updateVideoDataByFiled("video_comment_num", videoId, addCommentNum);
     }
 
     @Override
     public Integer updateVideoLikeNum(Integer videoId, Integer addLikeNum) {
-        return videoDataMapper.updateVideoDataByFiled("video_like_num" , videoId , addLikeNum);
+        return videoDataMapper.updateVideoDataByFiled("video_like_num", videoId, addLikeNum);
     }
 
     @Override
     public Integer updateVideoCollectNum(Integer videoId, Integer addCollectNum) {
-        return videoDataMapper.updateVideoDataByFiled("video_collect_num" , videoId , addCollectNum);
+        return videoDataMapper.updateVideoDataByFiled("video_collect_num", videoId, addCollectNum);
     }
 
     @Override

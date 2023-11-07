@@ -102,5 +102,16 @@ public class UserAttentionController {
         }
     }
 
+    @ApiOperation(value = "判断登录用户是否关注该用户")
+    @ApiImplicitParam(name = "beUserId", value = "判断我是否关注他的Id", dataTypeClass = Integer.class)
+    @GetMapping("/judgeMyIsAttention")
+    public RespBean<Boolean> judgeMyIsAttention(Integer beUserId) {
+        boolean myIsAttention = userAttentionService.judgeMyIsAttention(beUserId);
+        if (myIsAttention) {
+            return RespBean.ok("已关注该用户", true);
+        }
+        return RespBean.ok("未关注该用户", false);
+    }
+
 
 }

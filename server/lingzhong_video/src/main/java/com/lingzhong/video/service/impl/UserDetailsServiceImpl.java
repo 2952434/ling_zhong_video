@@ -52,9 +52,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserExt userExt = authService.execute(authParamsDto);
         //封装xcUserExt用户信息为UserDetails
         //根据UserDetails对象生成令牌
-        UserDetails userPrincipal = getUserPrincipal(userExt);
 
-        return userPrincipal;
+        return getUserPrincipal(userExt);
     }
 
     /**
@@ -67,8 +66,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         user.setUserPassword(null);
         //将用户信息转json
         String userJson = JSON.toJSONString(user);
-        UserDetails userDetails = User.withUsername(userJson).password("123").authorities(authorities).build();
-        return userDetails;
+        return User.withUsername(userJson).password("123").authorities(authorities).build();
     }
 
 

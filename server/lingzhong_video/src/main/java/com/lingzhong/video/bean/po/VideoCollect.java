@@ -3,6 +3,7 @@ package com.lingzhong.video.bean.po;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
 
-@TableName(value ="video_collect")
+@TableName(value = "video_collect")
 @Data
 public class VideoCollect implements Serializable {
 
@@ -52,9 +53,9 @@ public class VideoCollect implements Serializable {
         }
         VideoCollect other = (VideoCollect) that;
         return ((this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getBeUserId() == null ? other.getBeUserId() == null : this.getBeUserId().equals(other.getBeUserId()))
-            && (this.getCollectDate() == null ? other.getCollectDate() == null : this.getCollectDate().equals(other.getCollectDate())));
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+                && (this.getBeUserId() == null ? other.getBeUserId() == null : this.getBeUserId().equals(other.getBeUserId()))
+                && (this.getCollectDate() == null ? other.getCollectDate() == null : this.getCollectDate().equals(other.getCollectDate())));
     }
 
     @Override

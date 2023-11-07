@@ -5,15 +5,15 @@
 <mapper namespace="com.lingzhong.video.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.User">
-            <id property="userId" column="user_id" jdbcType="INTEGER"/>
-            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
-            <result property="userMail" column="user_mail" jdbcType="VARCHAR"/>
-            <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
-            <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
-            <result property="userPhoto" column="user_photo" jdbcType="VARCHAR"/>
-            <result property="userSex" column="user_sex" jdbcType="TINYINT"/>
-            <result property="userDescribe" column="user_describe" jdbcType="VARCHAR"/>
-            <result property="userDate" column="user_date" jdbcType="TIMESTAMP"/>
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userMail" column="user_mail" jdbcType="VARCHAR"/>
+        <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
+        <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
+        <result property="userPhoto" column="user_photo" jdbcType="VARCHAR"/>
+        <result property="userSex" column="user_sex" jdbcType="TINYINT"/>
+        <result property="userDescribe" column="user_describe" jdbcType="VARCHAR"/>
+        <result property="userDate" column="user_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

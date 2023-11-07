@@ -97,6 +97,15 @@ public class UserAttentionServiceImpl implements UserAttentionService {
         queryWrapper.eq(UserAttention::getUserId, userId);
         return userAttentionMapper.selectCount(queryWrapper);
     }
+
+    @Override
+    public boolean judgeMyIsAttention(Integer beUserId) {
+        User user = LoginUser.getUser();
+        LambdaQueryWrapper<UserAttention> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserAttention::getUserId,user.getUserId()).eq(UserAttention::getBeUserId,beUserId);
+        Integer count = userAttentionMapper.selectCount(queryWrapper);
+        return count != 0;
+    }
 }
 
 

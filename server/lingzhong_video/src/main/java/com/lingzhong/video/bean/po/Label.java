@@ -27,7 +27,7 @@ public class Label implements Serializable {
     /**
      * 标签名
      */
-    @ApiModelProperty(value = "标签名",required = true)
+    @ApiModelProperty(value = "标签名", required = true)
     private String labelName;
 
     /**

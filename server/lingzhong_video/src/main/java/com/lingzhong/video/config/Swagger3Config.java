@@ -37,21 +37,20 @@ public class Swagger3Config {
                 .build();
     }
 
-        /**
-         *
-         * enable 是否启动Swagger，如果为False，则Swagger不能在浏览器中访问
-         *                  在确定开发环境时用得到，咱现在用不到
-         *                  .enable(false)
-         *                  RequestHandlerSelectors 配置要扫描的接口方式
-         *                  basePackage: 指定要扫描的包 通常使用这个
-         *                  any(): 扫描全部
-         *                  none(): 不扫描
-         *                  withClassAnnotation: 扫描类上的注解，参数是一个注解的反射对象
-         *                  withMethodAnnotation: 扫描方法上的注解，参数是一个注解的反射对象
-         *                 .apis(RequestHandlerSelectors.basePackage("com.example.demo"))
-         *                  path() 过滤什么路径
-         *                  .paths(PathSelectors.ant(""))
-         */
+    /**
+     * enable 是否启动Swagger，如果为False，则Swagger不能在浏览器中访问
+     * 在确定开发环境时用得到，咱现在用不到
+     * .enable(false)
+     * RequestHandlerSelectors 配置要扫描的接口方式
+     * basePackage: 指定要扫描的包 通常使用这个
+     * any(): 扫描全部
+     * none(): 不扫描
+     * withClassAnnotation: 扫描类上的注解，参数是一个注解的反射对象
+     * withMethodAnnotation: 扫描方法上的注解，参数是一个注解的反射对象
+     * .apis(RequestHandlerSelectors.basePackage("com.example.demo"))
+     * path() 过滤什么路径
+     * .paths(PathSelectors.ant(""))
+     */
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
@@ -71,9 +70,9 @@ public class Swagger3Config {
 
     private SecurityContext securityContexts() {
         return SecurityContext.builder()
-                        .securityReferences(defaultAuth())
-                        .forPaths(PathSelectors.any())
-                        .build();
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.any())
+                .build();
     }
 
     private List<SecurityReference> defaultAuth() {

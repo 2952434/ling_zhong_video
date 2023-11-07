@@ -30,7 +30,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     private AuthenticationManager authenticationManager;
 
     /**
-     *
      * @param clients 客户端详情服务
      * @throws Exception 异常
      */

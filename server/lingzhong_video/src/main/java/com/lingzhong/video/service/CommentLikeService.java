@@ -7,28 +7,43 @@ import java.util.List;
 public interface CommentLikeService {
     /**
      * 添加点赞记录
+     *
+     * @param commentLike 评论实体
+     * @return Integer
      */
-    public Integer addNewLike(CommentLike commentLike);
+    Integer addNewLike(CommentLike commentLike);
 
     /**
-     * 取消（删除）点赞记录
+     * 取消（删除）评论记录
+     *
+     * @param userId    用户Id
+     * @param commentId 评论ID
+     * @return Integer
      */
-    public Integer delCommentLike(Integer userId , Long commentId);
+    Integer delCommentLike(Integer userId, Long commentId);
 
     /**
      * 判断是否点赞过
-     * @return
+     *
+     * @param userId    用户Id
+     * @param commentId 评论Id
+     * @return CommentLike
      */
-    public CommentLike selectByUserIdAndCommentId(Integer userId , Long commentId);
+    CommentLike selectByUserIdAndCommentId(Integer userId, Long commentId);
 
     /**
-     * 通过评论id批量删除点赞记录
-     * @param commentId
+     * 通过评论Id批量删除点赞记录
+     *
+     * @param commentId 评论Id
+     * @return Integer
      */
-    public Integer delListByCommentId(Long commentId);
+    Integer delListByCommentId(Long commentId);
 
     /**
      * 获取用户点赞的评论记录
+     *
+     * @param userId 用户Id
+     * @return List<CommentLike>
      */
-    public List<CommentLike> getUserLikedCommentList(Integer userId);
+    List<CommentLike> getUserLikedCommentList(Integer userId);
 }

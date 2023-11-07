@@ -56,25 +56,34 @@ public interface VideoService {
 
     /**
      * 用户登录后用于推荐视频
+     *
      * @param count 每次推荐视频的个数
      * @return List<VideoVo>
      */
     List<VideoVo> recommendVideo(Integer count);
 
 
-
     /**
      * 根据视频id获取视频信息
+     *
+     * @param videoIds 视频Id
+     * @return Video
      */
     Video getVideoById(Integer videoIds);
 
     /**
      * 查询用户喜欢的视频信息
+     *
+     * @param userId 用户Id
+     * @return List<VideoVo>
      */
     List<VideoVo> getUserLikeVideoList(Integer userId);
 
     /**
      * 查询用户收藏的视频信息
+     *
+     * @param userId 用户Id
+     * @return List<VideoVo>
      */
     List<VideoVo> getUserCollectVideoList(Integer userId);
 

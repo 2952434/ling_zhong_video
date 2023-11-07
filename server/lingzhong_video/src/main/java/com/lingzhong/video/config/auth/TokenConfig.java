@@ -43,6 +43,7 @@ public class TokenConfig {
 
     /**
      * 令牌管理服务
+     *
      * @return AuthorizationServerTokenServices
      */
     @Bean(name = "authorizationServerTokenServicesCustom")

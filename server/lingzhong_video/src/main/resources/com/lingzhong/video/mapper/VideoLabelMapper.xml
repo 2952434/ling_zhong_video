@@ -5,17 +5,36 @@
 <mapper namespace="com.lingzhong.video.mapper.VideoLabelMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.VideoLabel">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="videoId" column="video_id" jdbcType="INTEGER"/>
-            <result property="labelId" column="label_id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="videoId" column="video_id" jdbcType="INTEGER"/>
+        <result property="labelId" column="label_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,video_id,label_id
     </sql>
     <select id="getVideoByLabelId" resultType="com.lingzhong.video.bean.vo.VideoVo">
-            select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
-            from video_label l,video v,user u,video_data d
-            where l.label_id = #{labelId} and v.video_private = 0 and  v.video_id = l.video_id and v.video_user_id = u.user_id and v.video_id = d.video_id order by v.video_date DESC limit #{page},10;
+        select v.video_id,
+               video_description,
+               video_url,
+               video_user_id,
+               video_address,
+               video_date,
+               video_like_num,
+               video_collect_num,
+               video_comment_num,
+               u.user_name,
+               u.user_photo
+        from video_label l,
+             video v,
+             user u,
+             video_data d
+        where l.label_id = #{labelId}
+          and v.video_private = 0
+          and v.video_id = l.video_id
+          and v.video_user_id = u.user_id
+          and v.video_id = d.video_id
+        order by v.video_date DESC
+        limit #{page},10;
     </select>
 </mapper>

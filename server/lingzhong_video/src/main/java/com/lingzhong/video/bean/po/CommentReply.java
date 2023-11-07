@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 
-@TableName(value ="comment_reply")
+@TableName(value = "comment_reply")
 @Data
 @ApiModel
 public class CommentReply implements Serializable {
@@ -83,14 +84,14 @@ public class CommentReply implements Serializable {
         }
         CommentReply other = (CommentReply) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getCommentId() == null ? other.getCommentId() == null : this.getCommentId().equals(other.getCommentId()))
-            && (this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getCommentTxt() == null ? other.getCommentTxt() == null : this.getCommentTxt().equals(other.getCommentTxt()))
-            && (this.getCommentLike() == null ? other.getCommentLike() == null : this.getCommentLike().equals(other.getCommentLike()))
-            && (this.getCommentFid() == null ? other.getCommentFid() == null : this.getCommentFid().equals(other.getCommentFid()))
-            && (this.getReplyDate() == null ? other.getReplyDate() == null : this.getReplyDate().equals(other.getReplyDate()))
-            && (this.getSonCommentReplyList() == null ? other.getSonCommentReplyList() == null : this.getSonCommentReplyList().equals(other.getSonCommentReplyList()));
+                && (this.getCommentId() == null ? other.getCommentId() == null : this.getCommentId().equals(other.getCommentId()))
+                && (this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+                && (this.getCommentTxt() == null ? other.getCommentTxt() == null : this.getCommentTxt().equals(other.getCommentTxt()))
+                && (this.getCommentLike() == null ? other.getCommentLike() == null : this.getCommentLike().equals(other.getCommentLike()))
+                && (this.getCommentFid() == null ? other.getCommentFid() == null : this.getCommentFid().equals(other.getCommentFid()))
+                && (this.getReplyDate() == null ? other.getReplyDate() == null : this.getReplyDate().equals(other.getReplyDate()))
+                && (this.getSonCommentReplyList() == null ? other.getSonCommentReplyList() == null : this.getSonCommentReplyList().equals(other.getSonCommentReplyList()));
     }
 
     @Override

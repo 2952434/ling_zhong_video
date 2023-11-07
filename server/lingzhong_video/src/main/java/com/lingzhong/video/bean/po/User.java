@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 
-@TableName(value ="user")
+@TableName(value = "user")
 @Data
 public class User implements Serializable {
     /**
@@ -74,13 +76,13 @@ public class User implements Serializable {
         }
         User other = (User) that;
         return (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getUserName() == null ? other.getUserName() == null : this.getUserName().equals(other.getUserName()))
-            && (this.getUserAccount() == null ? other.getUserAccount() == null : this.getUserAccount().equals(other.getUserAccount()))
-            && (this.getUserPassword() == null ? other.getUserPassword() == null : this.getUserPassword().equals(other.getUserPassword()))
-            && (this.getUserPhoto() == null ? other.getUserPhoto() == null : this.getUserPhoto().equals(other.getUserPhoto()))
-            && (this.getUserSex() == null ? other.getUserSex() == null : this.getUserSex().equals(other.getUserSex()))
-            && (this.getUserDescribe() == null ? other.getUserDescribe() == null : this.getUserDescribe().equals(other.getUserDescribe()))
-            && (this.getUserDate() == null ? other.getUserDate() == null : this.getUserDate().equals(other.getUserDate()));
+                && (this.getUserName() == null ? other.getUserName() == null : this.getUserName().equals(other.getUserName()))
+                && (this.getUserAccount() == null ? other.getUserAccount() == null : this.getUserAccount().equals(other.getUserAccount()))
+                && (this.getUserPassword() == null ? other.getUserPassword() == null : this.getUserPassword().equals(other.getUserPassword()))
+                && (this.getUserPhoto() == null ? other.getUserPhoto() == null : this.getUserPhoto().equals(other.getUserPhoto()))
+                && (this.getUserSex() == null ? other.getUserSex() == null : this.getUserSex().equals(other.getUserSex()))
+                && (this.getUserDescribe() == null ? other.getUserDescribe() == null : this.getUserDescribe().equals(other.getUserDescribe()))
+                && (this.getUserDate() == null ? other.getUserDate() == null : this.getUserDate().equals(other.getUserDate()));
     }
 
     @Override

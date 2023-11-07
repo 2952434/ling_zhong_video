@@ -21,17 +21,17 @@ import java.util.List;
 @Api(tags = "消息操作接口")
 public class InformationController {
 
-    private InformationService informationService;
+    private final InformationService informationService;
 
     public InformationController(InformationService informationService) {
         this.informationService = informationService;
     }
 
-    @RequestMapping(value = "/video/like" , method = RequestMethod.GET)
+    @RequestMapping(value = "/video/like", method = RequestMethod.GET)
     @ApiOperation("获取视频点赞消息")
-    public RespBean<List<VideoLike>>  getVideoLikeInformation(){
+    public RespBean<List<VideoLike>> getVideoLikeInformation() {
         User user = LoginUser.getUser();
-        if (user == null){
+        if (user == null) {
             return RespBean.error("无法操作");
         }
         Integer userId = user.getUserId();
@@ -39,11 +39,11 @@ public class InformationController {
         return RespBean.ok(videoLikeInformation);
     }
 
-    @RequestMapping(value = "/video/collect",method = RequestMethod.GET)
+    @RequestMapping(value = "/video/collect", method = RequestMethod.GET)
     @ApiOperation("获取视频收藏消息")
-    public RespBean<List<VideoCollect>>  getVideoCollectInformation(){
+    public RespBean<List<VideoCollect>> getVideoCollectInformation() {
         User user = LoginUser.getUser();
-        if (user == null){
+        if (user == null) {
             return RespBean.error("无法操作");
         }
         Integer userId = user.getUserId();
@@ -51,11 +51,11 @@ public class InformationController {
         return RespBean.ok(videoCollectList);
     }
 
-    @RequestMapping(value = "/comment/like",method = RequestMethod.GET)
+    @RequestMapping(value = "/comment/like", method = RequestMethod.GET)
     @ApiOperation("获取评论点赞消息")
-    public RespBean<List<CommentLike>>  getCommentLikeInformation(){
+    public RespBean<List<CommentLike>> getCommentLikeInformation() {
         User user = LoginUser.getUser();
-        if (user == null){
+        if (user == null) {
             return RespBean.error("无法操作");
         }
         Integer userId = user.getUserId();
@@ -63,11 +63,11 @@ public class InformationController {
         return RespBean.ok(commentLikeList);
     }
 
-    @RequestMapping(value = "/comment",method = RequestMethod.GET)
+    @RequestMapping(value = "/comment", method = RequestMethod.GET)
     @ApiOperation("获取被回复的消息")
-    public RespBean<List<CommentReply>> getCommentInformation(){
+    public RespBean<List<CommentReply>> getCommentInformation() {
         User user = LoginUser.getUser();
-        if (user == null){
+        if (user == null) {
             return RespBean.error("无法操作");
         }
         Integer userId = user.getUserId();
@@ -76,11 +76,11 @@ public class InformationController {
     }
 
 
-    @RequestMapping(value = "/video/comment",method = RequestMethod.GET)
+    @RequestMapping(value = "/video/comment", method = RequestMethod.GET)
     @ApiOperation("获取视频被评论的消息")
-    public RespBean<List<CommentReply>> getVideoCommentInformation(){
+    public RespBean<List<CommentReply>> getVideoCommentInformation() {
         User user = LoginUser.getUser();
-        if (user == null){
+        if (user == null) {
             return RespBean.error("无法操作");
         }
         Integer userId = user.getUserId();

@@ -49,6 +49,7 @@ public interface UserService {
 
     /**
      * 上传用户头像
+     *
      * @param photo 用户头像
      * @return 地址
      */
@@ -56,6 +57,7 @@ public interface UserService {
 
     /**
      * 更新用户信息
+     *
      * @param updateUserDTO 用户信息
      * @return boolean
      */

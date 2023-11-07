@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class CommentLikeServiceImpl implements CommentLikeService {
 
-    private CommentLikeMapper commentLikeMapper;
+    private final CommentLikeMapper commentLikeMapper;
 
     public CommentLikeServiceImpl(CommentLikeMapper commentLikeMapper) {
         this.commentLikeMapper = commentLikeMapper;
@@ -25,28 +25,28 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     @Override
     public Integer delCommentLike(Integer userId, Long commentId) {
         QueryWrapper<CommentLike> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",userId).eq("comment_id",commentId);
+        queryWrapper.eq("user_id", userId).eq("comment_id", commentId);
         return commentLikeMapper.delete(queryWrapper);
     }
 
     @Override
     public CommentLike selectByUserIdAndCommentId(Integer userId, Long commentId) {
         QueryWrapper<CommentLike> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",userId).eq("comment_id",commentId);
+        queryWrapper.eq("user_id", userId).eq("comment_id", commentId);
         return commentLikeMapper.selectOne(queryWrapper);
     }
 
     @Override
     public Integer delListByCommentId(Long commentId) {
         QueryWrapper<CommentLike> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comment_id",commentId);
+        queryWrapper.eq("comment_id", commentId);
         return commentLikeMapper.delete(queryWrapper);
     }
 
     @Override
     public List<CommentLike> getUserLikedCommentList(Integer userId) {
         QueryWrapper<CommentLike> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("user_id", userId);
         return commentLikeMapper.selectList(queryWrapper);
     }
 }

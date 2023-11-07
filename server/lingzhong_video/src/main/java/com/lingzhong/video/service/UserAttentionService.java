@@ -1,7 +1,5 @@
 package com.lingzhong.video.service;
 
-import com.lingzhong.video.bean.po.UserAttention;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.lingzhong.video.bean.vo.AttentionUserVo;
 
 import java.util.List;
@@ -58,5 +56,14 @@ public interface UserAttentionService  {
      * @return Integer
      */
     Integer getMyAttentionCount(Integer userId);
+
+
+    /**
+     * 判断我是否关注该用户
+     * @param beUserId 用户ID
+     * @return boolean
+     */
+    boolean judgeMyIsAttention(Integer beUserId);
+
 
 }

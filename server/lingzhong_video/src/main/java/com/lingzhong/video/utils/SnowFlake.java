@@ -4,7 +4,7 @@ public class SnowFlake {
     /**
      * 起始的时间戳（可设置当前时间之前的邻近时间）
      */
-    private long startStamp;
+    private final long startStamp;
 
     /**
      * 序列号占用的位数

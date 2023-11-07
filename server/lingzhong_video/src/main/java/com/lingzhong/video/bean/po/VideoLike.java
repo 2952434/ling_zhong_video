@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 
-@TableName(value ="video_like")
+@TableName(value = "video_like")
 @Data
 public class VideoLike implements Serializable {
 
@@ -51,9 +52,9 @@ public class VideoLike implements Serializable {
         }
         VideoLike other = (VideoLike) that;
         return ((this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getBeUserId() == null ? other.getBeUserId() == null : this.getBeUserId().equals(other.getBeUserId()))
-            && (this.getLikeDate() == null ? other.getLikeDate() == null : this.getLikeDate().equals(other.getLikeDate())));
+                && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+                && (this.getBeUserId() == null ? other.getBeUserId() == null : this.getBeUserId().equals(other.getBeUserId()))
+                && (this.getLikeDate() == null ? other.getLikeDate() == null : this.getLikeDate().equals(other.getLikeDate())));
     }
 
     @Override
