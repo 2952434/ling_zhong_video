@@ -18,7 +18,7 @@
 
 > **提示：若视频不能播放请查看docs下的视频**
 
-[**项目演示视频链接** >>>]()
+[**项目演示视频链接** >>>](http://s32t6kk2m.hb-bkt.clouddn.com/video/lingzhong/lingzhong.mp4)
 
 ### 程序运行说明
 
