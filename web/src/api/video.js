@@ -40,3 +40,11 @@ export const getSearchVideo = (content, count, page) => {
 export const uploadVideo = (formData) => {
   return request.post(`/video/uploadVideo`, formData)
 }
+// 根据视频id获取视频信息
+export const getVideoInfoById = (videoId) => {
+  return request.get('/video/getVideoVoByVideoId', {
+    params: {
+      videoId
+    }
+  })
+}

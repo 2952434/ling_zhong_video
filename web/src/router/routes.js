@@ -30,6 +30,11 @@ export const constantRoute = [
     component: () => import('@/views/follow/index.vue'),
   },
   {
+    path: '/share',
+    name: 'share',
+    component: () => import('@/views/share/index.vue')
+  },
+  {
     // 搜索
     path: '/search',
     name: 'search',

@@ -11,7 +11,9 @@ import {
   unFollowUser,
   getLikeVideo,
   getCollectVideo,
-  locationCity
+  locationCity,
+  getUserInfoById,
+  followOne
 } from '@/api/user.js'
 import { getVideoByUser } from '@/api/video.js'
 let useUserStore = defineStore({
@@ -20,7 +22,8 @@ let useUserStore = defineStore({
     return {
       token: localStorage.getItem('token') || '',
       userInfo: {},
-      followList: []
+      followList: [],
+      loginShow: false
     }
   },
   actions: {
@@ -160,6 +163,28 @@ let useUserStore = defineStore({
       return new Promise((resolve, reject) => {
         locationCity(latitude, longitude).then(res => {
           resolve(res.data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    // 根据用户id查询用户
+    getUserInfoById(userId) {
+      return new Promise((resolve, reject) => {
+        getUserInfoById(userId).then(res => {
+
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    // 判断用户是否关注了某人
+    followOne(beUserId) {
+      console.log(beUserId);
+      return new Promise((resolve, reject) => {
+        followOne(beUserId).then(res => {
+          resolve(res)
         }).catch(err => {
           reject(err)
         })

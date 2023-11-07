@@ -5,20 +5,32 @@
         <img :src="props.videoNumInfo.userPhoto" />
       </div>
     </div>
+    <el-button size="small" style="transform: translate(10px,-30px);" v-show="!followShow"
+      @click="followThisOne">关注</el-button>
     <div class="like videoInfo" @click="liveVideo">
       <i class="iconfont icon-Heart" ref="iconHeart"
         :style="{ color: likeVideo === 1 || likeVideo === 3 ? 'red' : 'white' }"></i>
       {{ props.videoNumInfo.videoLikeNum }}
     </div>
-    <div class="comment videoInfo" @click="openChat">
+    <!-- <div class="comment videoInfo" @click="openChat">
       <i class="iconfont icon-Chat" ref="iconChat"></i>
       {{ props.videoNumInfo.videoCommentNum }}
-    </div>
+    </div> -->
     <div class="collect videoInfo" @click="collectVideo">
       <i class="iconfont icon-Star" ref="iconStar"
         :style="{ color: likeVideo === 2 || likeVideo === 3 ? 'yellow' : 'white' }"></i>
       {{ props.videoNumInfo.videoCollectNum }}
     </div>
+    <div class="videoInfo" @click="shareVideo">
+      <el-icon color="white" class="no-inherit" style="font-size:30px;">
+        <Share />
+      </el-icon>
+      <div style="font-size: 12px;text-align: center;">
+        分享
+
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -27,6 +39,11 @@ import { ref, reactive, onMounted, watch } from 'vue'
 const props = defineProps(['videoNumInfo'])
 // 引入视频仓库
 import useVideoStore from '@/store/videoStore'
+import { ElMessage } from 'element-plus';
+import useUserStore from '../../../store/user';
+const userStore = useUserStore()
+import { copy } from '@/utils/utils.js'
+const followShow = ref(true)
 /**
  * 用户对此视频的状态
  * 0：未喜欢，未收藏
@@ -37,10 +54,10 @@ import useVideoStore from '@/store/videoStore'
 const likeVideo = ref(0)
 const videoStore = useVideoStore()
 onMounted(() => {
-  if (videoStore.videoCurrentCount === props.videoNumInfo.id) {
+  if (videoStore.videoCurrentCount === props.videoNumInfo.id && localStorage.getItem('token')) {
     getVideoLike()
+    isFollowOne()
   }
-
 })
 // 获取当前视频点赞消息
 const getVideoLike = async () => {
@@ -58,6 +75,10 @@ const iconChat = ref()
 const iconStar = ref()
 // 喜欢此视频
 const liveVideo = async () => {
+  if (!localStorage.getItem('token')) {
+    ElMessage.warning("请先登录")
+    return userStore.loginShow = true
+  }
   if (iconHeart.value.style.color === 'red') {
     await videoStore.cancelLikeVideo(props.videoNumInfo.videoUserId, props.videoNumInfo.videoId)
     iconHeart.value.style.color = 'white'
@@ -86,6 +107,23 @@ const collectVideo = async () => {
     iconStar.value.style.color = 'yellow'
     getVideoLike()
   }
+}
+const shareVideo = () => {
+  const shareUrl = `http://localhost:3000/share?videoId=${props.videoNumInfo.videoId}&userId=${userStore.userInfo.userId}`
+  copy(shareUrl)
+  ElMessage.success('分享链接已复制，快去发给好友吧')
+}
+// 判断用户是否关注了某人
+const isFollowOne = async () => {
+  let result = await userStore.followOne(props.videoNumInfo.videoUserId)
+  followShow.value = result.obj
+}
+// 关注当前
+const followThisOne = async () => {
+  let result = await userStore.followUser(props.videoNumInfo.videoUserId)
+  console.log(result);
+  ElMessage.success('关注成功')
+  isFollowOne()
 }
 </script>
 
