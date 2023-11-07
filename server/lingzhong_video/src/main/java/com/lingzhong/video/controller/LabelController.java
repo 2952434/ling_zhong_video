@@ -11,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,7 +19,7 @@ import java.util.List;
 /**
  * @Author: Ljx
  * @Date: 2023/10/27 20:35
- * @role:
+ * @Description: 视频标签接口
  */
 @RestController
 @Api(tags = "视频标签接口")
@@ -28,7 +27,7 @@ import java.util.List;
 public class LabelController {
 
 
-    @Autowired
+    @Resource
     private LabelService labelService;
 
     @Resource

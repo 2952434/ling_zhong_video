@@ -1,7 +1,6 @@
 package com.lingzhong.video.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.po.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;

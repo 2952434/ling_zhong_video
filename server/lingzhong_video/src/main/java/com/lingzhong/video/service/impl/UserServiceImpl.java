@@ -2,7 +2,6 @@ package com.lingzhong.video.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.gson.Gson;
 import com.lingzhong.video.bean.dto.UpdateUserDTO;
 import com.lingzhong.video.bean.dto.UserRegisterDTO;
 import com.lingzhong.video.bean.po.User;
@@ -12,17 +11,7 @@ import com.lingzhong.video.service.UserService;
 import com.lingzhong.video.utils.FinalName;
 import com.lingzhong.video.utils.LoginUser;
 import com.lingzhong.video.utils.SendMail;
-import com.lingzhong.video.utils.TimeUtils;
-import com.qiniu.common.QiniuException;
-import com.qiniu.http.Response;
-import com.qiniu.storage.Configuration;
-import com.qiniu.storage.Region;
-import com.qiniu.storage.UploadManager;
-import com.qiniu.storage.model.DefaultPutRet;
-import com.qiniu.storage.persistent.FileRecorder;
-import com.qiniu.util.Auth;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -61,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(4, 5, 10, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(2000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 

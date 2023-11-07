@@ -4,11 +4,11 @@ import com.lingzhong.video.bean.po.*;
 import com.lingzhong.video.service.CommentReplyService;
 import com.lingzhong.video.service.InformationService;
 import com.lingzhong.video.service.VideoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +16,11 @@ import java.util.Map;
 @Service
 public class InformationServiceImpl implements InformationService {
 
-    private RedisTemplate<String , Object> redisTemplate;
+    private final RedisTemplate<String , Object> redisTemplate;
 
-    @Autowired
+    @Resource
     private CommentReplyService commentReplyService;
-    @Autowired
+    @Resource
     private VideoService videoService;
 
     private final String VIDEO_LIKE = "video_like";
@@ -61,8 +61,8 @@ public class InformationServiceImpl implements InformationService {
     public void innerNewCommentInformation(CommentReply commentReply) {
         HashOperations<String, String, CommentReply> hashOperations = redisTemplate.opsForHash();
         String filed = String.valueOf(commentReply.getReplyDate());
-        /**
-         * 查询评论的父用户id
+        /*
+          查询评论的父用户id
          */
         CommentReply beUserComment = commentReplyService.selectByCommentId(commentReply.getCommentId());
 
@@ -73,8 +73,8 @@ public class InformationServiceImpl implements InformationService {
     public void innerVideoCommentInformation(CommentReply commentReply) {
         HashOperations<String, String, CommentReply> hashOperations = redisTemplate.opsForHash();
         String filed = String.valueOf(commentReply.getReplyDate());
-        /**
-         * 查询视频的发表用户id
+        /*
+          查询视频的发表用户id
          */
         Video beUserVideo = videoService.getVideoById(commentReply.getVideoId());
 
@@ -87,8 +87,8 @@ public class InformationServiceImpl implements InformationService {
         HashOperations<String, String, CommentLike> hashOperations = redisTemplate.opsForHash();
         Map<String, CommentLike> entries = hashOperations.entries(key);
         List<CommentLike> commentLikeList = new ArrayList<>(entries.values());
-        /**
-         * 清除消息
+        /*
+          清除消息
          */
         hashOperations.getOperations().delete(key);
         return commentLikeList;
@@ -100,8 +100,8 @@ public class InformationServiceImpl implements InformationService {
         HashOperations<String, String, VideoLike> hashOperations = redisTemplate.opsForHash();
         Map<String, VideoLike> entries = hashOperations.entries(key);
         List<VideoLike> videoLikeList = new ArrayList<>(entries.values());
-        /**
-         * 清除消息
+        /*
+          清除消息
          */
         hashOperations.getOperations().delete(key);
         return videoLikeList;
@@ -113,8 +113,8 @@ public class InformationServiceImpl implements InformationService {
         HashOperations<String, String, VideoCollect> hashOperations = redisTemplate.opsForHash();
         Map<String, VideoCollect> entries = hashOperations.entries(key);
         List<VideoCollect> videoCollectList = new ArrayList<>(entries.values());
-        /**
-         * 清除消息
+        /*
+          清除消息
          */
         hashOperations.getOperations().delete(key);
         return videoCollectList;
@@ -126,8 +126,8 @@ public class InformationServiceImpl implements InformationService {
         HashOperations<String, String, CommentReply> hashOperations = redisTemplate.opsForHash();
         Map<String, CommentReply> entries = hashOperations.entries(key);
         List<CommentReply> commentReplyList = new ArrayList<>(entries.values());
-        /**
-         * 清除消息
+        /*
+          清除消息
          */
         hashOperations.getOperations().delete(key);
         return commentReplyList;
@@ -139,8 +139,8 @@ public class InformationServiceImpl implements InformationService {
         HashOperations<String, String, CommentReply> hashOperations = redisTemplate.opsForHash();
         Map<String, CommentReply> entries = hashOperations.entries(key);
         List<CommentReply> commentReplyList = new ArrayList<>(entries.values());
-        /**
-         * 清除消息
+        /*
+          清除消息
          */
         hashOperations.getOperations().delete(key);
         return commentReplyList;

@@ -1,7 +1,6 @@
 package com.lingzhong.video.service.impl;
 
 import com.google.gson.Gson;
-import com.lingzhong.video.bean.vo.RespBean;
 import com.lingzhong.video.utils.TimeUtils;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -86,9 +85,7 @@ public class QiNiuService {
             try {
                 Response response = uploadManager.put(file.getBytes(), key, upToken);
                 //解析上传成功的结果
-                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-//                System.out.println(putRet.key);
-//                System.out.println(putRet.hash);
+                new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
             } catch (QiniuException ex) {
                 ex.printStackTrace();
                 if (ex.response != null) {
@@ -126,9 +123,8 @@ public class QiNiuService {
             try {
                 Response response = uploadManager.put(photo.getBytes(), key, upToken);
                 //解析上传成功的结果
-                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-//                System.out.println(putRet.key);
-//                System.out.println(putRet.hash);
+                new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+
             } catch (QiniuException ex) {
                 ex.printStackTrace();
                 if (ex.response != null) {

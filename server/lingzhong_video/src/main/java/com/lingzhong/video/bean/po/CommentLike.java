@@ -12,7 +12,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-@TableName(value ="comment_like")
+@TableName(value = "comment_like")
 @Data
 @ApiModel
 public class CommentLike implements Serializable {
@@ -20,22 +20,22 @@ public class CommentLike implements Serializable {
     /**
      * 用户id
      */
-    @ApiModelProperty(name = "用户id",dataType = "Integer")
+    @ApiModelProperty(name = "用户id", dataType = "Integer")
     private Integer userId;
     /**
      * 评论id
      */
-    @ApiModelProperty(name = "评论id",dataType = "Long")
+    @ApiModelProperty(name = "评论id", dataType = "Long")
     private Long commentId;
     /**
      * 被点赞评论用户id
      */
-    @ApiModelProperty(name = "被点赞评论用户id",dataType = "Integer")
+    @ApiModelProperty(name = "被点赞评论用户id", dataType = "Integer")
     private Integer beUserId;
     /**
      * 点赞时间
      */
-    @ApiModelProperty(name = "点赞时间",dataType = "Date")
+    @ApiModelProperty(name = "点赞时间", dataType = "Date")
     private Date likeDate;
 
     @TableField(exist = false)

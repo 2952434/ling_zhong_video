@@ -5,10 +5,10 @@
 <mapper namespace="com.lingzhong.video.mapper.VideoCollectMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.VideoCollect">
-            <id property="videoId" column="video_id" jdbcType="INTEGER"/>
-            <id property="userId" column="user_id" jdbcType="INTEGER"/>
-            <id property="beUserId" column="be_user_id" jdbcType="INTEGER"/>
-            <result property="collectDate" column="collect_date" jdbcType="TIMESTAMP"/>
+        <id property="videoId" column="video_id" jdbcType="INTEGER"/>
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <id property="beUserId" column="be_user_id" jdbcType="INTEGER"/>
+        <result property="collectDate" column="collect_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

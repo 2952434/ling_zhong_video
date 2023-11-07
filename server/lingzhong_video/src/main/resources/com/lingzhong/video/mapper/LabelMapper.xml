@@ -5,13 +5,13 @@
 <mapper namespace="com.lingzhong.video.mapper.LabelMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.Label">
-            <id property="labelId" column="label_id" jdbcType="INTEGER"/>
-            <result property="labelName" column="label_name" jdbcType="VARCHAR"/>
-            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <id property="labelId" column="label_id" jdbcType="INTEGER"/>
+        <result property="labelName" column="label_name" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-    label_id,
+        label_id,
     label_name,
     user_id
     </sql>

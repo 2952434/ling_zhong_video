@@ -10,16 +10,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
-* @author ljx
-* @description 针对表【video】的数据库操作Mapper
-* @createDate 2023-10-27 20:30:22
-* @Entity com.lingzhong.video.bean.po.Video
-*/
+ * @author ljx
+ * @description 针对表【video】的数据库操作Mapper
+ * @createDate 2023-10-27 20:30:22
+ * @Entity com.lingzhong.video.bean.po.Video
+ */
 @Repository
 public interface VideoMapper extends BaseMapper<Video> {
 
     /**
      * 分页查询视频
+     *
      * @param count 页
      * @return List<VideoVo>
      */
@@ -27,11 +28,17 @@ public interface VideoMapper extends BaseMapper<Video> {
 
     /**
      * 查询用户喜欢的视频
+     *
+     * @param userId 用户Id
+     * @return List<VideoVo>
      */
     List<VideoVo> selectLikeVideoByUserId(@Param("userId") Integer userId);
 
     /**
      * 查询用户收藏的视频
+     *
+     * @param userId 用户Id
+     * @return List<VideoVo>
      */
     List<VideoVo> selectCollectVideoByUserId(@Param("userId") Integer userId);
 
@@ -47,26 +54,30 @@ public interface VideoMapper extends BaseMapper<Video> {
 
     /**
      * 排除videoIds的视频
+     *
      * @param videoIds 视频ID集合
-     * @param count 查询视频的条数
+     * @param count    查询视频的条数
      * @return List<VideoVo>
      */
     List<VideoVo> getVideoByNotVideoIds(@Param("videoIds") List<Integer> videoIds, @Param("count") Integer count);
 
     /**
      * 查询出同步到es的数据
+     *
      * @return List<VideoEsDTO>
      */
     List<VideoEsDTO> getVideoEsBeans();
 
     /**
      * 根据视频id集合更新标记位为0
+     *
      * @param videoIds 视频id集合
      */
     void updateVideoSign(@Param("videoIds") List<Integer> videoIds);
 
     /**
      * 根据id获取视频信息
+     *
      * @param videoId 视频id
      * @return 视频信息
      */
@@ -74,6 +85,7 @@ public interface VideoMapper extends BaseMapper<Video> {
 
     /**
      * 根据视频ID集合获取视频信息
+     *
      * @param videoIds 视频ID集合
      * @return 视频信息集合
      */
@@ -88,6 +100,14 @@ public interface VideoMapper extends BaseMapper<Video> {
      * @return 视频信息
      */
     List<VideoVo> getVideoVoByLabelIds(@Param("labels") List<Integer> labels, @Param("count") Integer count, @Param("ignoreVideoIds") List<Integer> ignoreVideoIds);
+
+    /**
+     * 根据视频ID获取视频信息
+     *
+     * @param videoId 视频ID
+     * @return VideoVo
+     */
+    VideoVo getVideoVoByVideoId(@Param("videoId") Integer videoId);
 }
 
 

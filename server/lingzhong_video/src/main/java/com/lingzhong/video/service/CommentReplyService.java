@@ -13,40 +13,54 @@ public interface CommentReplyService  {
 
     /**
      * 发表评论或回复
+     * @param commentReply 评论或回复实体
+     * @return Long
      */
-    public Long insertNewComment(CommentReply commentReply);
+    Long insertNewComment(CommentReply commentReply);
 
     /**
      * 通过评论id获取评论信息
+     * @param commentId 评论Id
+     * @return CommentReply
      */
-    public CommentReply selectByCommentId(Long commentId);
+    CommentReply selectByCommentId(Long commentId);
 
     /**
      * 获取视频下所有评论及回复
+     * @param videoId 视频Id
+     * @return List<CommentReply>
      */
-    public List<CommentReply> getAllCommentByVideoId(Integer videoId);
+    List<CommentReply> getAllCommentByVideoId(Integer videoId);
 
     /**
      * 获取用户的评论
+     * @param userId 用户Id
+     * @return List<CommentReply>
      */
-    public List<CommentReply> getCommentByUserId(Integer userId);
+    List<CommentReply> getCommentByUserId(Integer userId);
 
     /**
      * 删除本用户评论
-     * @param userId
-     * @param commentId
+     * @param userId 用户Id
+     * @param commentId 评论Id
+     * @return Integer
      */
-    public Integer delUserComment(Integer userId, Long commentId);
+    Integer delUserComment(Integer userId, Long commentId);
 
     /**
-     * 更新点赞数
+     * 更新评论数
+     * @param commentReply 评论实体
+     * @return Integer
      */
-    public Integer updateCommentLike(CommentReply commentReply);
+    Integer updateCommentLike(CommentReply commentReply);
 
     /**
      * 判断是否是该用户的评论
+     * @param userId 用户Id
+     * @param commentId 评论Id
+     * @return CommentReply
      */
-    public CommentReply getCommentByUserIdAndCommentId(Integer userId , Long commentId);
+    CommentReply getCommentByUserIdAndCommentId(Integer userId , Long commentId);
 
 
 }

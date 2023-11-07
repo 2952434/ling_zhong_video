@@ -3,20 +3,21 @@ package com.lingzhong.video.bean.po;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 
-@TableName(value ="video_data")
+@TableName(value = "video_data")
 @Data
 public class VideoData implements Serializable {
     /**
      * 视频id
      */
     @TableId
-    @ApiModelProperty(name = "视频id" , dataType = "Integer" , required = true)
+    @ApiModelProperty(name = "视频id", dataType = "Integer", required = true)
     private Integer videoId;
 
     /**
@@ -50,9 +51,9 @@ public class VideoData implements Serializable {
         }
         VideoData other = (VideoData) that;
         return (this.getVideoId() == null ? other.getVideoId() == null : this.getVideoId().equals(other.getVideoId()))
-            && (this.getVideoLikeNum() == null ? other.getVideoLikeNum() == null : this.getVideoLikeNum().equals(other.getVideoLikeNum()))
-            && (this.getVideoCollectNum() == null ? other.getVideoCollectNum() == null : this.getVideoCollectNum().equals(other.getVideoCollectNum()))
-            && (this.getVideoCommentNum() == null ? other.getVideoCommentNum() == null : this.getVideoCommentNum().equals(other.getVideoCommentNum()));
+                && (this.getVideoLikeNum() == null ? other.getVideoLikeNum() == null : this.getVideoLikeNum().equals(other.getVideoLikeNum()))
+                && (this.getVideoCollectNum() == null ? other.getVideoCollectNum() == null : this.getVideoCollectNum().equals(other.getVideoCollectNum()))
+                && (this.getVideoCommentNum() == null ? other.getVideoCommentNum() == null : this.getVideoCommentNum().equals(other.getVideoCommentNum()));
     }
 
     @Override

@@ -2,10 +2,8 @@ package com.lingzhong.video.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @Description: 安全管理配置
  */
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -49,9 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                //访问/r开始的请求需要认证通过
-                .antMatchers("/r/**", "/user/sentMailLoginAuthCode/**", "/video/getVideoByIp/**").permitAll()
-                //其它请求全部放行
+                .antMatchers("/user/sentMailLoginAuthCode/**", "/video/getVideoByIp/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //登录成功跳转到/login-success
@@ -63,22 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
 //        放行所有请求
         web.ignoring().antMatchers("/video/getVideo/**", "/user/sentMailLoginAuthCode/**", "/video/getVideoByIp/**");
-    }
-
-    public static void main(String[] args) {
-        String password = "123456";
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        for (int i = 0; i < 5; i++) {
-            //生成密码
-            String encode = passwordEncoder.encode(password);
-            System.out.println(encode);
-            //校验密码,参数1是输入的明文 ，参数2是正确密码加密后的串
-            boolean matches = passwordEncoder.matches(password, encode);
-            System.out.println(matches);
-        }
-
-        boolean matches = passwordEncoder.matches("1234", "$2a$10$fb2RlvFwr9HsRu9vH1OxCu/YiMRw6wy5UI6u3s0A.0bVSuR1UqdHK");
-        System.out.println(matches);
     }
 
 

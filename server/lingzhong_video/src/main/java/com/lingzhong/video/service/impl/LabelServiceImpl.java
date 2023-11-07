@@ -1,12 +1,9 @@
 package com.lingzhong.video.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.lingzhong.video.bean.dto.UserExt;
 import com.lingzhong.video.bean.dto.VideoLabelDTO;
 import com.lingzhong.video.bean.po.Label;
 import com.lingzhong.video.bean.po.User;
-import com.lingzhong.video.bean.po.VideoLabel;
 import com.lingzhong.video.bean.vo.LabelVo;
 import com.lingzhong.video.mapper.LabelMapper;
 import com.lingzhong.video.service.LabelService;
@@ -33,15 +30,15 @@ public class LabelServiceImpl implements LabelService {
     public List<LabelVo> getAllLabel() {
         User user = LoginUser.getUser();
         QueryWrapper<Label> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",user.getUserId()).or().eq("user_id",-1);
+        queryWrapper.eq("user_id", user.getUserId()).or().eq("user_id", -1);
         List<Label> labels = labelMapper.selectList(queryWrapper);
         List<LabelVo> labelVos = new ArrayList<>();
         for (Label label : labels) {
             LabelVo labelVo = new LabelVo();
-            BeanUtils.copyProperties(label,labelVo);
+            BeanUtils.copyProperties(label, labelVo);
             if (label.getUserId() == -1) {
                 labelVo.setIsUserAdd(Boolean.FALSE);
-            }else {
+            } else {
                 labelVo.setIsUserAdd(Boolean.TRUE);
             }
             labelVos.add(labelVo);
@@ -51,8 +48,7 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public Label getLabelById(Integer labelId) {
-        Label label = labelMapper.selectById(labelId);
-        return label;
+        return labelMapper.selectById(labelId);
     }
 
     @Override
@@ -67,7 +63,7 @@ public class LabelServiceImpl implements LabelService {
         if (isUser) {
             User user = LoginUser.getUser();
             label.setUserId(user.getUserId());
-        }else {
+        } else {
             label.setUserId(-1);
         }
         int insert = labelMapper.insert(label);
@@ -75,9 +71,9 @@ public class LabelServiceImpl implements LabelService {
     }
 
 
-
     /**
      * 判断标签是否存在
+     *
      * @param videoLabelDTO 添加的标签
      * @return true：存在 false：不存在
      */
@@ -87,9 +83,9 @@ public class LabelServiceImpl implements LabelService {
         queryWrapper.eq("label_name", videoLabelDTO.getLabelName());
         if (isUser) {
             User user = LoginUser.getUser();
-            queryWrapper.eq("user_id",user.getUserId());
-        }else {
-            queryWrapper.eq("user_id",-1);
+            queryWrapper.eq("user_id", user.getUserId());
+        } else {
+            queryWrapper.eq("user_id", -1);
         }
         Label label = labelMapper.selectOne(queryWrapper);
         return label != null;

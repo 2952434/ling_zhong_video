@@ -5,14 +5,14 @@
 <mapper namespace="com.lingzhong.video.mapper.VideoMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.Video">
-            <id property="videoId" column="video_id" jdbcType="INTEGER"/>
-            <result property="videoDescription" column="video_description" jdbcType="VARCHAR"/>
-            <result property="videoUrl" column="video_url" jdbcType="VARCHAR"/>
-            <result property="videoUserId" column="video_user_id" jdbcType="INTEGER"/>
-            <result property="videoAddress" column="video_address" jdbcType="VARCHAR"/>
-            <result property="videoPrivate" column="video_private" jdbcType="TINYINT"/>
-            <result property="videoDate" column="video_date" jdbcType="TIMESTAMP"/>
-            <result property="videoSign" column="video_sign" jdbcType="TINYINT"/>
+        <id property="videoId" column="video_id" jdbcType="INTEGER"/>
+        <result property="videoDescription" column="video_description" jdbcType="VARCHAR"/>
+        <result property="videoUrl" column="video_url" jdbcType="VARCHAR"/>
+        <result property="videoUserId" column="video_user_id" jdbcType="INTEGER"/>
+        <result property="videoAddress" column="video_address" jdbcType="VARCHAR"/>
+        <result property="videoPrivate" column="video_private" jdbcType="TINYINT"/>
+        <result property="videoDate" column="video_date" jdbcType="TIMESTAMP"/>
+        <result property="videoSign" column="video_sign" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -25,9 +25,9 @@
             update video
             set video_sign = 0
             where video_id in
-                <foreach collection="videoIds" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
+            <foreach collection="videoIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
     </update>
 
@@ -98,11 +98,6 @@
         order by c.collect_date DESC;
     </select>
     <select id="getUserVideoByUserId" resultType="com.lingzhong.video.bean.vo.VideoVo">
-        select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
-            from video v,video_data d,user u
-            where u.user_id = #{userId} and v.video_id = d.video_id and v.video_user_id = u.user_id limit #{page},#{count};
-    </select>
-    <select id="getVideoByNotVideoIds" resultType="com.lingzhong.video.bean.vo.VideoVo">
         select v.video_id,
                video_description,
                video_url,
@@ -113,14 +108,34 @@
                video_collect_num,
                video_comment_num,
                u.user_name,
-               u.user_photo,
-               d.video_like_num * 0.15 + d.video_collect_num * 0.45 + d.video_comment_num * 0.40 data_sum
+               u.user_photo
         from video v,
              video_data d,
              user u
-        where v.video_id = d.video_id
+        where u.user_id = #{userId}
+          and v.video_id = d.video_id
           and v.video_user_id = u.user_id
-          and v.video_private = 0
+        limit #{page},#{count};
+    </select>
+    <select id="getVideoByNotVideoIds" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select v.video_id,
+        video_description,
+        video_url,
+        video_user_id,
+        video_address,
+        video_date,
+        video_like_num,
+        video_collect_num,
+        video_comment_num,
+        u.user_name,
+        u.user_photo,
+        d.video_like_num * 0.15 + d.video_collect_num * 0.45 + d.video_comment_num * 0.40 data_sum
+        from video v,
+        video_data d,
+        user u
+        where v.video_id = d.video_id
+        and v.video_user_id = u.user_id
+        and v.video_private = 0
         <if test="videoIds.size() > 0">
             and v.video_id not in
             <foreach collection="videoIds" item="item" open="(" separator="," close=")">
@@ -139,9 +154,23 @@
           and v.video_user_id = u.user_id
     </select>
     <select id="getVideoVoById" resultType="com.lingzhong.video.bean.vo.VideoVo">
-        select v.video_id, video_description, video_url, video_user_id, video_address, video_date, video_like_num, video_collect_num, video_comment_num,u.user_name,u.user_photo
-            from video v,video_data d,user u
-            where v.video_id = #{videoId} and v.video_id = d.video_id and v.video_user_id = u.user_id;
+        select v.video_id,
+               video_description,
+               video_url,
+               video_user_id,
+               video_address,
+               video_date,
+               video_like_num,
+               video_collect_num,
+               video_comment_num,
+               u.user_name,
+               u.user_photo
+        from video v,
+             video_data d,
+             user u
+        where v.video_id = #{videoId}
+          and v.video_id = d.video_id
+          and v.video_user_id = u.user_id;
     </select>
     <select id="getVideoVoByVideoIds" resultType="com.lingzhong.video.bean.vo.VideoVo">
         select v.video_id,
@@ -199,5 +228,24 @@
         </if>
         order by data_sum DESC, v.video_date DESC
         limit 0,#{count};
+    </select>
+    <select id="getVideoVoByVideoId" resultType="com.lingzhong.video.bean.vo.VideoVo">
+        select v.video_id,
+        video_description,
+        video_url,
+        video_user_id,
+        video_address,
+        video_date,
+        video_like_num,
+        video_collect_num,
+        video_comment_num,
+        u.user_name,
+        u.user_photo
+        from video v,
+        video_data d,
+        user u
+        where v.video_id = d.video_id
+        and v.video_user_id = u.user_id
+        and v.video_id = #{videoId}
     </select>
 </mapper>

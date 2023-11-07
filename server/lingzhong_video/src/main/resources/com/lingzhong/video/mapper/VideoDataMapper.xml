@@ -5,10 +5,10 @@
 <mapper namespace="com.lingzhong.video.mapper.VideoDataMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.VideoData">
-            <id property="videoId" column="video_id" jdbcType="INTEGER"/>
-            <result property="videoLikeNum" column="video_like_num" jdbcType="INTEGER"/>
-            <result property="videoCollectNum" column="video_collect_num" jdbcType="INTEGER"/>
-            <result property="videoCommentNum" column="video_comment_num" jdbcType="INTEGER"/>
+        <id property="videoId" column="video_id" jdbcType="INTEGER"/>
+        <result property="videoLikeNum" column="video_like_num" jdbcType="INTEGER"/>
+        <result property="videoCollectNum" column="video_collect_num" jdbcType="INTEGER"/>
+        <result property="videoCommentNum" column="video_comment_num" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -17,7 +17,9 @@
     </sql>
 
     <update id="updateVideoDataByFiled">
-        update video_data set ${filed} = ${filed} + #{num} where video_id = #{videoId}
+        update video_data
+        set ${filed} = ${filed} + #{num}
+        where video_id = #{videoId}
     </update>
 
 </mapper>

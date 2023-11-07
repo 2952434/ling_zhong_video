@@ -5,10 +5,10 @@
 <mapper namespace="com.lingzhong.video.mapper.UserAttentionMapper">
 
     <resultMap id="BaseResultMap" type="com.lingzhong.video.bean.po.UserAttention">
-            <id property="attentionId" column="attention_id" jdbcType="INTEGER"/>
-            <result property="userId" column="user_id" jdbcType="INTEGER"/>
-            <result property="beUserId" column="be_user_id" jdbcType="INTEGER"/>
-            <result property="attentionDate" column="attention_date" jdbcType="TIMESTAMP"/>
+        <id property="attentionId" column="attention_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="beUserId" column="be_user_id" jdbcType="INTEGER"/>
+        <result property="attentionDate" column="attention_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

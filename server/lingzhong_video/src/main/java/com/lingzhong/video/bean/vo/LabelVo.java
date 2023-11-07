@@ -20,7 +20,7 @@ public class LabelVo {
     /**
      * 标签名
      */
-    @ApiModelProperty(value = "标签名",required = true)
+    @ApiModelProperty(value = "标签名", required = true)
     private String labelName;
 
     @ApiModelProperty(value = "是否是该用户添加")

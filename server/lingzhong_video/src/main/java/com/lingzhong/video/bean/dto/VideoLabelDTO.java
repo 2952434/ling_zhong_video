@@ -12,9 +12,9 @@ import lombok.Data;
 @Data
 public class VideoLabelDTO {
 
-    @ApiModelProperty(value = "标签名",required = true)
+    @ApiModelProperty(value = "标签名", required = true)
     private String labelName;
 
-    @ApiModelProperty(value = "如果是用户添加的传True，管理员添加传False",required = true,example = "false")
+    @ApiModelProperty(value = "如果是用户添加的传True，管理员添加传False", required = true, example = "false")
     private Boolean isUser;
 }

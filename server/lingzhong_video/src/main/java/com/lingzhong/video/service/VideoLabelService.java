@@ -1,7 +1,5 @@
 package com.lingzhong.video.service;
 
-import com.lingzhong.video.bean.po.VideoLabel;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.lingzhong.video.bean.vo.VideoVo;
 
 import java.util.List;
