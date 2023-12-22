@@ -28,9 +28,8 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public List<LabelVo> getAllLabel() {
-        User user = LoginUser.getUser();
         QueryWrapper<Label> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", user.getUserId()).or().eq("user_id", -1);
+        queryWrapper.eq("user_id", -1);
         List<Label> labels = labelMapper.selectList(queryWrapper);
         List<LabelVo> labelVos = new ArrayList<>();
         for (Label label : labels) {
